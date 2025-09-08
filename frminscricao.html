@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INSCRIÇÕES COMUNHÃ NA ROÇA</title>
+    <title>INSCRIÇÕES VEREDAS 2025</title>
     <link rel="shortcut icon" href="./assets/3.ico" type="image/x-icon">
     <link rel="stylesheet" href="./css/common.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <style>
         body {
-            /*background-image: url('/EBF.jpg');*/
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
@@ -33,16 +32,14 @@
         .logo-circle {
             width: 120px;
             height: 120px;
-            background: white;
-            border-radius: 50%;
             position: absolute;
             left: 50%;
-            top: 50%;
+            top: 0%;
             transform: translate(-50%, -30%);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            opacity: 1;
             transition: all 0.3s ease;
         }
 
@@ -53,18 +50,8 @@
         }
 
         .logo-circle.scrolled {
-            left: 60px;
-            transform: translate(0, -30%);
-            background: transparent;
-            box-shadow: none;
-            top: 5px;
-        }
-
-        .scrolled .logo-circle img {
-            content: url('./assets/Logo\ 360\ sem\ Fundo.png');
-            width: 180px;
-            height: auto;
-            margin-top: -80;
+            opacity: 0;
+            transform: translate(-50%, -50%);
         }
 
         .header-title {
@@ -170,16 +157,7 @@
                 border-radius: 0;
             }
 
-            .logo-circle.scrolled {
-                left: 3px;
-                transform: translate(0, -30%);
-            }
 
-            .scrolled .logo-circle img {
-                width: 96px;
-                /* Redução de 20% de 120px */
-                height: auto;
-            }
 
             .header-title {
                 font-size:1.3rem;
@@ -195,45 +173,29 @@
 
         }
 
-        .signature-container {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #fff;
-            margin-bottom: 10px;
-        }
 
-        .signature-pad {
-            width: 100%;
-            height: 200px;
-            touch-action: none;
-            cursor: crosshair;
-        }
-
-        .signature-buttons {
-            display: flex;
-            justify-content: flex-end;
-        }
     </style>
 </head>
 
 <body>
     <div class="header">
-        <!--<div class="logo-circle">
-             <img src="./assets/Logo_360 black-sem fundo.png" alt="Logo ACAMP">
-        </div>-->
-        <h2 class="header-title">COMUNHÃO NA ROÇA</h2>
+        <div class="logo-circle">
+             <img src="./assets/LogoBranco.png" alt="Logo IEBI">
+        </div>
+        <h2 class="header-title">INSCRIÇÕES VEREDAS 2025</h2>
     </div>
     <div class="container">
-        <h2 class="text-center mb-4 font-weight-bold">COMUNHÃO NA ROÇA</h2>
+        <h2 class="text-center mb-4 font-weight-bold">INSCRIÇÕES VEREDAS 2025</h2>
         <div class="divider"></div>
 
         <div class="info-box">
-            <p><strong>Valor da inscrição:</strong> R$ 30,00</p>
+            <p><strong>Valor da inscrição:</strong> R$ 130,00</p>
             <p><strong>Tipo de Pagamento:</strong> PIX, Espécie e Cartão (Com Taxa da Maquineta)*</p>
             <!-- <p style="margin-top: -15px;"><small><i>*Pagamento CARTÃO pode ser parcelado até 10x.</i></small></p> -->
-            <p>*Para realização do Pagamento, entrar em contato com <b>Samuel (Coordenador)</b></p>
-            <p style="margin-top: -15px;"><b>Whatsapp: </b><a href="https://wa.me/558391173924" target="_blank">83
-                    99117-3924</a></p>
+            <p>*Para realização do <b>Pagamento ou informações</b>, entrar em contato com:</p>
+                <p><b>Walter: </b><a href="https://wa.me/5583988330531" target="_blank">83
+                    98833-0531</a></p> <p style="margin-top: -5px;"><b>Gustavo: </b><a href="https://wa.me/5583999127728" target="_blank">83
+                    99912-7728</a></p>
         </div>
 
         <form id="acampForm">
@@ -264,8 +226,15 @@
                     <label for="celular">Celular</label>
                     <input type="text" class="form-control" id="celular" placeholder="(99) 99999-9999" required>
                 </div>
+                <div class="form-group col-md-6">
+                    <label for="genero">Gênero</label>
+                    <select class="form-control" id="genero" required>
+                        <option value="">Selecione</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                    </select>
+                </div>
             </div>
-
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="igreja">Igreja</label>
@@ -283,75 +252,27 @@
                         <option value="">Selecione seu Líder de Célula</option>
                     </select>
                 </div>
+            </div>
 
-                <div class="form-row" id="infoRedeDiv" style="display: none;">
-                    <div class="form-group col-md-6">
-                        <label for="supervisor">Supervisor</label>
-                        <input type="text" class="form-control" id="supervisor" readonly>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="rede">Rede</label>
-                        <input type="text" class="form-control" id="rede" readonly>
-                    </div>
+            <div class="form-row" id="infoRedeDiv" style="display: none;">
+                <div class="form-group col-md-6">
+                    <label for="supervisor">Supervisor</label>
+                    <input type="text" class="form-control" id="supervisor" readonly>
                 </div>
+                <div class="form-group col-md-6">
+                    <label for="rede">Rede</label>
+                    <input type="text" class="form-control" id="rede" readonly>
+                </div>
+            </div>
 
-
+            <div class="form-row">
                 <div class="form-group col-md-6" id="outraIgrejaDiv" style="display: none;">
                     <label for="outraIgreja">Qual Igreja?</label>
                     <input type="text" class="form-control" id="outraIgreja">
                 </div>
             </div>
 
-            <div id="responsavelDiv" style="display: none;">
-                <div class="form-group">
-                    <label for="contato">Nome do Responsável (Obrigatório para menor de 18 anos)</label>
-                    <input type="text" class="form-control" id="contato">
-                </div>
-                <div class="form-group" id="cpfResponsavelDiv">
-                    <label for="cpfResponsavel">CPF do Responsável (Obrigatório para menor de 18 anos)</label>
-                    <input type="text" class="form-control" id="cpfResponsavel" placeholder="000.000.000-00">
-                </div>
-                <div class="form-group">
-                    <label for="fonecontato">Celular do Responsável (Obrigatório para menor de 18 anos)</label>
-                    <input type="tel" class="form-control" id="fonecontato" placeholder="(99) 99999-9999">
-                </div>
-                <div class="form-group" id="autorizacaoDiv">
-                    <div class="info-box"
-                        style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px; padding: 15px; margin-top: 10px;">
-                        <p class="mb-1"><strong>TERMO DE AUTORIZAÇÃO</strong></p>
-                        <p class="mb-1">Eu <span id="nomeResponsavelSpan" style="font-weight: bold;"></span> autorizo a
-                            participão de <span id="nomeParticipanteSpan" style="font-weight: bold;"></span> no evento
-                            "Essência", organizado pela IEB Missão Resgate na cidade do Conde-PB, a ser realizado no dia
-                            26/04/2025.</p>
-                        <p class="mb-1">Autorizo também que o(a) referido(a) adolescente utilize o transporte oferecido
-                            pela IEB Intermares, onde será acompanhado pelo líderes de jovens Alysson Samuel Batista de
-                            Amorim
-                            (CPF: 093.463.304-57) e Raissa Bruna de A. Rodrigues Amorim (CPF: 070.085.934-90), maiores,
-                            capazes, casados
-                            e empresários.</p>
-                        <p class="mb-1">Declaro estar ciente de todas as informações referentes ao evento e ao
-                            transporte, bem como das normas e condutas esperadas dos participantes. Comprometo-me a
-                            fornecer informações médicas relevantes, caso necessário.</p>
-                        <p class="mb-1">A presente autorização é válida apenas para o dia 26/04/2025 – percurso ida e
-                            volta.</p>
-                    </div>
 
-                </div>
-
-                <div class="form-group mt-3">
-                    <label for="assinatura">Assinatura do Responsável</label>
-                    <div class="signature-container">
-                        <canvas id="signature-pad" class="signature-pad" width="400" height="200"></canvas>
-                    </div>
-                    <div class="signature-buttons mt-2">
-                        <button type="button" class="btn btn-secondary btn-sm" id="clear-signature">Limpar
-                            Assinatura</button>
-                    </div>
-                    <input type="hidden" id="assinaturaData" name="assinaturaData">
-                    <small class="form-text text-muted">Por favor, assine usando o mouse ou touch na tela.</small>
-                </div>
-
-            </div>
 
             <div class="form-group">
                 <label for="dataPreenchimento">Data de Preenchimento</label>
@@ -367,7 +288,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="./firebase/firebaseConfig.js"></script>
     <script src="./firebase/firebaseConfig2.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+
 
     <script>
 
@@ -416,22 +337,18 @@
         });
 
         document.getElementById('nome').addEventListener('input', atualizarTextoAutorizacao);
-        document.getElementById('contato').addEventListener('input', atualizarTextoAutorizacao);
 
         // Função para atualizar o texto de autorização com os nomes
         function atualizarTextoAutorizacao() {
             const nomeParticipante = document.getElementById('nome').value.trim();
-            const nomeResponsavel = document.getElementById('contato').value.trim();
 
             document.getElementById('nomeParticipanteSpan').textContent = nomeParticipante;
-            document.getElementById('nomeResponsavelSpan').textContent = nomeResponsavel;
         }
 
         // Máscaras
         // VMasker(document.getElementById("cpf")).maskPattern("999.999.999-99");
         VMasker(document.getElementById("celular")).maskPattern("(99) 99999-9999");
-        VMasker(document.getElementById("fonecontato")).maskPattern("(99) 99999-9999");
-        VMasker(document.getElementById("cpfResponsavel")).maskPattern("999.999.999-99");
+
         // VMasker(document.getElementById("cep")).maskPattern("99999-999");
 
         // Calcular idade automaticamente
@@ -445,46 +362,23 @@
             }
             document.getElementById('idade').value = age + " anos";
 
-            // Controlar a exibição dos campos de responsável e autorização
+            // Controlar a exibição da autorização
             const responsavelDiv = document.getElementById('responsavelDiv');
             const autorizacaoDiv = document.getElementById('autorizacaoDiv');
-            const contatoField = document.getElementById('contato');
-            const fonecontatoField = document.getElementById('fonecontato');
-            const cpfResponsavelField = document.getElementById('cpfResponsavel');
             const signatureContainer = document.querySelector('.signature-container')?.parentElement;
 
-            if (age < 0) {
-                // Mostrar campos e torná-los obrigatórios para menores de 18
+            if (age < 18) {
+                // Mostrar campos para menores de 18
                 responsavelDiv.style.display = 'block';
                 autorizacaoDiv.style.display = 'block';
                 if (signatureContainer) signatureContainer.style.display = 'block';
-
-                contatoField.required = true;
-                fonecontatoField.required = true;
-                cpfResponsavelField.required = true;
-
-                contatoField.parentElement.querySelector('label').innerHTML = 'Nome do Responsável (Obrigatório para menor de 18 anos) *';
-                fonecontatoField.parentElement.querySelector('label').innerHTML = 'Celular do Responsável (Obrigatório para menor de 18 anos) *';
-                cpfResponsavelField.parentElement.querySelector('label').innerHTML = 'CPF do Responsável (Obrigatório para menor de 18 anos) *';
             } else {
-                // Ocultar campos e remover obrigatoriedade para maiores de 18
+                // Ocultar campos para maiores de 18
                 responsavelDiv.style.display = 'none';
                 autorizacaoDiv.style.display = 'none';
                 if (signatureContainer) signatureContainer.style.display = 'none';
 
-                contatoField.required = false;
-                fonecontatoField.required = false;
-                cpfResponsavelField.required = false;
 
-                // Limpar os valores
-                contatoField.value = '';
-                fonecontatoField.value = '';
-                cpfResponsavelField.value = '';
-
-                // Limpar a assinatura se o pad existir
-                if (typeof signaturePad !== 'undefined' && signaturePad) {
-                    signaturePad.clear();
-                }
 
                 contatoField.parentElement.querySelector('label').innerHTML = 'Nome do Responsável';
                 fonecontatoField.parentElement.querySelector('label').innerHTML = 'Celular do Responsável';
@@ -647,39 +541,13 @@
         document.getElementById('acampForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // Verificar se os campos de responsável estão visíveis e obrigatórios
-            const responsavelDiv = document.getElementById('responsavelDiv');
-            if (responsavelDiv.style.display === 'block') {
-                const contato = document.getElementById('contato').value.trim();
-                const fonecontato = document.getElementById('fonecontato').value.trim();
-                const cpfResponsavel = document.getElementById('cpfResponsavel').value.trim();
 
-                if (!contato || !fonecontato || !cpfResponsavel) {
-                    alert('Por favor, preencha todos os dados do responsável (obrigatório para menores de 18 anos).');
-                    return;
-                }
 
-                // Verificar se a assinatura foi feita
-                if (signaturePad && signaturePad.isEmpty()) {
-                    alert('Por favor, forneça a assinatura do responsável antes de prosseguir.');
-                    return;
-                }
-
-                // Adicionar log para visualizar a assinatura
-                if (signaturePad) {
-                    const assinaturaTemp = signaturePad.toDataURL('image/png');
-                    console.log('Assinatura capturada:');
-                    console.log('Tipo de dados:', typeof assinaturaTemp);
-                    console.log('Tamanho da string:', assinaturaTemp.length);
-                    console.log('Primeiros 100 caracteres:', assinaturaTemp.substring(0, 100) + '...');
-
-                    // Criar um elemento de imagem para visualizar a assinatura no console
-                    const img = new Image();
-                    img.src = assinaturaTemp;
-                    img.onload = function () {
-                        console.log('Dimensões da imagem:', img.width, 'x', img.height);
-                    };
-                }
+            // Validar campo gênero
+            const genero = document.getElementById('genero').value;
+            if (!genero) {
+                alert('Por favor, selecione o gênero.');
+                return;
             }
 
             // First check if elements exist before accessing their style property
@@ -709,15 +577,7 @@
                     return;
                 }
 
-                // Capturar a assinatura se existir
-                let assinaturaData = '';
-                if (signaturePad && !signaturePad.isEmpty() && responsavelDiv.style.display === 'block') {
-                    assinaturaData = signaturePad.toDataURL('image/png');
-                    // Log adicional para confirmar a assinatura que será armazenada
-                    console.log('Assinatura que será armazenada no Firestore:');
-                    console.log('Formato:', assinaturaData.split(',')[0]);
-                    console.log('Tamanho total em bytes:', new Blob([assinaturaData]).size);
-                }
+
 
                 // Se o nome não existir, continuar com o envio do formulário
                 const formData = {
@@ -727,10 +587,8 @@
                     idade: document.getElementById('idade').value,
                     // email: document.getElementById('email').value,
                     celular: document.getElementById('celular').value,
-                    contato: document.getElementById('contato').value,
-                    fonecontato: document.getElementById('fonecontato').value,
-                    cpfResponsavel: document.getElementById('cpfResponsavel').value, // Adicionado campo de CPF do responsável
-                    assinaturaResponsavel: assinaturaData, // Adicionando a assinatura do responsável
+                    genero: document.getElementById('genero').value,
+
                     igreja: document.getElementById('igreja').value,
                     celula: document.getElementById('celula').value,
                     supervisor: document.getElementById('supervisor').value,
@@ -778,10 +636,7 @@
                         document.getElementById('dataPreenchimento').value = new Date().toLocaleDateString('pt-BR');
                         document.getElementById('idade').value = '';
 
-                        // Limpar a assinatura
-                        if (signaturePad) {
-                            signaturePad.clear();
-                        }
+
                     })
                     .catch((error) => {
                         console.error("Erro ao adicionar documento: ", error);
@@ -793,82 +648,21 @@
 
         window.addEventListener('scroll', function () {
             const header = document.querySelector('.header');
-            //const logoCircle = document.querySelector('.logo-circle');
+            const logoCircle = document.querySelector('.logo-circle');
             const headerTitle = document.querySelector('.header-title');
 
-            if (window.scrollY > 50) {
+            if (window.scrollY > 100) {
                 header.classList.add('scrolled');
-                //logoCircle.classList.add('scrolled');
+                logoCircle.classList.add('scrolled');
                 headerTitle.classList.add('visible');
             } else {
                 header.classList.remove('scrolled');
-                //logoCircle.classList.remove('scrolled');
+                logoCircle.classList.remove('scrolled');
                 headerTitle.classList.remove('visible');
             }
         });
 
-        // Inicializar o pad de assinatura
-        let signaturePad;
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const canvas = document.getElementById('signature-pad');
-            if (canvas) {
-                // Configurar o canvas para o tamanho correto antes de inicializar o SignaturePad
-                const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                canvas.width = canvas.offsetWidth * ratio;
-                canvas.height = canvas.offsetHeight * ratio;
-                const ctx = canvas.getContext("2d");
-                ctx.scale(ratio, ratio);
-
-                // Inicializar o SignaturePad com configurações adicionais
-                signaturePad = new SignaturePad(canvas, {
-                    backgroundColor: 'rgb(255, 255, 255)',
-                    penColor: 'rgb(0, 0, 0)',
-                    velocityFilterWeight: 0.7,  // Suaviza a linha
-                    minWidth: 0.5,              // Largura mínima da linha
-                    maxWidth: 2.5,              // Largura máxima da linha
-                    throttle: 16,               // Intervalo mínimo entre pontos (ms)
-                    minDistance: 5              // Distância mínima entre pontos
-                });
-
-                // Função para redimensionar o canvas
-                function resizeCanvas() {
-                    // Salvar a assinatura atual
-                    const data = signaturePad.toData();
-
-                    // Redimensionar o canvas
-                    const ratio = Math.max(window.devicePixelRatio || 1, 1);
-                    canvas.width = canvas.offsetWidth * ratio;
-                    canvas.height = canvas.offsetHeight * ratio;
-                    ctx.scale(ratio, ratio);
-
-                    // Limpar e restaurar a assinatura
-                    signaturePad.clear();
-                    if (data && data.length > 0) {
-                        signaturePad.fromData(data);
-                    }
-                }
-
-                // Adicionar evento de redimensionamento
-                window.addEventListener("resize", resizeCanvas);
-
-                // Adicionar eventos de mouse explicitamente
-                canvas.addEventListener('mousedown', function (event) {
-                    console.log('Mouse down event detected');
-                });
-
-                // Botão para limpar a assinatura
-                document.getElementById('clear-signature').addEventListener('click', function () {
-                    signaturePad.clear();
-                    console.log('Assinatura limpa');
-                });
-
-                // Log para confirmar inicialização
-                console.log('SignaturePad inicializado com sucesso');
-            } else {
-                console.error('Canvas para assinatura não encontrado');
-            }
-        });
 
 
     </script>

@@ -453,8 +453,17 @@
                             </div>
                         </div>
 
-                        <!-- >inha 2 -->
+                        <!-- Linha 2 -->
                         <div class="row mt-4">
+                            <!-- Gênero -->
+                            <div class="col-md-6">
+                                <div class="dashboard-card">
+                                    <h4>Distribuição por Gênero</h4>
+                                    <div class="chart-container">
+                                        <canvas id="generoInsightChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
                             <!-- Status de Pagamento -->
                             <div class="col-md-6">
                                 <div class="dashboard-card">
@@ -464,7 +473,10 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
+                        <!-- Linha 3 -->
+                        <div class="row mt-4">
                             <!-- Igreja -->
                             <div class="col-md-6">
                                 <div class="dashboard-card">
@@ -476,7 +488,7 @@
                             </div>
                         </div>
 
-                        <!-- >inha 3 -->
+                        <!-- Linha 4 -->
                         <div class="row mt-4">
                             <!-- Progresso de Inscrições -->
                             <div class="col-md-6">
@@ -2012,6 +2024,11 @@
                     "18+ anos": 0
                 };
 
+                const generos = {
+                    "Masculino": 0,
+                    "Feminino": 0
+                };
+
                 const celulas = {};
                 const igrejas = {};
                 const statusPagamento = {
@@ -2055,6 +2072,11 @@
                                 faixasEtarias["16-17 anos"]++;
                             } else {
                                 faixasEtarias["18+ anos"]++;
+                            }
+
+                            // Contabilizar gênero
+                            if (participante.genero) {
+                                generos[participante.genero] = (generos[participante.genero] || 0) + 1;
                             }
 
                             // Contabilizar igreja
@@ -2110,6 +2132,7 @@
 
                         // Criar gráficos
                         window.faixaEtariaChart = criarGraficoFaixaEtaria(faixasEtarias);
+                        window.generoChart = criarGraficoGenero(generos);
                         window.igrejaChart = criarGraficoIgrejas(igrejas);
                         window.pagamentoChart = criarGraficoPagamento(statusPagamento);
                         window.progressoChart = criarGraficoProgressoInscricoes(progressoInscricoes);
@@ -2173,6 +2196,45 @@
                                 ticks: {
                                     stepSize: 1
                                 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Função para criar gráfico de gênero
+            function criarGraficoGenero(dados) {
+                const canvas = document.getElementById('generoInsightChart');
+                const ctx = canvas.getContext('2d');
+
+                // Verificar se já existe um gráfico associado a este canvas
+                const chartInstance = Chart.getChart(canvas);
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+
+                // Configuração do Chart
+                return new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(dados),
+                        datasets: [{
+                            label: 'Distribuição por Gênero',
+                            data: Object.values(dados),
+                            backgroundColor: [
+                                '#3498db',  // Azul para Masculino
+                                '#e74c3c'   // Rosa/Vermelho para Feminino
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
                             }
                         }
                     }
@@ -2518,8 +2580,7 @@
                             "compl",
                             "bairro",
                             "cidade",
-                            "contato",
-                            "fonecontato",
+
                             "statusPagamento",
                             "dataPagamento",
                             "formaPagamento"

@@ -223,6 +223,7 @@
                     <tr>
                         <th>Nome</th>
                         <th>Idade</th>
+                        <th>Gênero</th>
                         <th>Celular</th>
                         <!-- <th>Responsável</th> -->
                         <!-- <th>Cel. Responsável</th> -->
@@ -270,14 +271,13 @@
                         <p><strong>Nome:</strong> <span id="modalNome"></span></p>
                         <p><strong>Data de Nascimento:</strong> <span id="modalDtNasc"></span></p>
                         <p><strong>Idade:</strong> <span id="modalIdade"></span></p>
+                        <p><strong>Gênero:</strong> <span id="modalGenero"></span></p>
                         <p><strong>Celular:</strong> <span id="modalCelular"></span></p>
                     </div>
                     <div class="col-md-6">
                         <h6>Informações do Responsável</h6>
                         <hr>
-                        <p><strong>Nome do Responsável:</strong> <span id="modalResponsavel"></span></p>
-                        <p><strong>CPF do Responsável:</strong> <span id="modalCpfResponsavel"></span></p>
-                        <p><strong>Celular do Responsável:</strong> <span id="modalCelularResp"></span></p>
+
                         <div id="assinaturaContainer" style="display: none;">
                             <p><strong>Assinatura do Responsável:</strong></p>
                             <img id="modalAssinatura" src="" alt="Assinatura do Responsável" style="max-width: 100%; border: 1px solid #ddd; margin-top: 5px;">
@@ -354,7 +354,7 @@
             text: 'Exportar Excel',
             className: 'btn btn-export d-none',
             exportOptions: {
-                columns: [0, 1, 2, 3, 4, 5]
+                columns: [0, 1, 2, 3, 4, 5, 6]
             }
         },
     ]
@@ -484,9 +484,9 @@
                         dataTable.row.add([
                             participante.nome,
                             participante.idade,
+                            participante.genero || 'N/A',
                             participante.celular,
-                            // participante.contato,
-                            // participante.fonecontato,
+
                             participante.celula,
                             participante.igreja === 'Outra' ? participante.outraIgreja : participante.igreja,
                             `<span class="badge ${participante.statusPagamento === 'pago' ? 'badge-pago' : 'badge-pendente'}">${participante.statusPagamento === 'pago' ? 'Pago' : 'Pendente'}</span>`,
@@ -533,12 +533,10 @@
                 $('#modalNome').text(p.nome || 'N/A');
                 $('#modalDtNasc').text(formatarData(p.dtnasc) || 'N/A');
                 $('#modalIdade').text(p.idade || 'N/A');
+                $('#modalGenero').text(p.genero || 'N/A');
                 $('#modalCelular').text(p.celular || 'N/A');
                 
                 // Informações do Responsável
-                $('#modalResponsavel').text(p.contato || 'N/A');
-                $('#modalCpfResponsavel').text(p.cpfResponsavel || 'N/A');
-                $('#modalCelularResp').text(p.fonecontato || 'N/A');
                 
                 // Exibir assinatura se existir
                 if (p.assinaturaResponsavel) {

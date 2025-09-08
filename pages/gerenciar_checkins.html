@@ -272,7 +272,7 @@
                                     <tr>
                                         <th>Acampante</th>
                                         <th>Data de Check-in</th>
-                                        <th>Responsável</th>
+
                                         <th>Telefone</th>
                                         <th>Status</th>
                                         <th>Ações</th>
@@ -520,7 +520,7 @@
                     <tr>
                         <td>${acampante.nome}</td>
                         <td>${dataCheckin}</td>
-                        <td>${acampante.contato || '-'}</td>
+
                         <td>${acampante.celular || '-'}</td>
                         <td>${statusCheckin}</td>
                         <td>
@@ -559,8 +559,7 @@
             // Aplicar filtro de busca
             if (termo) {
                 acampantesFiltrados = acampantesFiltrados.filter(a =>
-                    a.nome.toLowerCase().includes(termo) ||
-                    (a.contato && a.contato.toLowerCase().includes(termo))
+                    a.nome.toLowerCase().includes(termo)
                 );
             }
 
