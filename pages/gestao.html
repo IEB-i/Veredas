@@ -382,56 +382,115 @@
         });
 
         // Função para carregar estatísticas gerais
-        function carregarEstatisticas() {
-            // Carregar todas as inscrições de participantes
-            db.collection("Eventos").doc("Veredas2025").collection("inscricoes")
-                .where("anoevento", "==", "2025")
-                .get()
-                .then((querySnapshot) => {
-                    let totalParticipantes = 0;
-                    let pagosParticipantes = 0;
-
-                    // Contar participantes e status de pagamento
-                    querySnapshot.forEach((doc) => {
-                        const participante = doc.data();
-
-                        if (participante.tipoInsc === 'participante' || participante.tipoInsc === 'encontrista') {
-                            totalParticipantes++;
-                            if (participante.statusPagamento === 'pago') {
-                                pagosParticipantes++;
-                            }
-                        }
+        async function carregarEstatisticas() {
+            console.log('🔄 Iniciando carregamento de estatísticas...');
+            
+            // Primeiro, testar conectividade com Firebase
+            try {
+                console.log('🔥 Testando conectividade Firebase...');
+                await firebase.firestore().enableNetwork();
+                console.log('✅ Firebase conectado!');
+            } catch (networkError) {
+                console.warn('⚠️ Problema de rede com Firebase:', networkError);
+            }
+            
+            try {
+                // Usar a estrutura confirmada pelos outros arquivos
+                console.log('📡 Buscando dados do Firestore...');
+                const querySnapshot = await db.collection("Eventos").doc("Veredas2025").collection("inscricoes").get();
+                
+                console.log(`📋 Total de documentos encontrados: ${querySnapshot.size}`);
+                
+                if (querySnapshot.empty) {
+                    console.log('⚠️ Nenhum documento encontrado na coleção');
+                    throw new Error('Coleção vazia');
+                }
+                
+                let totalParticipantes = 0;
+                let pagosParticipantes = 0;
+                
+                querySnapshot.forEach((doc) => {
+                    const participante = doc.data();
+                    console.log('👤 Participante:', {
+                        id: doc.id,
+                        nome: participante.nome,
+                        tipoInsc: participante.tipoInsc || 'encontrista',
+                        statusPagamento: participante.statusPagamento
                     });
-
-                    // Calcular percentuais e pendentes
-                    const percentualParticipantes = totalParticipantes > 0 ? Math.round((pagosParticipantes / totalParticipantes) * 100) : 0;
-                    const pendentesParticipantes = totalParticipantes - pagosParticipantes;
-
-                    // Atualizar cards dos Participantes
-                    document.getElementById('totalEncontristas').textContent = totalParticipantes;
-                    document.getElementById('pagosEncontristas').textContent = pagosParticipantes;
-                    document.getElementById('percentualEncontristas').textContent = percentualParticipantes + '%';
-                    document.getElementById('pendentesEncontristas').textContent = pendentesParticipantes;
-                    document.getElementById('progressoEncontristas').style.width = percentualParticipantes + '%';
-
-                    console.log(`Estatísticas carregadas - Veredas 2025:
-        Participantes: ${totalParticipantes} inscritos, ${pagosParticipantes} pagos (${percentualParticipantes}%)`);
-                })
-                .catch((error) => {
-                    console.error("Erro ao carregar estatísticas: ", error);
-
-                    // Em caso de erro, mostrar 0
-                    const elementos = [
-                        'totalEncontristas', 'pagosEncontristas', 'percentualEncontristas', 'pendentesEncontristas'
-                    ];
-
-                    elementos.forEach(id => {
-                        const elemento = document.getElementById(id);
-                        if (elemento) {
-                            elemento.textContent = id.includes('percentual') ? '0%' : '0';
-                        }
-                    });
+                    
+                    // Para o evento Veredas, todos são considerados encontristas
+                    totalParticipantes++;
+                    if (participante.statusPagamento === 'pago') {
+                        pagosParticipantes++;
+                    }
                 });
+                
+                const percentualParticipantes = totalParticipantes > 0 ? Math.round((pagosParticipantes / totalParticipantes) * 100) : 0;
+                const pendentesParticipantes = totalParticipantes - pagosParticipantes;
+                
+                console.log('📊 Resultados calculados:', {
+                    totalParticipantes,
+                    pagosParticipantes,
+                    percentualParticipantes,
+                    pendentesParticipantes
+                });
+                
+                // Atualizar elementos do DOM
+                document.getElementById('totalEncontristas').textContent = totalParticipantes;
+                document.getElementById('pagosEncontristas').textContent = pagosParticipantes;
+                document.getElementById('percentualEncontristas').textContent = percentualParticipantes + '%';
+                document.getElementById('pendentesEncontristas').textContent = pendentesParticipantes;
+                
+                const progressoElemento = document.getElementById('progressoEncontristas');
+                if (progressoElemento) {
+                    progressoElemento.style.width = percentualParticipantes + '%';
+                }
+                
+                console.log('✅ Estatísticas atualizadas com sucesso!');
+                
+                // Salvar dados no localStorage para cache
+                localStorage.setItem('estatisticasCache', JSON.stringify({
+                    totalParticipantes,
+                    pagosParticipantes,
+                    percentualParticipantes,
+                    pendentesParticipantes,
+                    timestamp: Date.now()
+                }));
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar estatísticas:', error);
+                
+                // Tentar carregar dados do cache
+                const cache = localStorage.getItem('estatisticasCache');
+                if (cache) {
+                    try {
+                        const dadosCache = JSON.parse(cache);
+                        const tempoCache = Date.now() - dadosCache.timestamp;
+                        
+                        if (tempoCache < 3600000) { // Cache válido por 1 hora
+                            console.log('📦 Carregando dados do cache...');
+                            document.getElementById('totalEncontristas').textContent = dadosCache.totalParticipantes + ' (cache)';
+                            document.getElementById('pagosEncontristas').textContent = dadosCache.pagosParticipantes + ' (cache)';
+                            document.getElementById('percentualEncontristas').textContent = dadosCache.percentualParticipantes + '% (cache)';
+                            document.getElementById('pendentesEncontristas').textContent = dadosCache.pendentesParticipantes + ' (cache)';
+                            
+                            const progressoElemento = document.getElementById('progressoEncontristas');
+                            if (progressoElemento) {
+                                progressoElemento.style.width = dadosCache.percentualParticipantes + '%';
+                            }
+                            return;
+                        }
+                    } catch (cacheError) {
+                        console.error('Erro ao ler cache:', cacheError);
+                    }
+                }
+                
+                // Valores padrão em caso de erro
+                document.getElementById('totalEncontristas').textContent = 'Erro de conexão';
+                document.getElementById('pagosEncontristas').textContent = 'Erro de conexão';
+                document.getElementById('percentualEncontristas').textContent = 'Erro de conexão';
+                document.getElementById('pendentesEncontristas').textContent = 'Erro de conexão';
+            }
         }
 
         // Função para atualizar todos os dados a cada 5 minutos

@@ -19,16 +19,18 @@
         }
 
         .dashboard-card {
-            border-radius: 12px;
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s ease-in-out;
-            margin-bottom: 25px;
-            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+            height: 100%;
+            border: none;
+            background-color: white;
         }
 
         .dashboard-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
         }
 
         .card-header {
@@ -56,28 +58,44 @@
         }
 
         .card-body h6 {
-            font-size: 1rem;
-            color: #ffffff;
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-weight: 500;
         }
 
         .card-body .icon {
-            font-size: 50px;
+            font-size: 3rem;
             margin-bottom: 15px;
         }
 
+        .total-card .icon {
+            color: #007bff;
+        }
+
+        .pago-card .icon {
+            color: #28a745;
+        }
+
+        .pendente-card .icon {
+            color: #ffc107;
+        }
+
         .total-card {
-            background: linear-gradient(45deg, #007bff, #0069d9);
-            color: white;
+            background-color: white;
+            color: #333;
+            border-left: 5px solid #007bff;
         }
 
         .pago-card {
-            background: linear-gradient(45deg, #28a745, #218838);
-            color: white;
+            background-color: white;
+            color: #333;
+            border-left: 5px solid #28a745;
         }
 
         .pendente-card {
-            background: linear-gradient(45deg, #ffc107, #e0a800);
-            color: white;
+            background-color: white;
+            color: #333;
+            border-left: 5px solid #ffc107;
         }
 
         .chart-container {
@@ -483,7 +501,7 @@
 
                 // Atualizar participante com informações de pagamento
                 console.log("Atualizando status do participante para 'pago'...");
-                db.collection("Eventos").doc("ED2025").collection("inscricoes").doc(participanteId)
+                db.collection("Eventos").doc("Veredas2025").collection("inscricoes").doc(participanteId)
                     .update({
                         statusPagamento: 'pago',
                         formaPagamento: formaPagamento,
@@ -495,7 +513,7 @@
                         console.log("Registrando pagamento na coleção de pagamentos...");
 
                         // Registrar pagamento na coleção de pagamentos
-                        return db.collection("Eventos").doc("ED2025").collection("pagamentos").add({
+                        return db.collection("Eventos").doc("Veredas2025").collection("pagamentos").add({
                             participanteId: participanteId,
                             participanteNome: $('#participante option:selected').text(),
                             valor: valorPagamento,
@@ -508,7 +526,7 @@
                         console.log("Pagamento registrado com sucesso, ID:", docRef.id);
 
                         // ADICIONAR: Registrar automaticamente no caixa
-                        return db.collection("Eventos").doc("ED2025").collection("caixa").add({
+                        return db.collection("Eventos").doc("Veredas2025").collection("caixa").add({
                             descricao: `Inscrição - ${$('#participante option:selected').text()}`,
                             data: new Date().toISOString().substring(0, 10),
                             valor: valorPagamento,
@@ -545,7 +563,7 @@
                 console.log("Iniciando estorno do pagamento:", pagamentoId);
 
                 // Atualizar status do pagamento
-                db.collection("Eventos").doc("ED2025").collection("pagamentos").doc(pagamentoId)
+                db.collection("Eventos").doc("Veredas2025").collection("pagamentos").doc(pagamentoId)
                     .update({
                         status: 'estornado',
                         dataEstorno: new Date().toISOString()
@@ -554,7 +572,7 @@
                         console.log("Status do pagamento atualizado para 'estornado'");
 
                         // Atualizar status do participante
-                        return db.collection("Eventos").doc("ED2025").collection("inscricoes").doc(participanteId)
+                        return db.collection("Eventos").doc("Veredas2025").collection("inscricoes").doc(participanteId)
                             .update({
                                 statusPagamento: 'pendente',
                                 dataPagamento: null,
@@ -567,7 +585,7 @@
                         console.log("Buscando entrada correspondente no caixa...");
 
                         // Buscar e tratar entrada correspondente no caixa
-                        return db.collection("Eventos").doc("ED2025").collection("caixa")
+                        return db.collection("Eventos").doc("Veredas2025").collection("caixa")
                             .where("pagamentoId", "==", pagamentoId)
                             .where("referenciaOrigem", "==", "pagamento")
                             .get();
@@ -582,7 +600,7 @@
                                 const transacaoCaixa = doc.data();
 
                                 // Opção 1: Criar transação de estorno (RECOMENDADO para auditoria)
-                                const novaRefEstorno = db.collection("Eventos").doc("ED2025").collection("caixa").doc();
+                                const novaRefEstorno = db.collection("Eventos").doc("Veredas2025").collection("caixa").doc();
 
                                 batch.set(novaRefEstorno, {
                                     descricao: `ESTORNO - ${transacaoCaixa.descricao}`,
@@ -636,7 +654,7 @@
 
         function carregarDashboard() {
             // Primeiro, vamos buscar os pagamentos confirmados
-            db.collection("Eventos").doc("ED2025").collection("pagamentos")
+            db.collection("Eventos").doc("Veredas2025").collection("pagamentos")
                 .where("status", "==", "confirmado")
                 .get()
                 .then((pagamentosSnapshot) => {
@@ -656,14 +674,14 @@
                     $('#valorPago').text(valorTotalPago.toFixed(2).replace('.', ','));
 
                     // Agora vamos buscar os dados de inscrições para os outros cards
-                    return db.collection("Eventos").doc("ED2025").collection("inscricoes")
+                    return db.collection("Eventos").doc("Veredas2025").collection("inscricoes")
                         .where("anoevento", "==", "2025")
                         .get();
                 })
                 .then((querySnapshot) => {
                     let totalInscritos = querySnapshot.size;
                     let totalPendentes = 0;
-                    const valorInscricao = 120.00;
+                    const valorInscricao = 130.00;
 
                     querySnapshot.forEach((doc) => {
                         const participante = doc.data();
@@ -697,7 +715,7 @@
 
         function buscarFormasPagamento() {
             // Buscar pagamentos confirmados
-            db.collection("Eventos").doc("ED2025").collection("pagamentos")
+            db.collection("Eventos").doc("Veredas2025").collection("pagamentos")
                 .where("status", "==", "confirmado")
                 .get()
                 .then((querySnapshot) => {
@@ -729,7 +747,7 @@
             console.log("Iniciando o carregamento de participantes pendentes...");
 
             // Buscar todos os participantes do evento 2025
-            db.collection("Eventos").doc("ED2025").collection("inscricoes")
+            db.collection("Eventos").doc("Veredas2025").collection("inscricoes")
                 .where("anoevento", "==", "2025")
                 .get()
                 .then((querySnapshot) => {
@@ -738,12 +756,12 @@
 
                     querySnapshot.forEach((doc) => {
                         const participante = doc.data();
-                        const nomeCompleto = `${participante.nome} (${participante.tipoInsc || 'sem tipo'})`;
+                        const nomeCompleto = participante.nome;
                         const participanteId = doc.id;
-                        const limiteValor = participante.tipoInsc === 'encontrista' ? 350 : 250; // Limite baseado no tipo de inscrição
+                        const limiteValor = 130.00; // Valor padrão para Veredas 2025
 
                         // Criar uma promessa para buscar os pagamentos desse participante
-                        const promise = db.collection("Eventos").doc("ED2025").collection("pagamentos")
+                        const promise = db.collection("Eventos").doc("Veredas2025").collection("pagamentos")
                             .where("participanteId", "==", participanteId)
                             .where("status", "==", "confirmado")
                             .get()
@@ -804,7 +822,7 @@
             tabelaPagamentos.html('');
 
             // Buscar pagamentos
-            db.collection("Eventos").doc("ED2025").collection("pagamentos")
+            db.collection("Eventos").doc("Veredas2025").collection("pagamentos")
                 .orderBy("dataPagamento", "desc")
                 .get()
                 .then((querySnapshot) => {
@@ -1021,7 +1039,7 @@
                 }
 
                 // Atualizar o pagamento no Firestore
-                db.collection("Eventos").doc("ED2025").collection("pagamentos").doc(pagamentoId)
+                db.collection("Eventos").doc("Veredas2025").collection("pagamentos").doc(pagamentoId)
                     .update({
                         valor: valorPagamento,
                         formaPagamento: formaPagamento,
@@ -1029,7 +1047,7 @@
                     })
                     .then(() => {
                         // Atualizar o participante com as novas informações
-                        return db.collection("Eventos").doc("ED2025").collection("inscricoes").doc(participanteId)
+                        return db.collection("Eventos").doc("Veredas2025").collection("inscricoes").doc(participanteId)
                             .update({
                                 formaPagamento: formaPagamento,
                                 valorPago: valorPagamento

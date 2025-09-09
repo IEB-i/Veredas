@@ -426,7 +426,7 @@
                     dadosAtualizacao.formaPagamento = ''; // Limpa a forma de pagamento se status for pendente
                 }
 
-                db.collection("Eventos").doc("ComRoca2025").collection("inscricoes").doc(participanteId)
+                db.collection("Eventos").doc("Veredas2025").collection("inscricoes").doc(participanteId)
                     .update(dadosAtualizacao)
                     .then(() => {
                         alert('Status de pagamento atualizado com sucesso!');
@@ -466,7 +466,7 @@
 
         // Função para Carregar participante
         function carregarParticipantes() {
-            db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+            db.collection("Eventos").doc("Veredas2025").collection("inscricoes")
                 .where("anoevento", "==", "2025")
                 .get()
                 .then((querySnapshot) => {
@@ -523,7 +523,7 @@
         }
 
         function verDetalhes(participanteId) {
-    db.collection("Eventos").doc("ComRoca2025").collection("inscricoes").doc(participanteId)
+    db.collection("Eventos").doc("Veredas2025").collection("inscricoes").doc(participanteId)
         .get()
         .then((doc) => {
             if (doc.exists) {
@@ -663,9 +663,17 @@ function formatarDataHora(dataString) {
             }
 
             if (confirm("Tem certeza que deseja excluir este participante? Esta ação não pode ser desfeita.")) {
-                db.collection("Eventos").doc("ComRoca2025").collection("inscricoes").doc(participanteId)
+                db.collection("Eventos").doc("Veredas2025").collection("inscricoes").doc(participanteId)
                     .delete()
                     .then(() => {
+                        // Decrementar contador após exclusão bem-sucedida
+                        return db.collection("Eventos").doc("Veredas2025").update({
+                            "contador.totalInscricoes": firebase.firestore.FieldValue.increment(-1),
+                            "contador.ultimaAtualizacao": firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    })
+                    .then(() => {
+                        console.log("Contador decrementado com sucesso!");
                         alert("Participante excluído com sucesso!");
                         $('#participanteModal').modal('hide');
                         setTimeout(function () {
@@ -673,6 +681,7 @@ function formatarDataHora(dataString) {
                         }, 500);
                     })
                     .catch((error) => {
+                        console.error("Erro ao excluir participante ou atualizar contador:", error);
                         alert("Erro ao excluir participante: " + error.message);
                     });
             }
