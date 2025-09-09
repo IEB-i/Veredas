@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <!-- ok -->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -257,51 +258,52 @@
             loadingSpinner.style.display = 'block';
 
             // ✅ LER APENAS 1 DOCUMENTO = 1 LEITURA
-            db.collection("Eventos").doc("Veredas")  // Acesse diretamente o documento Veredas
-    .get()  // Aqui você já faz a leitura do documento
-    .then((doc) => {
-        if (doc.exists) {
-            const totalInscricoes = doc.data().contador.totalInscricoes || 0;  // Acesse o campo dentro do documento
-            console.log(`Total de inscrições ComRoca: ${totalInscricoes}`);
+            db.collection("Eventos").doc("Veredas2025")  // Acesse diretamente o documento Veredas
+                .get()  // Aqui você já faz a leitura do documento
+                .then((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        const totalInscricoes = (data.contador && data.contador.totalInscricoes) ? data.contador.totalInscricoes : 0;  // Verificação segura do contador
+                        console.log(`Total de inscrições Veredas2025: ${totalInscricoes}`);
 
-            const btnInscricao = document.getElementById('btnInscricao');
-            const alertaEsgotado = document.getElementById('alertaEsgotado');
+                        const btnInscricao = document.getElementById('btnInscricao');
+                        const alertaEsgotado = document.getElementById('alertaEsgotado');
 
-            loadingSpinner.style.display = 'none';
-            btnInscricao.classList.remove('btn-hidden');
+                        loadingSpinner.style.display = 'none';
+                        btnInscricao.classList.remove('btn-hidden');
 
-            if (totalInscricoes >= 210) {
-                // Desabilitar o botão
-                btnInscricao.classList.add('btn-esgotado');
-                btnInscricao.classList.remove('btn-gradient');
-                btnInscricao.textContent = 'Inscrições Encerradas';
-                btnInscricao.href = '#';
-                btnInscricao.onclick = function (e) {
-                    e.preventDefault();
-                    alert('Desculpe, as inscrições foram encerradas. Limite de vagas atingido.');
-                    return false;
-                };
-                alertaEsgotado.style.display = 'block';
-            } else {
-                // Manter o botão habilitado
-                btnInscricao.classList.remove('btn-esgotado');
-                btnInscricao.classList.add('btn-gradient');
-                btnInscricao.textContent = 'Inscreva-se Agora';
-                btnInscricao.href = 'frminscricao.html';
-                btnInscricao.onclick = null;
-                alertaEsgotado.style.display = 'none';
-            }
-        } else {
-            console.log("Documento Veredas não existe");
-            // Fallback: assumir 0 inscrições
-            handleButtonState(0);
-        }
-    })
-    .catch((error) => {
-        console.error("Erro ao verificar contador:", error);
-        // Em caso de erro, mostrar o botão funcionando
-        handleErrorState();
-    });
+                        if (totalInscricoes >= 210) {
+                            // Desabilitar o botão
+                            btnInscricao.classList.add('btn-esgotado');
+                            btnInscricao.classList.remove('btn-gradient');
+                            btnInscricao.textContent = 'Inscrições Encerradas';
+                            btnInscricao.href = '#';
+                            btnInscricao.onclick = function (e) {
+                                e.preventDefault();
+                                alert('Desculpe, as inscrições foram encerradas. Limite de vagas atingido.');
+                                return false;
+                            };
+                            alertaEsgotado.style.display = 'block';
+                        } else {
+                            // Manter o botão habilitado
+                            btnInscricao.classList.remove('btn-esgotado');
+                            btnInscricao.classList.add('btn-gradient');
+                            btnInscricao.textContent = 'Inscreva-se Agora';
+                            btnInscricao.href = 'frminscricao.html';
+                            btnInscricao.onclick = null;
+                            alertaEsgotado.style.display = 'none';
+                        }
+                    } else {
+                        console.log("Documento Veredas2025 não existe");
+                        // Fallback: assumir 0 inscrições
+                        handleButtonState(0);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erro ao verificar contador:", error);
+                    // Em caso de erro, mostrar o botão funcionando
+                    handleErrorState();
+                });
 
 
         }

@@ -16,7 +16,7 @@
         function criarContador() {
             document.getElementById('resultado').innerHTML = 'Criando contador...';
             
-            db.collection("Eventos").doc("Veredas").collection("inscricoes")
+            db.collection("Eventos").doc("Veredas2025").collection("inscricoes")
                 .where("anoevento", "==", "2025")
                 .get()
                 .then((querySnapshot) => {
@@ -24,7 +24,7 @@
                     console.log(`Total atual encontrado: ${totalAtual}`);
                     
                     // ✅ CORREÇÃO: Usar apenas um .doc()
-                    return db.collection("Eventos").doc("Veredas").set({
+                    return db.collection("Eventos").doc("Veredas2025").set({
                         contador: {
                             totalInscricoes: totalAtual,
                             ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp()

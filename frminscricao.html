@@ -297,7 +297,7 @@
 
         // Função para verificar se o nome já existe
         function verificarNomeExistente(nome) {
-            return db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+            return db.collection("Eventos").doc("Veredas2025").collection("inscricoes")
                 .where("nome", "==", nome)
                 .where("anoevento", "==", "2025")
                 .get()
@@ -603,14 +603,14 @@
                 // Log para visualizar o objeto formData completo (sem a assinatura para não sobrecarregar o console)
                 console.log('Dados completos a serem enviados:', { ...formData, assinaturaResponsavel: formData.assinaturaResponsavel ? 'ASSINATURA_BASE64_REMOVIDA_DO_LOG' : null });
 
-                db.collection("Eventos").doc("ComRoca2025").collection("inscricoes").add(formData)
+                db.collection("Eventos").doc("Veredas2025").collection("inscricoes").add(formData)
                     .then((docRef) => {
                         console.log("Documento escrito com ID: ", docRef.id);
 
                         // ✅ ADICIONE ESTA PARTE - Incrementar contador
-                        return db.collection("Eventos").doc("ComRoca2025").update({
-                            totalInscricoes: firebase.firestore.FieldValue.increment(1),
-                            ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
+                        return db.collection("Eventos").doc("Veredas2025").update({
+                            "contador.totalInscricoes": firebase.firestore.FieldValue.increment(1),
+                            "contador.ultimaAtualizacao": firebase.firestore.FieldValue.serverTimestamp()
                         });
                     })
                     .then(() => {
