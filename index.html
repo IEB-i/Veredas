@@ -194,10 +194,10 @@
             }
 
             .btn-gradient {
-                padding: 12px 30px;
+                padding: 13px 30px;
                 font-size: 16px;
-                min-width: 305px;
-                top: 78.5%;
+                min-width: 308px;
+                top: 78.8%;
                 left: 50%;
                 z-index: 10;
                 position: fixed;
@@ -257,7 +257,7 @@
             loadingSpinner.style.display = 'block';
 
             // ✅ LER APENAS 1 DOCUMENTO = 1 LEITURA
-            db.collection("Eventos").doc("ComRoca2025")  // Acesse diretamente o documento ComRoca2025
+            db.collection("Eventos").doc("Veredas")  // Acesse diretamente o documento Veredas
     .get()  // Aqui você já faz a leitura do documento
     .then((doc) => {
         if (doc.exists) {
@@ -292,7 +292,7 @@
                 alertaEsgotado.style.display = 'none';
             }
         } else {
-            console.log("Documento ComRoca2025 não existe");
+            console.log("Documento Veredas não existe");
             // Fallback: assumir 0 inscrições
             handleButtonState(0);
         }
