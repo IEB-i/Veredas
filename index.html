@@ -171,6 +171,35 @@
             }
         }
 
+        .gestao-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            color: white !important;
+            font-size: 30px;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+            filter: grayscale(100%) brightness(0) invert(1);
+            text-shadow: none;
+            background: none;
+            border: none;
+            box-shadow: none;
+        }
+
+        .gestao-icon:hover {
+            opacity: 1;
+            color: white !important;
+            text-decoration: none;
+            transform: none;
+            filter: grayscale(100%) brightness(0) invert(1);
+            text-shadow: none;
+            background: none;
+            border: none;
+            box-shadow: none;
+        }
+
         @media screen and (max-width: 768px) {
             body {
                 height: 100vh;
@@ -229,6 +258,11 @@
 </head>
 
 <body>
+    <!-- Ícone de Gestão -->
+    <a href="login.html" class="gestao-icon" title="Acessar Gestão">
+        ⚙️
+    </a>
+
     <img src="./assets/Texto.png" alt="Texto" class="img-fluid mb-4 desktop-image">
     <img src="./assets/Texto Celular.png" alt="Texto" class="img-fluid mb-4 mobile-image">
 

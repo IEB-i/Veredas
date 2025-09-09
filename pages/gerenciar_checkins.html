@@ -4,13 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciamento de Check-ins</title>
+    <title>Gerenciamento de Check-ins - Veredas 2025</title>
     <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
     <link rel="stylesheet" href="../css/common.css">
     <style>
         body {
@@ -177,7 +176,7 @@
         <a href="gestao.html" class="btn-voltar">
             <i class="material-icons">arrow_back</i>
         </a>
-        <h2 class="header-title">GERENCIAMENTO DE CHECK-INS</h2>
+        <h2 class="header-title">CHECK-INS VEREDAS 2025</h2>
     </div>
 
     <div class="container mt-5">
@@ -227,11 +226,11 @@
             <div class="col-md-6">
                 <div class="card dashboard-card">
                     <div class="card-header">
-                        Check-ins por Dia
+                        Check-ins por Faixa Etária
                     </div>
                     <div class="card-body">
                         <div class="chart-container">
-                            <canvas id="graficoDias"></canvas>
+                            <canvas id="graficoIdades"></canvas>
                         </div>
                     </div>
                 </div>
@@ -272,7 +271,7 @@
                                     <tr>
                                         <th>Acampante</th>
                                         <th>Data de Check-in</th>
-
+                                        <th>Responsável</th>
                                         <th>Telefone</th>
                                         <th>Status</th>
                                         <th>Ações</th>
@@ -343,714 +342,761 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="../firebase/firebaseConfig.js"></script>
     
-    <script>
-        
-        // Variáveis para gráficos
-        let graficoStatus;
-        let graficoDias;
-        let todosAcampantes = [];
-        let filtroAtual = 'todos';
+<script>
+    // Variáveis para gráficos (CORRIGIDAS)
+    let graficoStatus;
+    let graficoIdades; // Renomeado de graficoDias
+    let todosAcampantes = [];
+    let filtroAtual = 'todos';
 
-        $(document).ready(function () {
-            // Carregar dados
-            carregarDashboard();
-            carregarCheckins();
+    $(document).ready(function () {
+        // Carregar dados
+        carregarDashboard();
+        carregarCheckins();
 
-            // Inicializar gráficos
-            initGraficos();
+        // Inicializar gráficos
+        initGraficos();
 
-            // Configurar busca
-            $('#searchButton').on('click', function () {
-                const searchTerm = $('#searchInput').val().toLowerCase();
-                filtrarAcampantes(searchTerm, filtroAtual);
-            });
-
-            $('#searchInput').on('keyup', function (e) {
-                if (e.key === 'Enter') {
-                    const searchTerm = $(this).val().toLowerCase();
-                    filtrarAcampantes(searchTerm, filtroAtual);
-                }
-            });
-
-            // Configurar filtros
-            $('.filter-btn').on('click', function () {
-                $('.filter-btn').removeClass('active');
-                $(this).addClass('active');
-                filtroAtual = $(this).data('filter');
-                const searchTerm = $('#searchInput').val().toLowerCase();
-                filtrarAcampantes(searchTerm, filtroAtual);
-            });
-
-            // Exportar PDF
-            $('#exportarPDF').on('click', function () {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF('p', 'mm', 'a4');
-                const modalBody = document.getElementById('detalhesModalBody');
-
-                // Capturar o conteúdo como imagem (incluindo a assinatura que já está no modal)
-                html2canvas(modalBody).then(canvas => {
-                    const imgData = canvas.toDataURL('image/png');
-                    const imgWidth = 190;
-                    const pageHeight = 290;
-                    const imgHeight = canvas.height * imgWidth / canvas.width;
-                    let heightLeft = imgHeight;
-                    let position = 10;
-
-                    doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-
-                    // Adicionar páginas adicionais se necessário
-                    while (heightLeft >= 0) {
-                        position = heightLeft - imgHeight;
-                        doc.addPage();
-                        doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
-                    }
-
-                    // Salvar o PDF
-                    const acampanteNome = $('#detalhesModalLabel').text().replace('Detalhes do Check-in: ', '');
-                    doc.save(`Checkin_${acampanteNome.replace(/\s+/g, '_')}.pdf`);
-                });
-            });
+        // Configurar busca
+        $('#searchButton').on('click', function () {
+            const searchTerm = $('#searchInput').val().toLowerCase();
+            filtrarAcampantes(searchTerm, filtroAtual);
         });
 
-        function carregarDashboard() {
-            // Buscar todas as inscrições com status de pagamento "pago"
-            db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
-                .where("anoevento", "==", "2025")
-                .where("statusPagamento", "==", "pago")
-                .get()
-                .then((querySnapshot) => {
-                    let totalPagos = querySnapshot.size;
-                    let totalCheckins = 0;
-                    let totalPendentes = 0;
+        $('#searchInput').on('keyup', function (e) {
+            if (e.key === 'Enter') {
+                const searchTerm = $(this).val().toLowerCase();
+                filtrarAcampantes(searchTerm, filtroAtual);
+            }
+        });
 
-                    querySnapshot.forEach((doc) => {
-                        const acampante = doc.data();
-                        if (acampante.statusCheckin === 'realizado') {
-                            totalCheckins++;
-                        } else {
-                            totalPendentes++;
-                        }
-                    });
+        // Configurar filtros
+        $('.filter-btn').on('click', function () {
+            $('.filter-btn').removeClass('active');
+            $(this).addClass('active');
+            filtroAtual = $(this).data('filter');
+            const searchTerm = $('#searchInput').val().toLowerCase();
+            filtrarAcampantes(searchTerm, filtroAtual);
+        });
 
-                    // Atualizar contadores
-                    $('#totalInscritos').text(totalPagos);
-                    $('#totalCheckins').text(totalCheckins);
-                    $('#totalPendentes').text(totalPendentes);
+        // Exportar PDF
+        $('#exportarPDF').on('click', function () {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const modalBody = document.getElementById('detalhesModalBody');
 
-                    // Atualizar gráfico de status
-                    atualizarGraficoStatus(totalCheckins, totalPendentes);
+            html2canvas(modalBody).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 190;
+                const pageHeight = 290;
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10;
 
-                    // Buscar datas de check-in para o gráfico por dia
-                    buscarDatasCheckin();
-                })
-                .catch((error) => {
-                    console.error("Erro ao carregar dashboard: ", error);
-                });
-        }
+                doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
 
-        function buscarDatasCheckin() {
-            // Buscar check-ins realizados
-            db.collection("Eventos").doc("ComRoca2025").collection("checkin")
-                .get()
-                .then((querySnapshot) => {
-                    const datasPorDia = {};
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
 
-                    querySnapshot.forEach((doc) => {
-                        const checkin = doc.data();
-                        if (checkin.dtCheckin) {
-                            const data = new Date(checkin.dtCheckin);
-                            const dataFormatada = data.toLocaleDateString('pt-BR');
-
-                            if (datasPorDia[dataFormatada]) {
-                                datasPorDia[dataFormatada]++;
-                            } else {
-                                datasPorDia[dataFormatada] = 1;
-                            }
-                        }
-                    });
-
-                    // Atualizar gráfico de datas
-                    atualizarGraficoDias(datasPorDia);
-                })
-                .catch((error) => {
-                    console.error("Erro ao buscar datas de check-in: ", error);
-                });
-        }
-
-        function carregarCheckins() {
-            // Limpar tabela de check-ins
-            const tabelaCheckins = $('#checkinsList');
-            tabelaCheckins.html('');
-
-            // Buscar todos os acampantes
-            db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
-                .where("anoevento", "==", "2025")
-                .orderBy("nome")
-                .get()
-                .then((querySnapshot) => {
-                    todosAcampantes = [];
-
-                    querySnapshot.forEach((doc) => {
-                        const acampante = doc.data();
-                        acampante.id = doc.id;
-                        todosAcampantes.push(acampante);
-                    });
-
-                    // Exibir acampantes na tabela
-                    exibirAcampantes(todosAcampantes);
-                })
-                .catch((error) => {
-                    console.error("Erro ao carregar acampantes: ", error);
-                });
-        }
-
-        function exibirAcampantes(acampantes) {
-            const tabelaCheckins = $('#checkinsList');
-            tabelaCheckins.html('');
-
-            acampantes.forEach((acampante) => {
-                const dataCheckin = acampante.dtCheckin ? formatarData(acampante.dtCheckin) : '-';
-                const statusCheckin = acampante.statusCheckin === 'realizado' ?
-                    '<span class="badge badge-realizado">Realizado</span>' :
-                    '<span class="badge badge-pendente">Pendente</span>';
-
-                const linha = `
-                    <tr>
-                        <td>${acampante.nome}</td>
-                        <td>${dataCheckin}</td>
-
-                        <td>${acampante.celular || '-'}</td>
-                        <td>${statusCheckin}</td>
-                        <td>
-                            ${acampante.statusCheckin === 'realizado' ?
-                        `<button class="btn btn-info btn-sm mr-2" onclick="verDetalhes('${acampante.nome}')">
-                                    <i class="material-icons">visibility</i>
-                                </button>
-                                <button class="btn btn-pdf mr-2" onclick="exportarPDF('${acampante.nome}')">
-                                    <i class="material-icons">picture_as_pdf</i>
-                                </button>
-                                <button class="btn btn-danger btn-sm" onclick="confirmarExclusao('${acampante.nome}')">
-                                    <i class="material-icons">delete</i>
-                                </button>` :
-                        `<button class="btn btn-primary btn-sm" onclick="realizarCheckin('${acampante.nome}')">
-                                    <i class="material-icons">how_to_reg</i>
-                                </button>`
-                    }
-                        </td>
-                    </tr>
-                `;
-
-                tabelaCheckins.append(linha);
+                const acampanteNome = $('#detalhesModalLabel').text().replace('Detalhes do Check-in: ', '');
+                doc.save(`Checkin_${acampanteNome.replace(/\s+/g, '_')}.pdf`);
             });
-        }
+        });
+    });
 
-        function filtrarAcampantes(termo, filtro) {
-            let acampantesFiltrados = todosAcampantes;
+    // Função carregarDashboard() CORRIGIDA
+    function carregarDashboard() {
+        db.collection("Eventos").doc("EBF2025").collection("inscricoes")
+            .where("anoevento", "==", "2025")
+            .where("tipoInsc", "==", "criancas")
+            .where("statusPagamento", "==", "pago")
+            .get()
+            .then((querySnapshot) => {
+                let totalPagos = querySnapshot.size;
+                let totalCheckins = 0;
+                let totalPendentes = 0;
 
-            // Aplicar filtro de status
-            if (filtro === 'realizados') {
-                acampantesFiltrados = acampantesFiltrados.filter(a => a.statusCheckin === 'realizado');
-            } else if (filtro === 'pendentes') {
-                acampantesFiltrados = acampantesFiltrados.filter(a => a.statusCheckin !== 'realizado');
-            }
-
-            // Aplicar filtro de busca
-            if (termo) {
-                acampantesFiltrados = acampantesFiltrados.filter(a =>
-                    a.nome.toLowerCase().includes(termo)
-                );
-            }
-
-            exibirAcampantes(acampantesFiltrados);
-        }
-
-        function verDetalhes(nomeAcampante) {
-            // Buscar detalhes do check-in
-            db.collection("Eventos").doc("ComRoca2025").collection("checkin")
-                .where("nome", "==", nomeAcampante)
-                .limit(1)
-                .get()
-                .then((querySnapshot) => {
-                    if (!querySnapshot.empty) {
-                        const checkin = querySnapshot.docs[0].data();
-
-                        // Atualizar título do modal
-                        $('#detalhesModalLabel').text(`Detalhes do Check-in: ${checkin.nome}`);
-
-                        // Construir conteúdo do modal
-                        let conteudo = `
-                            <div class="container-fluid">
-                                <div class="row mb-3">
-                                    <div class="col-12 mb-4">
-                                        <div style="display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #dee2e6; padding-bottom: 10px;">
-                                            <img src="../assets/Logo.png" alt="Logo ACAMP" style="height: 50px; margin-right: 15px;">
-                                            <h4 style="margin-bottom: 0;">Ficha de Check-in - ACAMP IEBI 2025</h4>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <h5 class="border-bottom pb-2">Dados Pessoais</h5>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>Nome:</strong> ${checkin.nome}</p>
-                                        <p><strong>Data de Nascimento:</strong> ${formatarDataSimples(checkin.dtnasc)}</p>
-                                        <p><strong>Idade:</strong> ${checkin.idade}</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>CPF:</strong> ${checkin.cpf || '-'}</p>
-                                        <p><strong>Responsável:</strong> ${checkin.responsavel || '-'}</p>
-                                        <p><strong>Telefone:</strong> ${checkin.telefone1 || '-'}</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <h5 class="border-bottom pb-2">Saúde</h5>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>Alergias Alimentares:</strong> ${checkin.alergiasAlimentares === 'sim' ? 'Sim' : 'Não'}</p>
-                                        ${checkin.alergiasAlimentares === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasAlimentares}</p>` : ''}
-                                        
-                                        <p><strong>Alergias a Medicamentos:</strong> ${checkin.alergiasMedicamentos === 'sim' ? 'Sim' : 'Não'}</p>
-                                        ${checkin.alergiasMedicamentos === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasMedicamentos}</p>` : ''}
-                                        
-                                        <p><strong>Alergias a Insetos:</strong> ${checkin.alergiasInsetos === 'sim' ? 'Sim' : 'Não'}</p>
-                                        ${checkin.alergiasInsetos === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasInsetos}</p>` : ''}
-                                        
-                                        <p><strong>Possui Seguro Saúde:</strong> ${checkin.seguroSaude ? 'Sim' : 'Não'}</p>
-                                        ${checkin.seguroSaude ? `<p><strong>Qual:</strong> ${checkin.seguroSaude}</p>` : ''}
-                                        
-                                        <p><strong>Hospital de Preferência:</strong> ${checkin.hospitalPreferencia || 'Não informado'}</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>Medicamentos Controlados:</strong> ${checkin.medicamentosControlados === 'sim' ? 'Sim' : 'Não'}</p>
-                                        ${checkin.medicamentosControlados === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisMedicamentos}</p>` : ''}
-                                        
-                                        <p><strong>Problemas de Saúde:</strong> ${checkin.problemasSaude === 'sim' ? 'Sim' : 'Não'}</p>
-                                        ${checkin.problemasSaude === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisProblemasSaude}</p>` : ''}
-                                        
-                                        <p><strong>Tipo Sanguíneo:</strong> ${checkin.tipoSanguineo || 'Não informado'}</p>
-                                        <p><strong>Vacinas em Dia:</strong> ${checkin.vacinasEmDia === 'sim' ? 'Sim' : 'Não'}</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <h5 class="border-bottom pb-2">Alimentação</h5>
-                                    </div>
-                                    <div class="col-12">
-                                        <p><strong>Restrições Alimentares:</strong> ${checkin.restricoesAlimentares === 'sim' ? 'Sim' : 'Não'}</p>
-                                        ${checkin.restricoesAlimentares === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisRestricoesAlimentares}</p>` : ''}
-                                        
-                                        <p><strong>Alimentos que não consome:</strong> ${checkin.alimentosNaoConsome || 'Nenhum'}</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <h5 class="border-bottom pb-2">Outros</h5>
-                                    </div>
-                                    <div class="col-12">
-                                        <p><strong>Comportamento Especial:</strong> ${checkin.comportamentoEspecial === 'sim' ? 'Sim' : 'Não'}</p>
-                                        ${checkin.comportamentoEspecial === 'sim' ? `<p><strong>Qual:</strong> ${checkin.qualComportamento}</p>` : ''}
-                                        
-                                        <p><strong>Observações:</strong> ${checkin.observacoesAdicionais || 'Nenhuma'}</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <h5 class="border-bottom pb-2">Autorizações</h5>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>Participação:</strong> ${checkin.autorizacaoParticipacao ? 'Autorizado' : 'Não autorizado'}</p>
-                                        <p><strong>Atendimento Médico:</strong> ${checkin.autorizacaoEmergencia ? 'Autorizado' : 'Não autorizado'}</p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>Uso de Imagem:</strong> ${checkin.autorizacaoFotos ? 'Autorizado' : 'Não autorizado'}</p>
-                                        <p><strong>Medicamentos Básicos:</strong> ${checkin.autorizacaoMedicamentos ? 'Autorizado' : 'Não autorizado'}</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-12">
-                                        <h5 class="border-bottom pb-2">Assinatura</h5>
-                                    </div>
-                                    <div class="col-12 text-center">
-                                        ${checkin.assinatura ?
-                                `<img id="assinaturaImg" src="${checkin.assinatura}" alt="Assinatura" style="max-width: 50%; max-height: 100px;">` :
-                                '<p>Assinatura não disponível</p>'}
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-
-                        // Atualizar conteúdo do modal
-                        $('#detalhesModalBody').html(conteudo);
-
-                        // Exibir modal
-                        $('#detalhesModal').modal('show');
+                querySnapshot.forEach((doc) => {
+                    const acampante = doc.data();
+                    if (acampante.statusCheckin === 'realizado') {
+                        totalCheckins++;
                     } else {
-                        alert('Detalhes do check-in não encontrados.');
+                        totalPendentes++;
                     }
-                })
-                .catch((error) => {
-                    console.error("Erro ao buscar detalhes do check-in: ", error);
-                    alert('Erro ao buscar detalhes do check-in.');
                 });
+
+                $('#totalInscritos').text(totalPagos);
+                $('#totalCheckins').text(totalCheckins);
+                $('#totalPendentes').text(totalPendentes);
+
+                atualizarGraficoStatus(totalCheckins, totalPendentes);
+                buscarDadosFaixaEtaria();
+            })
+            .catch((error) => {
+                console.error("Erro ao carregar dashboard: ", error);
+            });
+    }
+
+    function carregarCheckins() {
+        const tabelaCheckins = $('#checkinsList');
+        tabelaCheckins.html('');
+
+        db.collection("Eventos").doc("EBF2025").collection("inscricoes")
+            .where("anoevento", "==", "2025")
+            .where("tipoInsc", "==", "criancas")
+            .orderBy("nome")
+            .get()
+            .then((querySnapshot) => {
+                todosAcampantes = [];
+
+                querySnapshot.forEach((doc) => {
+                    const acampante = doc.data();
+                    acampante.id = doc.id;
+                    todosAcampantes.push(acampante);
+                });
+
+                exibirAcampantes(todosAcampantes);
+            })
+            .catch((error) => {
+                console.error("Erro ao carregar acampantes: ", error);
+            });
+    }
+
+    function exibirAcampantes(acampantes) {
+        const tabelaCheckins = $('#checkinsList');
+        tabelaCheckins.html('');
+
+        acampantes.forEach((acampante) => {
+            const dataCheckin = acampante.dtCheckin ? formatarData(acampante.dtCheckin) : '-';
+            const statusCheckin = acampante.statusCheckin === 'realizado' ?
+                '<span class="badge badge-realizado">Realizado</span>' :
+                '<span class="badge badge-pendente">Pendente</span>';
+
+            const linha = `
+                <tr>
+                    <td>${acampante.nome}</td>
+                    <td>${dataCheckin}</td>
+                    <td>${acampante.contato || '-'}</td>
+                    <td>${acampante.celular || '-'}</td>
+                    <td>${statusCheckin}</td>
+                    <td>
+                        ${acampante.statusCheckin === 'realizado' ?
+                    `<button class="btn btn-info btn-sm mr-2" onclick="verDetalhes('${acampante.nome}')">
+                                <i class="material-icons">visibility</i>
+                            </button>
+                            <button class="btn btn-pdf mr-2" onclick="exportarPDF('${acampante.nome}')">
+                                <i class="material-icons">picture_as_pdf</i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="confirmarExclusao('${acampante.nome}')">
+                                <i class="material-icons">delete</i>
+                            </button>` :
+                    `<button class="btn btn-primary btn-sm" onclick="realizarCheckin('${acampante.nome}')">
+                                <i class="material-icons">how_to_reg</i>
+                            </button>`
+                }
+                    </td>
+                </tr>
+            `;
+
+            tabelaCheckins.append(linha);
+        });
+    }
+
+    function filtrarAcampantes(termo, filtro) {
+        let acampantesFiltrados = todosAcampantes;
+
+        if (filtro === 'realizados') {
+            acampantesFiltrados = acampantesFiltrados.filter(a => a.statusCheckin === 'realizado');
+        } else if (filtro === 'pendentes') {
+            acampantesFiltrados = acampantesFiltrados.filter(a => a.statusCheckin !== 'realizado');
         }
 
-        function realizarCheckin(nomeAcampante) {
-            // Redirecionar para a página de check-in com o nome do acampante como parâmetro
-            window.location.href = `frmcheckinACAMP.html?nome=${encodeURIComponent(nomeAcampante)}`;
+        if (termo) {
+            acampantesFiltrados = acampantesFiltrados.filter(a =>
+                a.nome.toLowerCase().includes(termo) ||
+                (a.contato && a.contato.toLowerCase().includes(termo))
+            );
         }
 
-        function exportarPDF(nomeAcampante) {
-            // Buscar detalhes do check-in
-            db.collection("Eventos").doc("ComRoca2025").collection("checkin")
-                .where("nome", "==", nomeAcampante)
-                .limit(1)
-                .get()
-                .then((querySnapshot) => {
-                    if (!querySnapshot.empty) {
-                        const checkin = querySnapshot.docs[0].data();
+        exibirAcampantes(acampantesFiltrados);
+    }
 
-                        // Criar o mesmo HTML que é usado no modal
-                        let conteudoHTML = `
-                    <div class="container-fluid" style="font-family: 'Montserrat', sans-serif; color: #333; max-width: 800px; margin: 0 auto; padding: 20px;">
-                        <div class="row mb-3">
-                            <div class="col-12 mb-4">
-                                <div style="display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #dee2e6; padding-bottom: 10px;">
-                                    <img src="../assets/Logo.png" alt="Logo ACAMP" style="height: 50px; margin-right: 15px;">
-                                    <h4 style="margin-bottom: 0;">Ficha de Check-in - ACAMP IEBI 2025</h4>
+    function verDetalhes(nomeAcampante) {
+        db.collection("Eventos").doc("EBF2025").collection("checkin")
+            .where("nome", "==", nomeAcampante)
+            .limit(1)
+            .get()
+            .then((querySnapshot) => {
+                if (!querySnapshot.empty) {
+                    const checkin = querySnapshot.docs[0].data();
+
+                    $('#detalhesModalLabel').text(`Detalhes do Check-in: ${checkin.nome}`);
+
+                    let conteudo = `
+                        <div class="container-fluid">
+                            <div class="row mb-3">
+                                <div class="col-12 mb-4">
+                                    <div style="display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #dee2e6; padding-bottom: 10px;">
+                                        <img src="../assets/Logo.png" alt="Logo ACAMP" style="height: 50px; margin-right: 15px;">
+                                        <h4 style="margin-bottom: 0;">Ficha de Check-in - ACAMP IEBI 2025</h4>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">Dados Pessoais</h5>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Nome:</strong> ${checkin.nome}</p>
+                                    <p><strong>Data de Nascimento:</strong> ${formatarDataSimples(checkin.dtnasc)}</p>
+                                    <p><strong>Idade:</strong> ${checkin.idade}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>CPF:</strong> ${checkin.cpf || '-'}</p>
+                                    <p><strong>Responsável:</strong> ${checkin.responsavel || '-'}</p>
+                                    <p><strong>Telefone:</strong> ${checkin.telefone1 || '-'}</p>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Dados Pessoais</h5>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">Saúde</h5>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Alergias Alimentares:</strong> ${checkin.alergiasAlimentares === 'sim' ? 'Sim' : 'Não'}</p>
+                                    ${checkin.alergiasAlimentares === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasAlimentares}</p>` : ''}
+                                    
+                                    <p><strong>Alergias a Medicamentos:</strong> ${checkin.alergiasMedicamentos === 'sim' ? 'Sim' : 'Não'}</p>
+                                    ${checkin.alergiasMedicamentos === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasMedicamentos}</p>` : ''}
+                                    
+                                    <p><strong>Alergias a Insetos:</strong> ${checkin.alergiasInsetos === 'sim' ? 'Sim' : 'Não'}</p>
+                                    ${checkin.alergiasInsetos === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasInsetos}</p>` : ''}
+                                    
+                                    <p><strong>Possui Seguro Saúde:</strong> ${checkin.seguroSaude ? 'Sim' : 'Não'}</p>
+                                    ${checkin.seguroSaude ? `<p><strong>Qual:</strong> ${checkin.seguroSaude}</p>` : ''}
+                                    
+                                    <p><strong>Hospital de Preferência:</strong> ${checkin.hospitalPreferencia || 'Não informado'}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Medicamentos Controlados:</strong> ${checkin.medicamentosControlados === 'sim' ? 'Sim' : 'Não'}</p>
+                                    ${checkin.medicamentosControlados === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisMedicamentos}</p>` : ''}
+                                    
+                                    <p><strong>Problemas de Saúde:</strong> ${checkin.problemasSaude === 'sim' ? 'Sim' : 'Não'}</p>
+                                    ${checkin.problemasSaude === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisProblemasSaude}</p>` : ''}
+                                    
+                                    <p><strong>Tipo Sanguíneo:</strong> ${checkin.tipoSanguineo || 'Não informado'}</p>
+                                    <p><strong>Vacinas em Dia:</strong> ${checkin.vacinasEmDia === 'sim' ? 'Sim' : 'Não'}</p>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <p><strong>Nome:</strong> ${checkin.nome}</p>
-                                <p><strong>Data de Nascimento:</strong> ${formatarDataSimples(checkin.dtnasc)}</p>
-                                <p><strong>Idade:</strong> ${checkin.idade}</p>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">Alimentação</h5>
+                                </div>
+                                <div class="col-12">
+                                    <p><strong>Restrições Alimentares:</strong> ${checkin.restricoesAlimentares === 'sim' ? 'Sim' : 'Não'}</p>
+                                    ${checkin.restricoesAlimentares === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisRestricoesAlimentares}</p>` : ''}
+                                    
+                                    <p><strong>Alimentos que não consome:</strong> ${checkin.alimentosNaoConsome || 'Nenhum'}</p>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <p><strong>CPF:</strong> ${checkin.cpf || '-'}</p>
-                                <p><strong>Responsável:</strong> ${checkin.responsavel || '-'}</p>
-                                <p><strong>Telefone:</strong> ${checkin.telefone1 || '-'}</p>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">Outros</h5>
+                                </div>
+                                <div class="col-12">
+                                    <p><strong>Comportamento Especial:</strong> ${checkin.comportamentoEspecial === 'sim' ? 'Sim' : 'Não'}</p>
+                                    ${checkin.comportamentoEspecial === 'sim' ? `<p><strong>Qual:</strong> ${checkin.qualComportamento}</p>` : ''}
+                                    
+                                    <p><strong>Observações:</strong> ${checkin.observacoesAdicionais || 'Nenhuma'}</p>
+                                </div>
+                                                        </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">Autorizações</h5>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Participação:</strong> ${checkin.autorizacaoParticipacao ? 'Autorizado' : 'Não autorizado'}</p>
+                                    <p><strong>Atendimento Médico:</strong> ${checkin.autorizacaoEmergencia ? 'Autorizado' : 'Não autorizado'}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Uso de Imagem:</strong> ${checkin.autorizacaoFotos ? 'Autorizado' : 'Não autorizado'}</p>
+                                    <p><strong>Medicamentos Básicos:</strong> ${checkin.autorizacaoMedicamentos ? 'Autorizado' : 'Não autorizado'}</p>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Saúde</h5>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Alergias Alimentares:</strong> ${checkin.alergiasAlimentares === 'sim' ? 'Sim' : 'Não'}</p>
-                                ${checkin.alergiasAlimentares === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasAlimentares}</p>` : ''}
-                                
-                                <p><strong>Alergias a Medicamentos:</strong> ${checkin.alergiasMedicamentos === 'sim' ? 'Sim' : 'Não'}</p>
-                                ${checkin.alergiasMedicamentos === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasMedicamentos}</p>` : ''}
-                                
-                                <p><strong>Alergias a Insetos:</strong> ${checkin.alergiasInsetos === 'sim' ? 'Sim' : 'Não'}</p>
-                                ${checkin.alergiasInsetos === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasInsetos}</p>` : ''}
-                                
-                                <p><strong>Possui Seguro Saúde:</strong> ${checkin.seguroSaude ? 'Sim' : 'Não'}</p>
-                                ${checkin.seguroSaude ? `<p><strong>Qual:</strong> ${checkin.seguroSaude}</p>` : ''}
-                                
-                                <p><strong>Hospital de Preferência:</strong> ${checkin.hospitalPreferencia || 'Não informado'}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Medicamentos Controlados:</strong> ${checkin.medicamentosControlados === 'sim' ? 'Sim' : 'Não'}</p>
-                                ${checkin.medicamentosControlados === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisMedicamentos}</p>` : ''}
-                                
-                                <p><strong>Problemas de Saúde:</strong> ${checkin.problemasSaude === 'sim' ? 'Sim' : 'Não'}</p>
-                                ${checkin.problemasSaude === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisProblemasSaude}</p>` : ''}
-                                
-                                <p><strong>Tipo Sanguíneo:</strong> ${checkin.tipoSanguineo || 'Não informado'}</p>
-                                <p><strong>Vacinas em Dia:</strong> ${checkin.vacinasEmDia === 'sim' ? 'Sim' : 'Não'}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Alimentação</h5>
-                            </div>
-                            <div class="col-12">
-                                <p><strong>Restrições Alimentares:</strong> ${checkin.restricoesAlimentares === 'sim' ? 'Sim' : 'Não'}</p>
-                                ${checkin.restricoesAlimentares === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisRestricoesAlimentares}</p>` : ''}
-                                
-                                <p><strong>Alimentos que não consome:</strong> ${checkin.alimentosNaoConsome || 'Nenhum'}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Outros</h5>
-                            </div>
-                            <div class="col-12">
-                                <p><strong>Comportamento Especial:</strong> ${checkin.comportamentoEspecial === 'sim' ? 'Sim' : 'Não'}</p>
-                                ${checkin.comportamentoEspecial === 'sim' ? `<p><strong>Qual:</strong> ${checkin.qualComportamento}</p>` : ''}
-                                
-                                <p><strong>Observações:</strong> ${checkin.observacoesAdicionais || 'Nenhuma'}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Autorizações</h5>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Participação:</strong> ${checkin.autorizacaoParticipacao ? 'Autorizado' : 'Não autorizado'}</p>
-                                <p><strong>Atendimento Médico:</strong> ${checkin.autorizacaoEmergencia ? 'Autorizado' : 'Não autorizado'}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p><strong>Uso de Imagem:</strong> ${checkin.autorizacaoFotos ? 'Autorizado' : 'Não autorizado'}</p>
-                                <p><strong>Medicamentos Básicos:</strong> ${checkin.autorizacaoMedicamentos ? 'Autorizado' : 'Não autorizado'}</p>
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    <h5 class="border-bottom pb-2">Assinatura</h5>
+                                </div>
+                                <div class="col-12 text-center">
+                                    ${checkin.assinatura ?
+                            `<img id="assinaturaImg" src="${checkin.assinatura}" alt="Assinatura" style="max-width: 50%; max-height: 100px;">` :
+                            '<p>Assinatura não disponível</p>'}
+                                </div>
                             </div>
                         </div>
-                        
-                        <div class="row">
-                            <div class="col-12">
-                                <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Assinatura</h5>
+                    `;
+
+                    $('#detalhesModalBody').html(conteudo);
+                    $('#detalhesModal').modal('show');
+                } else {
+                    alert('Detalhes do check-in não encontrados.');
+                }
+            })
+            .catch((error) => {
+                console.error("Erro ao buscar detalhes do check-in: ", error);
+                alert('Erro ao buscar detalhes do check-in.');
+            });
+    }
+
+    function realizarCheckin(nomeAcampante) {
+        window.location.href = `frmcheckin.html?nome=${encodeURIComponent(nomeAcampante)}`;
+    }
+
+    function exportarPDF(nomeAcampante) {
+        db.collection("Eventos").doc("EBF2025").collection("checkin")
+            .where("nome", "==", nomeAcampante)
+            .limit(1)
+            .get()
+            .then((querySnapshot) => {
+                if (!querySnapshot.empty) {
+                    const checkin = querySnapshot.docs[0].data();
+
+                    let conteudoHTML = `
+                <div class="container-fluid" style="font-family: 'Montserrat', sans-serif; color: #333; max-width: 800px; margin: 0 auto; padding: 20px;">
+                    <div class="row mb-3">
+                        <div class="col-12 mb-4">
+                            <div style="display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #dee2e6; padding-bottom: 10px;">
+                                <img src="../assets/Logo.png" alt="Logo ACAMP" style="height: 50px; margin-right: 15px;">
+                                <h4 style="margin-bottom: 0;">Ficha de Check-in - ACAMP IEBI 2025</h4>
                             </div>
-                            <div class="col-12 text-center">
-                                ${checkin.assinatura ?
-                                `<img id="assinaturaImg" src="${checkin.assinatura}" alt="Assinatura" style="max-width: 50%; max-height: 100px;">` :
-                                '<p>Assinatura não disponível</p>'}
-                            </div>
+                        </div>
+                        <div class="col-12">
+                            <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Dados Pessoais</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Nome:</strong> ${checkin.nome}</p>
+                            <p><strong>Data de Nascimento:</strong> ${formatarDataSimples(checkin.dtnasc)}</p>
+                            <p><strong>Idade:</strong> ${checkin.idade}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>CPF:</strong> ${checkin.cpf || '-'}</p>
+                            <p><strong>Responsável:</strong> ${checkin.responsavel || '-'}</p>
+                            <p><strong>Telefone:</strong> ${checkin.telefone1 || '-'}</p>
                         </div>
                     </div>
-                `;
+                    
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Saúde</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Alergias Alimentares:</strong> ${checkin.alergiasAlimentares === 'sim' ? 'Sim' : 'Não'}</p>
+                            ${checkin.alergiasAlimentares === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasAlimentares}</p>` : ''}
+                            
+                            <p><strong>Alergias a Medicamentos:</strong> ${checkin.alergiasMedicamentos === 'sim' ? 'Sim' : 'Não'}</p>
+                            ${checkin.alergiasMedicamentos === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasMedicamentos}</p>` : ''}
+                            
+                            <p><strong>Alergias a Insetos:</strong> ${checkin.alergiasInsetos === 'sim' ? 'Sim' : 'Não'}</p>
+                            ${checkin.alergiasInsetos === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisAlergiasInsetos}</p>` : ''}
+                            
+                            <p><strong>Possui Seguro Saúde:</strong> ${checkin.seguroSaude ? 'Sim' : 'Não'}</p>
+                            ${checkin.seguroSaude ? `<p><strong>Qual:</strong> ${checkin.seguroSaude}</p>` : ''}
+                            
+                            <p><strong>Hospital de Preferência:</strong> ${checkin.hospitalPreferencia || 'Não informado'}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Medicamentos Controlados:</strong> ${checkin.medicamentosControlados === 'sim' ? 'Sim' : 'Não'}</p>
+                            ${checkin.medicamentosControlados === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisMedicamentos}</p>` : ''}
+                            
+                            <p><strong>Problemas de Saúde:</strong> ${checkin.problemasSaude === 'sim' ? 'Sim' : 'Não'}</p>
+                            ${checkin.problemasSaude === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisProblemasSaude}</p>` : ''}
+                            
+                            <p><strong>Tipo Sanguíneo:</strong> ${checkin.tipoSanguineo || 'Não informado'}</p>
+                            <p><strong>Vacinas em Dia:</strong> ${checkin.vacinasEmDia === 'sim' ? 'Sim' : 'Não'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Alimentação</h5>
+                        </div>
+                        <div class="col-12">
+                            <p><strong>Restrições Alimentares:</strong> ${checkin.restricoesAlimentares === 'sim' ? 'Sim' : 'Não'}</p>
+                            ${checkin.restricoesAlimentares === 'sim' ? `<p><strong>Quais:</strong> ${checkin.quaisRestricoesAlimentares}</p>` : ''}
+                            
+                            <p><strong>Alimentos que não consome:</strong> ${checkin.alimentosNaoConsome || 'Nenhum'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Outros</h5>
+                        </div>
+                        <div class="col-12">
+                            <p><strong>Comportamento Especial:</strong> ${checkin.comportamentoEspecial === 'sim' ? 'Sim' : 'Não'}</p>
+                            ${checkin.comportamentoEspecial === 'sim' ? `<p><strong>Qual:</strong> ${checkin.qualComportamento}</p>` : ''}
+                            
+                            <p><strong>Observações:</strong> ${checkin.observacoesAdicionais || 'Nenhuma'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Autorizações</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Participação:</strong> ${checkin.autorizacaoParticipacao ? 'Autorizado' : 'Não autorizado'}</p>
+                            <p><strong>Atendimento Médico:</strong> ${checkin.autorizacaoEmergencia ? 'Autorizado' : 'Não autorizado'}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Uso de Imagem:</strong> ${checkin.autorizacaoFotos ? 'Autorizado' : 'Não autorizado'}</p>
+                            <p><strong>Medicamentos Básicos:</strong> ${checkin.autorizacaoMedicamentos ? 'Autorizado' : 'Não autorizado'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <h5 style="border-bottom: 1px solid #dee2e6; padding-bottom: 8px;">Assinatura</h5>
+                        </div>
+                        <div class="col-12 text-center">
+                            ${checkin.assinatura ?
+                            `<img id="assinaturaImg" src="${checkin.assinatura}" alt="Assinatura" style="max-width: 50%; max-height: 100px;">` :
+                            '<p>Assinatura não disponível</p>'}
+                        </div>
+                    </div>
+                </div>
+            `;
 
-                        // Criar um elemento temporário para renderizar o HTML
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = conteudoHTML;
-                        tempDiv.style.position = 'absolute';
-                        tempDiv.style.left = '-9999px';
-                        document.body.appendChild(tempDiv);
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = conteudoHTML;
+                    tempDiv.style.position = 'absolute';
+                    tempDiv.style.left = '-9999px';
+                    document.body.appendChild(tempDiv);
 
-                        // Usar html2canvas para capturar o conteúdo
-                        html2canvas(tempDiv, {
-                            scale: 2, // Melhor qualidade
-                            useCORS: true, // Permitir imagens de outros domínios
-                            logging: false // Desativar logs
-                        }).then(canvas => {
-                            // Criar PDF
-                            const { jsPDF } = window.jspdf;
-                            const doc = new jsPDF('p', 'mm', 'a4');
+                    html2canvas(tempDiv, {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false
+                    }).then(canvas => {
+                        const { jsPDF } = window.jspdf;
+                        const doc = new jsPDF('p', 'mm', 'a4');
 
-                            const imgData = canvas.toDataURL('image/png');
-                            const imgWidth = 190;
-                            const pageHeight = 290;
-                            const imgHeight = canvas.height * imgWidth / canvas.width;
-                            let heightLeft = imgHeight;
-                            let position = 10;
+                        const imgData = canvas.toDataURL('image/png');
+                        const imgWidth = 190;
+                        const pageHeight = 290;
+                        const imgHeight = canvas.height * imgWidth / canvas.width;
+                        let heightLeft = imgHeight;
+                        let position = 10;
 
+                        doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+
+                        while (heightLeft >= 0) {
+                            position = heightLeft - imgHeight;
+                            doc.addPage();
                             doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
                             heightLeft -= pageHeight;
+                        }
 
-                            // Adicionar páginas adicionais se necessário
-                            while (heightLeft >= 0) {
-                                position = heightLeft - imgHeight;
-                                doc.addPage();
-                                doc.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                                heightLeft -= pageHeight;
-                            }
+                        doc.save(`Checkin_${nomeAcampante.replace(/\s+/g, '_')}.pdf`);
+                        document.body.removeChild(tempDiv);
+                    });
+                } else {
+                    alert('Detalhes do check-in não encontrados.');
+                }
+            })
+            .catch((error) => {
+                console.error("Erro ao exportar PDF: ", error);
+                alert('Erro ao exportar PDF.');
+            });
+    }
 
-                            // Salvar o PDF
-                            doc.save(`Checkin_${nomeAcampante.replace(/\s+/g, '_')}.pdf`);
-
-                            // Remover o elemento temporário
-                            document.body.removeChild(tempDiv);
-                        });
-                    } else {
-                        alert('Detalhes do check-in não encontrados.');
+    // FUNÇÕES DOS GRÁFICOS CORRIGIDAS
+    function initGraficos() {
+        // Gráfico de status
+        const ctxStatus = document.getElementById('graficoStatus').getContext('2d');
+        graficoStatus = new Chart(ctxStatus, {
+            type: 'doughnut',
+            data: {
+                labels: ['Realizados', 'Pendentes'],
+                datasets: [{
+                    data: [0, 0],
+                    backgroundColor: ['#6108a1', '#ffc107'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
                     }
-                })
-                .catch((error) => {
-                    console.error("Erro ao exportar PDF: ", error);
-                    alert('Erro ao exportar PDF.');
-                });
-        }
+                }
+            }
+        });
 
-        function initGraficos() {
-            // Inicializar gráfico de status
-            const ctxStatus = document.getElementById('graficoStatus').getContext('2d');
-            graficoStatus = new Chart(ctxStatus, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Realizados', 'Pendentes'],
-                    datasets: [{
-                        data: [0, 0],
-                        backgroundColor: ['#6108a1', '#ffc107'],
-                        borderWidth: 1
-                    }]
+        // Gráfico de faixas etárias
+        const ctxIdades = document.getElementById('graficoIdades').getContext('2d');
+        graficoIdades = new Chart(ctxIdades, {
+            type: 'bar',
+            data: {
+                labels: ['4-5 anos', '6-7 anos', '8-9 anos', '10-12 anos', 'Outras idades'],
+                datasets: [{
+                    label: 'Check-ins por Faixa Etária',
+                    data: [0, 0, 0, 0, 0],
+                    backgroundColor: [
+                        'rgba(40, 167, 69, 0.8)',    // Verde - Sala Verde
+                        'rgba(255, 193, 7, 0.8)',    // Amarelo - Sala Amarela
+                        'rgba(253, 126, 20, 0.8)',   // Laranja - Sala Laranja
+                        'rgba(220, 53, 69, 0.8)',    // Vermelho - Sala Vermelha
+                        'rgba(108, 117, 125, 0.8)'   // Cinza - Outras idades
+                    ],
+                    borderColor: [
+                        'rgba(40, 167, 69, 1)',
+                        'rgba(255, 193, 7, 1)',
+                                                'rgba(253, 126, 20, 1)',
+                        'rgba(220, 53, 69, 1)',
+                        'rgba(108, 117, 125, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            afterLabel: function(context) {
+                                const faixas = ['Sala Verde', 'Sala Amarela', 'Sala Laranja', 'Sala Vermelha', 'Sem sala definida'];
+                                return faixas[context.dataIndex];
+                            }
                         }
                     }
                 }
-            });
+            }
+        });
+    }
 
-            // Inicializar gráfico de dias
-            const ctxDias = document.getElementById('graficoDias').getContext('2d');
-            graficoDias = new Chart(ctxDias, {
-                type: 'bar',
-                data: {
-                    labels: [],
-                    datasets: [{
-                        label: 'Check-ins por Dia',
-                        data: [],
-                        backgroundColor: 'rgba(97, 8, 161, 0.7)',
-                        borderColor: 'rgba(97, 8, 161, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function atualizarGraficoStatus(totalCheckins, totalPendentes) {
+    function atualizarGraficoStatus(totalCheckins, totalPendentes) {
+        if (graficoStatus) {
             graficoStatus.data.datasets[0].data = [totalCheckins, totalPendentes];
             graficoStatus.update();
         }
+    }
 
-        function atualizarGraficoDias(datasPorDia) {
-            const labels = Object.keys(datasPorDia).sort((a, b) => {
-                const partsA = a.split('/').reverse();
-                const partsB = b.split('/').reverse();
-                return new Date(partsA.join('-')) - new Date(partsB.join('-'));
+    // NOVAS FUNÇÕES PARA FAIXA ETÁRIA
+    function calcularFaixaEtaria(idade) {
+        const idadeNum = parseInt(idade);
+        
+        if (idadeNum >= 4 && idadeNum <= 5) return '4-5 anos';      // Sala Verde
+        if (idadeNum >= 6 && idadeNum <= 7) return '6-7 anos';      // Sala Amarela
+        if (idadeNum >= 8 && idadeNum <= 9) return '8-9 anos';      // Sala Laranja
+        if (idadeNum >= 10 && idadeNum <= 12) return '10-12 anos';  // Sala Vermelha
+        
+        return 'Outras idades'; // Para idades fora das faixas das salas
+    }
+
+    function buscarDadosFaixaEtaria() {
+        db.collection("Eventos").doc("EBF2025").collection("checkin")
+            .get()
+            .then((querySnapshot) => {
+                const faixasEtarias = {
+                    '4-5 anos': 0,      // Sala Verde
+                    '6-7 anos': 0,      // Sala Amarela
+                    '8-9 anos': 0,      // Sala Laranja
+                    '10-12 anos': 0,    // Sala Vermelha
+                    'Outras idades': 0  // Fora das faixas
+                };
+
+                querySnapshot.forEach((doc) => {
+                    const checkin = doc.data();
+                    if (checkin.idade) {
+                        const faixa = calcularFaixaEtaria(checkin.idade);
+                        if (faixasEtarias.hasOwnProperty(faixa)) {
+                            faixasEtarias[faixa]++;
+                        }
+                    }
+                });
+
+                atualizarGraficoIdades(faixasEtarias);
+            })
+            .catch((error) => {
+                console.error("Erro ao buscar dados de faixa etária:", error);
             });
+    }
 
-            const dados = labels.map(data => datasPorDia[data]);
+    function atualizarGraficoIdades(faixasEtarias) {
+        const dados = Object.values(faixasEtarias);
 
-            graficoDias.data.labels = labels;
-            graficoDias.data.datasets[0].data = dados;
-            graficoDias.update();
+        if (graficoIdades) {
+            graficoIdades.data.datasets[0].data = dados;
+            graficoIdades.update();
         }
+    }
 
-        function formatarData(dataString) {
-            if (!dataString) return '-';
+    // FUNÇÕES DE FORMATAÇÃO
+    function formatarData(dataString) {
+        if (!dataString) return '-';
 
-            try {
-                const data = new Date(dataString);
-                return data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            } catch (e) {
+        try {
+            if (typeof dataString === 'string' && dataString.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
                 return dataString;
             }
+            
+            const data = new Date(dataString);
+            if (!isNaN(data.getTime())) {
+                return data.toLocaleDateString('pt-BR');
+            }
+            
+            return dataString;
+        } catch (e) {
+            console.error('Erro ao formatar data:', e, dataString);
+            return dataString;
         }
+    }
 
-        function formatarDataSimples(dataString) {
-            if (!dataString) return '-';
+    function formatarDataSimples(dataString) {
+        if (!dataString) return '-';
 
-            try {
-                if (typeof dataString === 'string' && dataString.includes('-')) {
-                    // Formato ISO
-                    const partes = dataString.split('-');
-                    return `${partes[2].substring(0, 2)}/${partes[1]}/${partes[0]}`;
-                } else if (dataString instanceof Date) {
-                    // Objeto Date
-                    return dataString.toLocaleDateString('pt-BR');
-                }
-                return dataString;
-            } catch (e) {
+        try {
+            if (typeof dataString === 'string' && dataString.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
                 return dataString;
             }
+            
+            const data = new Date(dataString);
+            if (!isNaN(data.getTime())) {
+                return data.toLocaleDateString('pt-BR');
+            }
+            
+            return dataString;
+        } catch (e) {
+            console.error('Erro ao formatar data:', e, dataString);
+            return dataString || '-';
         }
+    }
 
-        // Função para mostrar o modal de confirmação de exclusão
-        function confirmarExclusao(nomeAcampante) {
-            // Armazenar o nome do acampante no modal
-            $('#nomeAcampanteExclusao').text(nomeAcampante);
+    function formatarDataComHorario(dataString) {
+        if (!dataString) return '-';
+
+        try {
+            if (typeof dataString === 'string' && dataString.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+                return dataString;
+            }
             
-            // Configurar o botão de confirmação
-            $('#confirmarExclusaoBtn').off('click').on('click', function() {
-                excluirCheckin(nomeAcampante);
-            });
+            const data = new Date(dataString);
+            if (!isNaN(data.getTime())) {
+                return data.toLocaleDateString('pt-BR') + ' às ' + data.toLocaleTimeString('pt-BR', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
             
-            // Mostrar o modal
-            $('#confirmarExclusaoModal').modal('show');
+            return dataString;
+        } catch (e) {
+            return formatarData(dataString);
         }
+    }
 
-        // Função para excluir o check-in
-        function excluirCheckin(nomeAcampante) {
-            // Mostrar indicador de carregamento
-            $('#confirmarExclusaoBtn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Excluindo...');
-            $('#confirmarExclusaoBtn').prop('disabled', true);
-            
-            // 1. Buscar o documento de check-in para excluir
-            db.collection("Eventos").doc("ComRoca2025").collection("checkin")
-                .where("nome", "==", nomeAcampante)
-                .get()
-                .then((querySnapshot) => {
-                    // Array de promessas para exclusão
-                    const deletePromises = [];
-            
-                    querySnapshot.forEach((doc) => {
-                        // Adicionar promessa de exclusão ao array
-                        deletePromises.push(doc.ref.delete());
-                    });
-            
-                    // 2. Atualizar o status na coleção de inscrições
-                    const updatePromise = db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
-                        .where("nome", "==", nomeAcampante)
-                        .where("anoevento", "==", "2025")
-                        .get()
-                        .then((inscricoesSnapshot) => {
-                            const inscricoesPromises = [];
-                    
-                            inscricoesSnapshot.forEach((doc) => {
-                                // Remover campos relacionados ao check-in
-                                inscricoesPromises.push(doc.ref.update({
-                                    statusCheckin: firebase.firestore.FieldValue.delete(),
-                                    dtCheckin: firebase.firestore.FieldValue.delete()
-                                }));
-                            });
-                    
-                            return Promise.all(inscricoesPromises);
+    // FUNÇÕES DE EXCLUSÃO
+    function confirmarExclusao(nomeAcampante) {
+        $('#nomeAcampanteExclusao').text(nomeAcampante);
+        
+        $('#confirmarExclusaoBtn').off('click').on('click', function() {
+            excluirCheckin(nomeAcampante);
+        });
+        
+        $('#confirmarExclusaoModal').modal('show');
+    }
+
+    function excluirCheckin(nomeAcampante) {
+        // 1. FEEDBACK VISUAL - Mostra spinner e desabilita botão
+        $('#confirmarExclusaoBtn').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Excluindo...');
+        $('#confirmarExclusaoBtn').prop('disabled', true);
+        
+        // 2. BUSCA DOCUMENTOS DE CHECK-IN
+        db.collection("Eventos").doc("EBF2025").collection("checkin")
+            .where("nome", "==", nomeAcampante)
+            .get()
+            .then((querySnapshot) => {
+                const deletePromises = [];
+        
+                // 3. PREPARA EXCLUSÃO DOS CHECK-INS
+                querySnapshot.forEach((doc) => {
+                    deletePromises.push(doc.ref.delete());
+                });
+        
+                // 4. ATUALIZA INSCRIÇÕES (Remove campos relacionados)
+                const updatePromise = db.collection("Eventos").doc("EBF2025").collection("inscricoes")
+                    .where("nome", "==", nomeAcampante)
+                    .where("anoevento", "==", "2025")
+                    .where("tipoInsc", "==", "criancas")
+                    .get()
+                    .then((inscricoesSnapshot) => {
+                        const inscricoesPromises = [];
+                
+                        inscricoesSnapshot.forEach((doc) => {
+                            // Remove campos específicos do check-in
+                            inscricoesPromises.push(doc.ref.update({
+                                statusCheckin: firebase.firestore.FieldValue.delete(),
+                                dtCheckin: firebase.firestore.FieldValue.delete()
+                            }));
                         });
+                
+                        return Promise.all(inscricoesPromises);
+                    });
+        
+                // 5. EXECUTA TODAS AS OPERAÇÕES
+                return Promise.all([...deletePromises, updatePromise]);
+            })
+            .then(() => {
+                // 6. SUCESSO - RESTAURAR BOTÃO ANTES DE FECHAR MODAL
+                $('#confirmarExclusaoBtn').html('Excluir Check-in');
+                $('#confirmarExclusaoBtn').prop('disabled', false);
             
-                    // Executar todas as promessas
-                    return Promise.all([...deletePromises, updatePromise]);
-                })
-                .then(() => {
-                    // Fechar o modal
-                    $('#confirmarExclusaoModal').modal('hide');
+                // Fechar modal
+                $('#confirmarExclusaoModal').modal('hide');
             
-                    // Mostrar mensagem de sucesso
-                    alert('Check-in excluído com sucesso!');
+                // Mostrar mensagem de sucesso
+                alert('Check-in excluído com sucesso!');
             
-                    // Recarregar os dados
+                // Recarregar dados após um pequeno delay para garantir que o modal fechou
+                setTimeout(() => {
                     carregarDashboard();
                     carregarCheckins();
-                })
-                .catch((error) => {
-                    console.error("Erro ao excluir check-in:", error);
-                    alert('Erro ao excluir check-in. Por favor, tente novamente.');
+                }, 300);
+            })
+            .catch((error) => {
+                // 7. ERRO - Restaura botão e mostra erro
+                console.error("Erro ao excluir check-in:", error);
             
-                    // Restaurar botão
-                    $('#confirmarExclusaoBtn').html('Excluir Check-in');
-                    $('#confirmarExclusaoBtn').prop('disabled', false);
-                });
-        }
-    </script>
+                // RESTAURAR BOTÃO EM CASO DE ERRO
+                $('#confirmarExclusaoBtn').html('Excluir Check-in');
+                $('#confirmarExclusaoBtn').prop('disabled', false);
+            
+                alert('Erro ao excluir check-in. Por favor, tente novamente.');
+            });
+    }
+</script>
 </body>
 
 </html>
