@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INSCRIÇÕES VEREDAS 2025</title>
+    <title>INSCRIÇÕES FILHAS DO REI 2025</title>
     <link rel="shortcut icon" href="./assets/3.ico" type="image/x-icon">
     <link rel="stylesheet" href="./css/common.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -16,14 +16,14 @@
             background-attachment: fixed;
             background-position: center;
             font-family: 'Montserrat', sans-serif;
-            color: #333;
+            color: #1d1d1d;
             padding-top: 80px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin-top: 20px;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(207, 145, 158, 0.2);
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -34,7 +34,7 @@
             height: 120px;
             position: absolute;
             left: 50%;
-            top: 0%;
+            top: 12.5%;
             transform: translate(-50%, -30%);
             display: flex;
             align-items: center;
@@ -88,7 +88,15 @@
 
         .form-control:focus {
             border-color: #3d7517;
-            box-shadow: 0 0 0 0.2rem rgba(128, 0, 128, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(128, 0, 128, 0.15);
+        }
+
+        /* Estilo personalizado para campos readonly */
+        #idade[readonly], #genero[readonly], #dataPreenchimento[readonly] {
+            background-color: rgba(207, 145, 158, 0.3);
+            border-color: #cf919e;
+            color: #6108a1;
+            font-weight: 500;
         }
 
         .switch {
@@ -130,8 +138,8 @@
         }
 
         .info-box {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
+            background-color: transparent;
+            border: 2px solid #dee2e6;
             border-radius: 5px;
             padding: 15px;
             margin-bottom: 20px;
@@ -145,19 +153,17 @@
             transform: translateX(16px);
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 900px) {
             body {
-                padding-top: 120px;
+                padding: 70px 0 0 0 !important;
             }
 
             .container {
-                max-width: 97%;
-                margin: 10px 5px;
-                padding: 15px;
+                max-width: 100%;
+                margin: 0px;
+                padding: 40px 18px;
                 border-radius: 0;
             }
-
-
 
             .header-title {
                 font-size:1.3rem;
@@ -170,9 +176,7 @@
                 width: 100%;
                 z-index: 1000;
             }
-
         }
-
 
     </style>
 </head>
@@ -182,20 +186,16 @@
         <div class="logo-circle">
              <img src="./assets/LogoBranco.png" alt="Logo IEBI">
         </div>
-        <h2 class="header-title">INSCRIÇÕES VEREDAS 2025</h2>
+        <h2 class="header-title">CONFERÊNCIA FILHAS DO REI 2025</h2>
     </div>
     <div class="container">
-        <h2 class="text-center mb-4 font-weight-bold">INSCRIÇÕES VEREDAS 2025</h2>
+        <h2 class="text-center mb-4 font-weight-bold">CONFERÊNCIA FILHAS DO REI 2025</h2>
         <div class="divider"></div>
 
         <div class="info-box">
-            <p><strong>Valor da inscrição:</strong> R$ 130,00</p>
-            <p><strong>Tipo de Pagamento:</strong> PIX, Espécie e Cartão (Com Taxa da Maquineta)*</p>
-            <!-- <p style="margin-top: -15px;"><small><i>*Pagamento CARTÃO pode ser parcelado até 10x.</i></small></p> -->
-            <p>*Para realização do <b>Pagamento ou informações</b>, entrar em contato com:</p>
-                <p><b>Walter: </b><a href="https://wa.me/5583988330531" target="_blank">83
-                    98833-0531</a></p> <p style="margin-top: -5px;"><b>Gustavo: </b><a href="https://wa.me/5583999127728" target="_blank">83
-                    99912-7728</a></p>
+            <p><strong>Para mais informações</strong>, entrar em contato com:</p>
+            <p><b>Raquel: </b><a href="https://wa.me/5583988522524" target="_blank">83
+                    98852-2524</a></p> 
         </div>
 
         <form id="acampForm">
@@ -204,10 +204,6 @@
                 <input type="text" class="form-control" id="nome" required>
             </div>
             <div class="form-row">
-                <!--     <div class="form-group col-md-4">
-                    <label for="CPF">CPF</label>
-                    <input type="text" class="form-control" id="cpf" required>
-                </div> -->
                 <div class="form-group col-md-4">
                     <label for="dtnasc">Data de Nascimento</label>
                     <input type="date" class="form-control" id="dtnasc" placeholder="DD/MM/AAAA" required>
@@ -218,20 +214,28 @@
                 </div>
             </div>
             <div class="form-row">
-                <!-- <div class="form-group col-md-6">
-                    <label for="email">Email</label>
+                <div class="form-group col-md-6">
+                    <label for="email">Email (Opcional)</label>
                     <input type="email" class="form-control" id="email">
-                </div> -->
+                </div>
                 <div class="form-group col-md-6">
                     <label for="celular">Celular</label>
                     <input type="text" class="form-control" id="celular" placeholder="(99) 99999-9999" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="genero">Gênero</label>
-                    <select class="form-control" id="genero" required>
+                    <input type="text" class="form-control" id="genero" value="Feminino" readonly>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="tamanhoBlusa">Tamanho da Blusa</label>
+                    <select class="form-control" id="tamanhoBlusa" required>
                         <option value="">Selecione</option>
-                        <option value="Masculino">Masculino</option>
-                        <option value="Feminino">Feminino</option>
+                        <option value="P">P</option>
+                        <option value="M">M</option>
+                        <option value="G">G</option>
+                        <option value="GG">GG</option>
+                        <option value="XG">XG</option>
+                        <option value="XXG">XXG</option>
                     </select>
                 </div>
             </div>
@@ -272,13 +276,11 @@
                 </div>
             </div>
 
-
-
             <div class="form-group">
                 <label for="dataPreenchimento">Data de Preenchimento</label>
                 <input type="text" class="form-control" id="dataPreenchimento" readonly>
             </div>
-            <button type="submit" class="btn btn-primary btn-block" id="cadastrarBtn">Cadastrar</button>
+            <button type="submit" class="btn btn-primary btn-block" id="cadastrarBtn">Confirmar Inscrição</button>
         </form>
     </div>
 
@@ -297,7 +299,7 @@
 
         // Função para verificar se o nome já existe
         function verificarNomeExistente(nome) {
-            return db.collection("Eventos").doc("Veredas2025").collection("inscricoes")
+            return db.collection("Eventos").doc("filhasdoRei2025").collection("inscricoes")
                 .where("nome", "==", nome)
                 .where("anoevento", "==", "2025")
                 .get()
@@ -418,7 +420,6 @@
                 "CAIO / BIANCA",
                 "CLÁUDIO / JAQUELINE",
                 "CLOVILDA / JOSIMARC",
-                "CLOVIS / ANDREI",
                 "DANIEL / EVELLY",
                 "EDUARDO / NICOLLY",
                 "FÁBIO / EDNALVA",
@@ -431,19 +432,16 @@
                 "GUSTAVO / MARIANA",
                 "GUTEMBERG / ELAINE",
                 "JAIRO / ROSANA",
-                "JOHN",
                 "JONATHAN / ALINE",
                 "JOSINALDO / ELAINE",
                 "JÚNIOR / FERNANDA",
                 "LEONARDO / LIDIA",
                 "LINDEMBERG / ADRIANA / LUCIENE",
                 "LÍVIA / NICOLY",
-                "LUCAS / SAYMON",
                 "MANOEL / CLAUDIANE",
                 "MARCIELLE / PIETRA",
                 "NATIVA",
                 "PATRÍCIA",
-                "PEDRO / FILIPE",
                 "RAMON / NAZELI",
                 "RAQUEL",
                 "RAQUEL / ADEILDES",
@@ -543,10 +541,10 @@
 
 
 
-            // Validar campo gênero
-            const genero = document.getElementById('genero').value;
-            if (!genero) {
-                alert('Por favor, selecione o gênero.');
+            // Validar campo tamanho da blusa
+            const tamanhoBlusa = document.getElementById('tamanhoBlusa').value;
+            if (!tamanhoBlusa) {
+                alert('Por favor, selecione o tamanho da blusa.');
                 return;
             }
 
@@ -585,10 +583,10 @@
                     // cpf: document.getElementById('cpf').value,
                     dtnasc: document.getElementById('dtnasc').value,
                     idade: document.getElementById('idade').value,
-                    // email: document.getElementById('email').value,
+                    email: document.getElementById('email').value,
                     celular: document.getElementById('celular').value,
                     genero: document.getElementById('genero').value,
-
+                    tamanhoBlusa: document.getElementById('tamanhoBlusa').value,
                     igreja: document.getElementById('igreja').value,
                     celula: document.getElementById('celula').value,
                     supervisor: document.getElementById('supervisor').value,
@@ -603,31 +601,19 @@
                 // Log para visualizar o objeto formData completo (sem a assinatura para não sobrecarregar o console)
                 console.log('Dados completos a serem enviados:', { ...formData, assinaturaResponsavel: formData.assinaturaResponsavel ? 'ASSINATURA_BASE64_REMOVIDA_DO_LOG' : null });
 
-                db.collection("Eventos").doc("Veredas2025").collection("inscricoes").add(formData)
+                db.collection("Eventos").doc("filhasdoRei2025").collection("inscricoes").add(formData)
                     .then((docRef) => {
                         console.log("Documento escrito com ID: ", docRef.id);
 
                         // ✅ ADICIONE ESTA PARTE - Incrementar contador
-                        return db.collection("Eventos").doc("Veredas2025").update({
+                        return db.collection("Eventos").doc("filhasdoRei2025").update({
                             "contador.totalInscricoes": firebase.firestore.FieldValue.increment(1),
                             "contador.ultimaAtualizacao": firebase.firestore.FieldValue.serverTimestamp()
                         });
                     })
                     .then(() => {
                         console.log("Contador atualizado!");
-                        
-                        // Send email notification
-                        const emailData = {
-                            to: "mozer.cielle@gmail.com",
-                            subject: "Nova Inscrição Essência 2025",
-                            text: `Nova inscrição realizada:\nNome: ${formData.nome}\nTelefone: ${formData.celular}\nData: ${formData.dataPreenchimento}`
-                        };
-
-                        // Using EmailJS service
-                        emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailData, "YOUR_USER_ID")
-                            .then(response => console.log("Email enviado:", response))
-                            .catch(error => console.error("Erro ao enviar email:", error));
-
+        
                         window.location.href = 'obrigado.html';
                         this.reset();
 
@@ -651,7 +637,7 @@
             const logoCircle = document.querySelector('.logo-circle');
             const headerTitle = document.querySelector('.header-title');
 
-            if (window.scrollY > 100) {
+            if (window.scrollY > 5000) {
                 header.classList.add('scrolled');
                 logoCircle.classList.add('scrolled');
                 headerTitle.classList.add('visible');

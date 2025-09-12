@@ -114,7 +114,7 @@
             }
 
             50% {
-                box-shadow: 0 4px 20px rgba(255, 140, 0, 0.6), 0 0 30px rgba(255, 140, 0, 0.3);
+                box-shadow: 0 4px 20px rgba(169, 47, 132, 0.6), 0 0 30px rgba(122, 44, 108, 0.3);
             }
         }
 
@@ -144,7 +144,7 @@
             width: 50px;
             height: 50px;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #FF8C00;
+            border-top: 4px solid #a92f85;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -173,13 +173,13 @@
 
         .gestao-icon {
             position: fixed;
-            top: 5px;
-            right: 5px;
+            top: 7px;
+            right: 7px;
             z-index: 1000;
-            color: white !important;
+            color: rgb(0, 0, 0) !important;
             font-size: 20px;
             text-decoration: none;
-            opacity: 0.7;
+            opacity: 0.9;
             transition: opacity 0.2s ease;
             filter: grayscale(100%) brightness(0) invert(1);
             text-shadow: none;
@@ -190,7 +190,7 @@
 
         .gestao-icon:hover {
             opacity: 0;
-            color: white !important;
+            color: rgb(0, 0, 0) !important;
             text-decoration: none;
             transform: none;
             filter: grayscale(100%) brightness(0) invert(1);
@@ -227,7 +227,7 @@
                 padding: 6% 4%;
                 font-size: 5%x;
                 min-width: 80%;
-                top: 70%;
+                top: 79.5%;
                 left: 50%;
                 z-index: 10;
                 position: fixed;
@@ -235,7 +235,7 @@
 
             .alerta-esgotado {
                 position: fixed;
-                top: 70%;
+                top: 80%;
                 left: 53%;
                 max-width: 90%;
                 font-size: 20px;
@@ -244,7 +244,7 @@
 
             .loading-spinner {
                 position: fixed;
-                top: 75%;
+                top: 85%;
                 min-width: 60%;
                 left: 75%;
                 z-index: 10;
@@ -344,13 +344,13 @@
             loadingSpinner.style.display = 'block';
 
             // ✅ LER APENAS 1 DOCUMENTO = 1 LEITURA
-            db.collection("Eventos").doc("Veredas2025")  // Acesse diretamente o documento Veredas
+            db.collection("Eventos").doc("filhasdoRei2025")  // Acesse diretamente o documento filhasdoRei2025
                 .get()  // Aqui você já faz a leitura do documento
                 .then((doc) => {
                     if (doc.exists) {
                         const data = doc.data();
                         const totalInscricoes = (data.contador && data.contador.totalInscricoes) ? data.contador.totalInscricoes : 0;  // Verificação segura do contador
-                        console.log(`Total de inscrições Veredas2025: ${totalInscricoes}`);
+                        console.log(`Total de inscrições Filhas do Rei: ${totalInscricoes}`);
 
                         const btnInscricao = document.getElementById('btnInscricao');
                         const alertaEsgotado = document.getElementById('alertaEsgotado');
@@ -380,7 +380,7 @@
                             alertaEsgotado.style.display = 'none';
                         }
                     } else {
-                        console.log("Documento Veredas2025 não existe");
+                        console.log("Documento filhasdoRei2025 não existe");
                         // Fallback: assumir 0 inscrições
                         handleButtonState(0);
                     }
