@@ -227,8 +227,18 @@
                     <input type="text" class="form-control" id="genero" value="Feminino" readonly>
                 </div>
                 <div class="form-group col-md-6">
+                    <label for="adquirirBlusa">Gostaria de Adquirir a Blusa?</label>
+                    <select class="form-control" id="adquirirBlusa" required>
+                        <option value="">Selecione</option>
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row" id="tamanhoDiv" style="display: none;">
+                <div class="form-group col-md-6">
                     <label for="tamanhoBlusa">Tamanho da Blusa</label>
-                    <select class="form-control" id="tamanhoBlusa" required>
+                    <select class="form-control" id="tamanhoBlusa">
                         <option value="">Selecione</option>
                         <option value="P">P</option>
                         <option value="M">M</option>
@@ -352,6 +362,21 @@
         VMasker(document.getElementById("celular")).maskPattern("(99) 99999-9999");
 
         // VMasker(document.getElementById("cep")).maskPattern("99999-999");
+
+        // Controlar exibição do campo tamanho da blusa
+        document.getElementById('adquirirBlusa').addEventListener('change', function () {
+            const tamanhoDiv = document.getElementById('tamanhoDiv');
+            const tamanhoBlusa = document.getElementById('tamanhoBlusa');
+            
+            if (this.value === 'sim') {
+                tamanhoDiv.style.display = 'block';
+                tamanhoBlusa.setAttribute('required', 'required');
+            } else {
+                tamanhoDiv.style.display = 'none';
+                tamanhoBlusa.removeAttribute('required');
+                tamanhoBlusa.value = '';
+            }
+        });
 
         // Calcular idade automaticamente
         document.getElementById('dtnasc').addEventListener('change', function () {
@@ -541,11 +566,20 @@
 
 
 
-            // Validar campo tamanho da blusa
-            const tamanhoBlusa = document.getElementById('tamanhoBlusa').value;
-            if (!tamanhoBlusa) {
-                alert('Por favor, selecione o tamanho da blusa.');
+            // Validar campo adquirir blusa
+            const adquirirBlusa = document.getElementById('adquirirBlusa').value;
+            if (!adquirirBlusa) {
+                alert('Por favor, informe se gostaria de adquirir a blusa.');
                 return;
+            }
+
+            // Validar campo tamanho da blusa (apenas se escolheu adquirir)
+            if (adquirirBlusa === 'sim') {
+                const tamanhoBlusa = document.getElementById('tamanhoBlusa').value;
+                if (!tamanhoBlusa) {
+                    alert('Por favor, selecione o tamanho da blusa.');
+                    return;
+                }
             }
 
             // First check if elements exist before accessing their style property
@@ -586,7 +620,8 @@
                     email: document.getElementById('email').value,
                     celular: document.getElementById('celular').value,
                     genero: document.getElementById('genero').value,
-                    tamanhoBlusa: document.getElementById('tamanhoBlusa').value,
+                    adquirirBlusa: document.getElementById('adquirirBlusa').value,
+                    tamanhoBlusa: document.getElementById('adquirirBlusa').value === 'sim' ? document.getElementById('tamanhoBlusa').value : 'N/A',
                     igreja: document.getElementById('igreja').value,
                     celula: document.getElementById('celula').value,
                     supervisor: document.getElementById('supervisor').value,
