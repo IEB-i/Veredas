@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INSCRIÇÕES COMUNHÃ NA ROÇA</title>
+    <link rel="shortcut icon" href="./assets/3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            /*background-image: url('/EBF.jpg');*/
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-circle {
+            width: 120px;
+            height: 120px;
+            position: absolute;
+            left: 50%;
+            top: 8%;
+            transform: translate(-50%, -30%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .logo-circle img {
+            max-width: 150px;
+            height: auto;
+            margin-top: 15px;
+        }
+
+        .logo-circle.scrolled {
+            left: 60px;
+            transform: translate(0, -30%);
+            top: 5px;
+        }
+
+        .scrolled .logo-circle img {
+            content: url('./assets/Logo\ 360\ sem\ Fundo.png');
+            width: 180px;
+            height: auto;
+            margin-top: -80;
+        }
+
+        .header-title {
+            color: white;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: none;
+        }
+
+        .header-title.visible {
+            opacity: 1;
+            display: block;
+        }
+
+
+        .divider {
+            width: 75%;
+            height: 2px;
+            background-color: #000;
+            margin: 30px auto;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #6108a1, #9900CC);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #200020, #9900CC);
+        }
+
+        .form-control:focus {
+            border-color: #3d7517;
+            box-shadow: 0 0 0 0.2rem rgba(128, 0, 128, 0.25);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 24px;
+            margin-left: 10px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        .info-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        input:checked+.slider {
+            background: linear-gradient(45deg, #3d7517, #3d7517);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(16px);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 120px;
+            }
+
+            .container {
+                max-width: 97%;
+                margin: 10px 5px;
+                padding: 15px;
+                border-radius: 0;
+            }
+
+            .logo-circle.scrolled {
+                left: 3px;
+                transform: translate(0, -30%);
+            }
+
+            .scrolled .logo-circle img {
+                width: 96px;
+                /* Redução de 20% de 120px */
+                height: auto;
+            }
+
+            .header-title {
+                font-size: 1.3rem;
+                text-align: center;
+            }
+
+            .header {
+                position: fixed;
+                top: 0;
+                width: 100%;
+                z-index: 1000;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo-circle">
+            <img src="./assets/LogoBranco.png" alt="Logo IEBI">
+        </div>
+        <h2 class="header-title">VEREDAS 2025</h2>
+    </div>
+    <div class="container">
+        <h2 class="text-center mb-4 font-weight-bold">Veredas 2025</h2>
+        <div class="divider"></div>
+
+        <div class="info-box">
+            <p><strong>Valor da inscrição:</strong> R$ 130,00</p>
+            <p><strong>Tipo de Pagamento:</strong> PIX, Espécie e Cartão (Com Taxa da Maquineta)*</p>
+            <!-- <p style="margin-top: -15px;"><small><i>*Pagamento CARTÃO pode ser parcelado até 10x.</i></small></p> -->
+            <p>*Para realização do Pagamento, entrar em contato com:</p>
+            <p style="margin-top: -15px;"><b>Walter: </b><a href="https://wa.me/5583988330531" target="_blank">83
+                    98833-0531</a></p>
+            <p style="margin-top: -15px;"><b>Gustavo: </b><a href="https://wa.me/5583999127728" target="_blank">83
+                    99912-7728</a></p>
+        </div>
+
+        <form id="acampForm">
+            <div class="form-group">
+                <label for="nome">Nome Completo (Conforme RG)</label>
+                <input type="text" class="form-control" id="nome" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="CPF">CPF</label>
+                    <input type="text" class="form-control" id="cpf" placeholder="999.999.999-99" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="dtnasc">Data de Nascimento</label>
+                    <input type="date" class="form-control" id="dtnasc" placeholder="DD/MM/AAAA" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="idade">Idade</label>
+                    <input type="text" class="form-control" id="idade" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="celular">Celular</label>
+                    <input type="text" class="form-control" id="celular" placeholder="(99) 99999-9999" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="genero">Gênero</label>
+                <select class="form-control" id="genero" required>
+                    <option value="">Selecione o gênero</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Feminino">Feminino</option>
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="igreja">Igreja</label>
+                    <select class="form-control" id="igreja" required>
+                        <option value="">Selecione</option>
+                        <option value="IEB Intermares">IEB Intermares</option>
+                        <option value="IEB Cidade Verde">IEB Cidade Verde</option>
+                        <option value="IEB Vila Feliz">IEB Vila Feliz</option>
+                        <option value="Outra">Outra Igreja</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6" id="celulaDiv" style="display: none;">
+                    <label for="celula">Qual é a sua Célula?</label>
+                    <select class="form-control" id="celula">
+                        <option value="">Selecione seu Líder de Célula</option>
+                    </select>
+                </div>
+
+                <div class="form-row" id="infoRedeDiv" style="display: none;">
+                    <div class="form-group col-md-6">
+                        <label for="supervisor">Supervisor</label>
+                        <input type="text" class="form-control" id="supervisor" readonly>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="rede">Rede</label>
+                        <input type="text" class="form-control" id="rede" readonly>
+                    </div>
+                </div>
+
+
+                <div class="form-group col-md-6" id="outraIgrejaDiv" style="display: none;">
+                    <label for="outraIgreja">Qual Igreja?</label>
+                    <input type="text" class="form-control" id="outraIgreja">
+                </div>
+            </div>
+
+
+
+            <div class="form-group">
+                <label for="dataPreenchimento">Data de Preenchimento</label>
+                <input type="text" class="form-control" id="dataPreenchimento" readonly>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="cadastrarBtn">Cadastrar</button>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-masker/1.1.0/vanilla-masker.min.js"></script>
+
+    <script src="./firebase/firebaseConfig.js"></script>
+    <script src="./firebase/firebaseConfig2.js"></script>
+
+
+    <script>
+
+
+
+        // Função para verificar se o nome já existe
+        function verificarNomeExistente(nome) {
+            return db.collection("Eventos").doc("Veredas2025").collection("inscricoes")
+                .where("nome", "==", nome)
+                .where("anoevento", "==", "2025")
+                .get()
+                .then((querySnapshot) => {
+                    return !querySnapshot.empty;
+                });
+        }
+
+        // Adicionar evento 'blur' ao campo 'nome'
+        document.getElementById('nome').addEventListener('blur', function () {
+            const nome = this.value.trim().toUpperCase();
+            if (nome) {
+                verificarNomeExistente(nome).then(existe => {
+                    if (existe) {
+                        alert('Este nome já está cadastrado.');
+                        this.value = ''; // Limpa o campo
+                        this.focus(); // Redireciona o cursor para o campo
+                        document.getElementById('cadastrarBtn').disabled = true;
+                    } else {
+                        document.getElementById('cadastrarBtn').disabled = false;
+                    }
+                });
+            }
+        });
+
+        // Função para converter texto para maiúsculas
+        function toUpperCase(input) {
+            input.value = input.value.toUpperCase();
+        }
+
+        // Adicionar evento na digitação para campos de texto
+        const textInputs = document.querySelectorAll('input[type="text"]');
+        textInputs.forEach(input => {
+            input.addEventListener('input', function () {
+                toUpperCase(this);
+            });
+        });
+
+
+
+
+
+        // Máscaras
+        VMasker(document.getElementById("cpf")).maskPattern("999.999.999-99");
+        VMasker(document.getElementById("celular")).maskPattern("(99) 99999-9999");
+
+        // VMasker(document.getElementById("cep")).maskPattern("99999-999");
+
+        // Calcular idade automaticamente
+        document.getElementById('dtnasc').addEventListener('change', function () {
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            document.getElementById('idade').value = age + " anos";
+
+
+        });
+
+        // Mostrar/esconder campo de outra igreja
+        document.getElementById('igreja').addEventListener('change', function () {
+            document.getElementById('outraIgrejaDiv').style.display =
+                this.value === 'Outra' ? 'block' : 'none';
+            document.getElementById('celulaDiv').style.display =
+                this.value === 'IEB Intermares' ? 'block' : 'none';
+        });
+
+        function carregarLideres() {
+            const selectCelula = document.getElementById('celula');
+
+            // Limpar opções anteriores e adicionar a opção padrão
+            selectCelula.innerHTML = '<option value="">Selecione seu Líder de Célula</option>';
+
+            // Lista estática de líderes de células
+            const lideres = [
+                "ADRIANA / KENEDY",
+                "AIRTON / EMÍLIA",
+                "ALDA",
+                "ALLAN / AILDA",
+                "ANA / JOYCE / AMANDA",
+                "ANDERSON / LAURISA",
+                "ANDREIA / VANDERLEI",
+                "ARTHUR / LORENA",
+                "BELMIRO / MÔNICA",
+                "BERNADETE / FRANCY",
+                "CAIO / BIANCA",
+                "CLÁUDIO / JAQUELINE",
+                "CLOVILDA / JOSIMARC",
+                "CLOVIS / ANDREI",
+                "DANIEL / EVELLY",
+                "EDUARDO / NICOLLY",
+                "FÁBIO / EDNALVA",
+                "FABRÍCIO / NADJA",
+                "FERNANDES / ZELÂNDIA",
+                "GABRIEL / BARBARA",
+                "GABRIEL / RAYZA",
+                "GILBERTO / MARCIA",
+                "GUILHERME / MIGUEL",
+                "GUSTAVO / MARIANA",
+                "GUTEMBERG / ELAINE",
+                "JAIRO / ROSANA",
+                "JOHN",
+                "JONATHAN / ALINE",
+                "JOSINALDO / ELAINE",
+                "JÚNIOR / FERNANDA",
+                "LEONARDO / LIDIA",
+                "LINDEMBERG / ADRIANA / LUCIENE",
+                "LÍVIA / NICOLY",
+                "LUCAS / SAYMON",
+                "MANOEL / CLAUDIANE",
+                "MARCIELLE / PIETRA",
+                "NATIVA",
+                "PATRÍCIA",
+                "PEDRO / FILIPE",
+                "RAMON / NAZELI",
+                "RAQUEL",
+                "RAQUEL / ADEILDES",
+                "REBEKAH / MONIQUE",
+                "RHODNEY / KAREN",
+                "RIBAMAR / JOSELMA",
+                "RICARDO / ROSANE",
+                "ROGÉRIO / LUCIÉLLEN",
+                "RUBENS / EMILLY",
+                "SAMUEL / RAISSA",
+                "SAULO / ERIKA",
+                "SIMONE",
+                "WALTER / JESSY",
+                "KAYANN / NATÁLIA"
+            ];
+
+            // Ordenar os líderes alfabeticamente
+            lideres.sort((a, b) => a.localeCompare(b));
+
+            // Adicionar os líderes ordenados ao dropdown
+            lideres.forEach(lider => {
+                const option = document.createElement('option');
+                option.value = lider;
+                option.textContent = lider;
+                selectCelula.appendChild(option);
+            });
+
+            // Adicionar "Outras Células" como última opção
+            const outrasCelulasOption = document.createElement('option');
+            outrasCelulasOption.value = "Outras Células";
+            outrasCelulasOption.textContent = "Outras Células";
+            selectCelula.appendChild(outrasCelulasOption);
+        }
+
+
+        document.getElementById('celula').addEventListener('change', function () {
+            const liderSelecionado = this.value;
+            const infoRedeDiv = document.getElementById('infoRedeDiv');
+
+            if (liderSelecionado && liderSelecionado !== "Outras Células") {
+                // Como não temos mais as informações de supervisor e rede no Firebase,
+                // vamos ocultar esses campos ou deixá-los vazios
+                document.getElementById('supervisor').value = '';
+                document.getElementById('rede').value = '';
+                infoRedeDiv.style.display = 'none';
+            } else {
+                document.getElementById('supervisor').value = '';
+                document.getElementById('rede').value = '';
+                infoRedeDiv.style.display = 'none';
+            }
+        });
+
+
+        // Chame a função quando a igreja for selecionada
+        document.getElementById('igreja').addEventListener('change', function () {
+            const celulaDiv = document.getElementById('celulaDiv');
+            const outraIgrejaDiv = document.getElementById('outraIgrejaDiv');
+            const infoRedeDiv = document.getElementById('infoRedeDiv');
+
+            if (this.value === 'IEB Intermares') {
+                celulaDiv.style.display = 'block';
+                outraIgrejaDiv.style.display = 'none';
+                carregarLideres();
+            } else if (this.value === 'Outra') {
+                celulaDiv.style.display = 'none';
+                outraIgrejaDiv.style.display = 'block';
+                infoRedeDiv.style.display = 'none';
+                document.getElementById('supervisor').value = '';
+                document.getElementById('rede').value = '';
+                document.getElementById('celula').value = '';
+            } else {
+                celulaDiv.style.display = 'none';
+                outraIgrejaDiv.style.display = 'none';
+                infoRedeDiv.style.display = 'none';
+                document.getElementById('supervisor').value = '';
+                document.getElementById('rede').value = '';
+                document.getElementById('celula').value = '';
+            }
+        });
+
+        // Adicionar log para verificar quando o script é carregado
+        //console.log('Script inicializado');
+
+        // Verificar se o elemento dataPreenchimento existe
+        const dataPreenchimentoElement = document.getElementById('dataPreenchimento');
+        //console.log('Elemento dataPreenchimento encontrado:', dataPreenchimentoElement);
+
+        // Definir a data de preenchimento e verificar o valor
+        const dataAtual = new Date().toLocaleDateString('pt-BR');
+        //console.log('Data atual formatada:', dataAtual);
+        dataPreenchimentoElement.value = dataAtual;
+        //console.log('Valor após atribuição:', dataPreenchimentoElement.value);
+
+        // No evento de submit do formulário, adicione esta verificação:
+        document.getElementById('acampForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+
+
+            // First check if elements exist before accessing their style property
+            const outraIgrejaDiv = document.getElementById('outraIgrejaDiv');
+            // Only check display style if elements exist
+            const outraIgrejaVisivel = outraIgrejaDiv ? outraIgrejaDiv.style.display === 'block' : false;
+
+            // Rest of your validation logic
+            if (outraIgrejaVisivel && !document.getElementById('outraIgreja').value.trim()) {
+                alert('Por favor, preencha o campo "Qual Igreja?".');
+                return;
+            }
+
+
+
+            // Verificar novamente se o nome já existe antes de enviar
+            const nome = document.getElementById('nome').value.trim().toUpperCase();
+            verificarNomeExistente(nome).then(existe => {
+                if (existe) {
+                    alert('Este nome já está cadastrado. Não é possível prosseguir com o cadastro.');
+                    return;
+                }
+
+
+
+                // Se o nome não existir, continuar com o envio do formulário
+                const formData = {
+                    nome: nome,
+                    genero: document.getElementById('genero').value,
+                    cpf: document.getElementById('cpf').value,
+                    dtnasc: document.getElementById('dtnasc').value,
+                    idade: document.getElementById('idade').value,
+                    // email: document.getElementById('email').value,
+                    celular: document.getElementById('celular').value,
+
+                    igreja: document.getElementById('igreja').value,
+                    celula: document.getElementById('celula').value,
+                    supervisor: document.getElementById('supervisor').value,
+                    rede: document.getElementById('rede').value,
+                    outraIgreja: document.getElementById('outraIgreja').value,
+                    dataPreenchimento: document.getElementById('dataPreenchimento').value,
+                    anoevento: '2025',
+                    statusPagamento: 'pendente',
+                    dtRegistro: new Date().toISOString()
+                };
+
+                // Log para visualizar o objeto formData completo (sem a assinatura para não sobrecarregar o console)
+                console.log('Dados completos a serem enviados:', { ...formData, assinaturaResponsavel: formData.assinaturaResponsavel ? 'ASSINATURA_BASE64_REMOVIDA_DO_LOG' : null });
+
+                db.collection("Eventos").doc("Veredas2025").collection("inscricoes").add(formData)
+                    .then((docRef) => {
+                        console.log("Documento escrito com ID: ", docRef.id);
+
+                        // ✅ ADICIONE ESTA PARTE - Incrementar contador
+                        return db.collection("Eventos").doc("Veredas2025").update({
+                            "contador.totalInscricoes": firebase.firestore.FieldValue.increment(1),
+                            ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    })
+                    .then(() => {
+                        console.log("Contador atualizado!");
+
+
+
+                        window.location.href = 'obrigado.html';
+                        this.reset();
+
+                        // Resetar campos adicionais
+                        document.getElementById('outraIgrejaDiv').style.display = 'none';
+                        document.getElementById('dataPreenchimento').value = new Date().toLocaleDateString('pt-BR');
+                        document.getElementById('idade').value = '';
+
+
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao adicionar documento: ", error);
+                        console.log(error); // Adicione esta linha para obter mais detalhes sobre o erro
+                        alert('Erro ao realizar inscrição. Por favor, tente novamente.');
+                    });
+            });
+        });
+
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header');
+            //const logoCircle = document.querySelector('.logo-circle');
+            const headerTitle = document.querySelector('.header-title');
+
+            if (window.scrollY > 5000) {
+                header.classList.add('scrolled');
+                //logoCircle.classList.add('scrolled');
+                headerTitle.classList.add('visible');
+            } else {
+                header.classList.remove('scrolled');
+                //logoCircle.classList.remove('scrolled');
+                headerTitle.classList.remove('visible');
+            }
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

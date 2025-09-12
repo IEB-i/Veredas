@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Quartos - Veredas 2025</title>
+    <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+            background-color: #f8f9fa;
+        }
+
+        .dashboard-card {
+            border-radius: 12px;
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s ease-in-out;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            border-radius: 12px 12px 0 0;
+            font-weight: 700;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .card-body {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-body h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .card-body h6 {
+            font-size: 1rem;
+            color: #ffffff;
+        }
+
+        .card-body .icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .masculino-card {
+            background: linear-gradient(45deg, #007bff, #0069d9);
+            color: white;
+        }
+
+        .feminino-card {
+            background: linear-gradient(45deg, #e83e8c, #d91a72);
+            color: white;
+        }
+
+        .total-card {
+            background: linear-gradient(45deg, #28a745, #218838);
+            color: white;
+        }
+
+        .room-action {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-masculino {
+            background-color: #007bff;
+        }
+
+        .badge-feminino {
+            background-color: #e83e8c;
+        }
+
+        .badge-encontrista {
+            background-color: #000000;
+            color: white;
+        }
+
+        .badge-encontreiro {
+            background-color: #7a6107;
+            color: white;
+        }
+
+        .btn-voltar {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-50%) scale(1.05);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-group .btn {
+            margin-right: 2px;
+        }
+
+        .btn-group .btn:last-child {
+            margin-right: 0;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            padding: 15px 15px;
+            transition: all 0.3s ease;
+            line-height: 1.5;
+            font-size: 1rem;
+            min-height: 48px;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        select.form-control {
+            padding: 15px 15px;
+            line-height: 1.4;
+            min-height: 50px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            display: block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            line-height: 1.4;
+            min-height: 50px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .sort-btn {
+            background: transparent;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sort-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .sort-btn:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .sort-asc .material-icons {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 15px;
+            }
+            
+            .room-action {
+                padding: 10px;
+            }
+            
+            .form-control {
+                padding: 16px 12px;
+                font-size: 16px;
+                min-height: 50px;
+            }
+            
+            select.form-control {
+                min-height: 52px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- CABEÇALHO -->
+    <div class="header">
+        <a href="gestao.html" class="btn-voltar">
+            <i class="material-icons">arrow_back</i>
+        </a>
+        <h2 class="header-title">QUARTOS - VEREDAS 2025</h2>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <div class="container mt-5">
+        <!-- Cards de Estatísticas -->
+        <div class="row">
+            <!-- Card: Quartos Masculinos -->
+            <div class="col-md-4">
+                <div class="card dashboard-card">
+                    <div class="card-body masculino-card">
+                        <i class="material-icons icon">hotel</i>
+                        <h5 class="card-title">Quartos Masculinos</h5>
+                        <h2 id="totalMasculinos">0</h2>
+                        <h6>Ocupação: <span id="ocupacaoMasculina">0/20</span></h6>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Quartos Femininos -->
+            <div class="col-md-4">
+                <div class="card dashboard-card">
+                    <div class="card-body feminino-card">
+                        <i class="material-icons icon">hotel</i>
+                        <h5 class="card-title">Quartos Femininos</h5>
+                        <h2 id="totalFemininos">0</h2>
+                        <h6>Ocupação: <span id="ocupacaoFeminina">0/20</span></h6>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Total de Alocações -->
+            <div class="col-md-4">
+                <div class="card dashboard-card">
+                    <div class="card-body total-card">
+                        <i class="material-icons icon">group</i>
+                        <h5 class="card-title">Total Alocado</h5>
+                        <h2 id="totalAlocados">0</h2>
+                        <h6>Capacidade: <span id="capacidadeTotal">0/40</span></h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção de Alocação de Quartos -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="room-action">
+                    <h5>Alocar Participante em Quarto</h5>
+                    <form id="quartoForm" class="row">
+                        <!-- Nome do Participante -->
+                        <div class="form-group col-md-4">
+                            <label for="participante">Nome do Participante *</label>
+                            <select class="form-control" id="participante" required>
+                                <option value="">Selecione um participante</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Idade -->
+                        <div class="form-group col-md-2">
+                            <label for="idade">Idade</label>
+                            <input type="text" class="form-control" id="idade" readonly>
+                        </div>
+                        
+                        <!-- Quarto Selecionado -->
+                        <div class="form-group col-md-4">
+                            <label for="quartoSelecionado">Quarto Selecionado *</label>
+                            <select class="form-control" id="quartoSelecionado" required>
+                                <option value="">Selecione um quarto</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Botão de Confirmar -->
+                        <div class="form-group col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="material-icons align-middle">save</i> Alocar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela de Alocações -->
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card dashboard-card">
+                    <div class="card-header">
+                        Alocações de Quartos
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="quartosTable">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>
+                                            <div class="d-flex align-items-center">
+                                                Participante
+                                                <button class="btn btn-sm text-white ml-2 sort-btn" data-sort="participante">
+                                                    <i class="material-icons" id="sortIconParticipante">sort</i>
+                                                </button>
+                                            </div>
+                                        </th>
+                                        <th>Tipo</th>
+                                        <th>Idade</th>
+                                        <th>Quarto</th>
+                                        <th>Ocupação</th>
+                                        <th>Data Alocação</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="quartosList">
+                                    <!-- Os dados serão carregados dinamicamente do Firebase -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Remoção -->
+    <div class="modal fade" id="removerModal" tabindex="-1" role="dialog" aria-labelledby="removerModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="removerModalLabel">Confirmar Remoção</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Você tem certeza que deseja remover <strong id="removerNome"></strong> do quarto?</p>
+                    <p>Esta ação irá liberar a vaga no quarto.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmarRemocao">Confirmar Remoção</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição de Quarto -->
+    <div class="modal fade" id="editarQuartoModal" tabindex="-1" role="dialog" aria-labelledby="editarQuartoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarQuartoModalLabel">Editar Alocação</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editarQuartoForm">
+                        <input type="hidden" id="editAlocacaoId">
+                        <input type="hidden" id="editParticipanteId">
+
+                        <div class="form-group">
+                            <label for="editParticipanteNome">Participante</label>
+                            <input type="text" class="form-control" id="editParticipanteNome" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editIdade">Idade</label>
+                            <input type="text" class="form-control" id="editIdade" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editQuartoSelecionado">Novo Quarto *</label>
+                            <select class="form-control" id="editQuartoSelecionado" required>
+                                <option value="">Selecione um quarto</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirmarEdicao">Salvar Alterações</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="../firebase/firebaseConfig.js"></script>
+
+    <script>
+        // Variáveis globais
+        let participantes = [];
+        let alocacoes = [];
+        let alocacaoParaRemover = null;
+        let alocacaoParaEditar = null;
+        let sortOrder = { field: null, direction: 'asc' };
+
+        // Configuração de quartos
+        const QUARTOS_CONFIG = {
+            // Quartos Masculinos
+            'M01': { capacidade: 4, tipo: 'masculino', nome: 'Quarto Masculino 01' },
+            'M02': { capacidade: 4, tipo: 'masculino', nome: 'Quarto Masculino 02' },
+            'M03': { capacidade: 4, tipo: 'masculino', nome: 'Quarto Masculino 03' },
+            'M04': { capacidade: 4, tipo: 'masculino', nome: 'Quarto Masculino 04' },
+            'M05': { capacidade: 4, tipo: 'masculino', nome: 'Quarto Masculino 05' },
+            
+            // Quartos Femininos
+            'F01': { capacidade: 4, tipo: 'feminino', nome: 'Quarto Feminino 01' },
+            'F02': { capacidade: 4, tipo: 'feminino', nome: 'Quarto Feminino 02' },
+            'F03': { capacidade: 4, tipo: 'feminino', nome: 'Quarto Feminino 03' },
+            'F04': { capacidade: 4, tipo: 'feminino', nome: 'Quarto Feminino 04' },
+            'F05': { capacidade: 4, tipo: 'feminino', nome: 'Quarto Feminino 05' },
+        };
+
+        $(document).ready(function() {
+            carregarParticipantes();
+            carregarAlocacoes();
+            configurarEventos();
+        });
+
+        function configurarEventos() {
+            // Evento de seleção de participante
+            $('#participante').on('change', function() {
+                const participanteId = $(this).val();
+                if (participanteId) {
+                    const participante = participantes.find(p => p.id === participanteId);
+                    if (participante) {
+                        preencherDadosParticipante(participante);
+                        carregarQuartosDisponiveis(participante.sexo);
+                    }
+                } else {
+                    limparDadosParticipante();
+                }
+            });
+
+            // Evento de submissão do formulário
+            $('#quartoForm').on('submit', function(e) {
+                e.preventDefault();
+                alocarParticipante();
+            });
+
+            // Evento de confirmação de remoção
+            $('#confirmarRemocao').on('click', function() {
+                if (alocacaoParaRemover) {
+                    removerAlocacao(alocacaoParaRemover);
+                }
+            });
+
+            // Evento de confirmação de edição
+            $('#confirmarEdicao').on('click', function() {
+                if (alocacaoParaEditar) {
+                    salvarEdicaoQuarto();
+                }
+            });
+
+            // Eventos de ordenação
+            $('.sort-btn').on('click', function() {
+                const field = $(this).data('sort');
+                ordenarTabela(field);
+            });
+        }
+
+        function carregarParticipantes() {
+            $('#participante').html('<option value="">Carregando participantes...</option>');
+
+            // Buscar encontristas e encontreiros com pagamento confirmado
+            Promise.all([
+                db.collection("Eventos").doc("ED2025").collection("inscricoes")
+                    .where("anoevento", "==", "2025")
+                    .where("tipoInsc", "==", "encontrista")
+                    .where("statusPagamento", "==", "pago")
+                    .get(),
+                db.collection("Eventos").doc("ED2025").collection("inscricoes")
+                    .where("anoevento", "==", "2025")
+                    .where("tipoInsc", "==", "encontreiro")
+                    .where("statusPagamento", "==", "pago")
+                    .get()
+            ]).then(([encontristasSnapshot, encontreirosSnapshot]) => {
+                participantes = [];
+                
+                // Processar encontristas
+                encontristasSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    participantes.push({
+                        id: doc.id,
+                        nome: data.nome,
+                        tipo: 'Encontrista',
+                        dtnasc: data.dtnasc,
+                        sexo: data.sexo,
+                        celular: data.celular,
+                        igreja: data.igreja === 'Outra' ? data.outraIgreja : data.igreja,
+                        ...data
+                    });
+                });
+
+                // Processar encontreiros
+                encontreirosSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    participantes.push({
+                        id: doc.id,
+                        nome: data.nome,
+                        tipo: 'Encontreiro',
+                        dtnasc: data.dtnasc,
+                        sexo: data.sexo,
+                        celular: data.celular,
+                        igreja: data.igreja === 'Outra' ? data.outraIgreja : data.igreja,
+                        ...data
+                    });
+                });
+
+                // Ordenar por nome
+                participantes.sort((a, b) => a.nome.localeCompare(b.nome));
+
+                // ✅ IMPORTANTE: Só preencher dropdown após carregar alocações
+                // A função preencherDropdownParticipantes() será chamada em carregarAlocacoes()
+
+            }).catch((error) => {
+                console.error("Erro ao carregar participantes:", error);
+                $('#participante').html('<option value="">Erro ao carregar participantes</option>');
+            });
+        }
+
+        function preencherDropdownParticipantes() {
+            const select = $('#participante');
+            select.html('<option value="">Selecione um participante</option>');
+
+            // Criar lista de IDs dos participantes que já têm quarto
+            const participantesComQuarto = alocacoes.map(alocacao => alocacao.participanteId);
+
+            // Filtrar apenas participantes sem quarto
+            const participantesSemQuarto = participantes.filter(participante => 
+                !participantesComQuarto.includes(participante.id)
+            );
+
+            // Verificar se há participantes disponíveis
+            if (participantesSemQuarto.length === 0) {
+                select.append('<option value="">Todos os participantes já têm quarto</option>');
+                return;
+            }
+
+            // Preencher dropdown apenas com participantes sem quarto
+            participantesSemQuarto.forEach((participante) => {
+                const option = `<option value="${participante.id}">${participante.nome} (${participante.tipo})</option>`;
+                select.append(option);
+            });
+        }
+
+        function preencherDadosParticipante(participante) {
+            const idade = calcularIdade(participante.dtnasc);
+            $('#idade').val(idade + ' anos');
+        }
+
+        function limparDadosParticipante() {
+            $('#idade').val('');
+            $('#quartoSelecionado').html('<option value="">Selecione um quarto</option>');
+        }
+
+        function carregarQuartosDisponiveis(sexoParticipante) {
+            const tipoQuarto = sexoParticipante === 'Masculino' ? 'masculino' : 'feminino';
+
+            // Calcular ocupação atual dos quartos
+            const quartosOcupados = {};
+            alocacoes.forEach(alocacao => {
+                const quartoId = alocacao.quartoId;
+                if (!quartosOcupados[quartoId]) {
+                    quartosOcupados[quartoId] = 0;
+                }
+                quartosOcupados[quartoId]++;
+            });
+
+            // Filtrar quartos disponíveis
+            const quartosDisponiveis = [];
+            Object.keys(QUARTOS_CONFIG).forEach(quartoId => {
+                const quarto = QUARTOS_CONFIG[quartoId];
+                const ocupacao = quartosOcupados[quartoId] || 0;
+                
+                if (quarto.tipo === tipoQuarto && ocupacao < quarto.capacidade) {
+                    quartosDisponiveis.push({
+                        id: quartoId,
+                        nome: quarto.nome,
+                        capacidade: quarto.capacidade,
+                        ocupacao: ocupacao,
+                        vagas: quarto.capacidade - ocupacao
+                    });
+                }
+            });
+
+            // Preencher dropdown de quartos
+            const select = $('#quartoSelecionado');
+            select.html('<option value="">Selecione um quarto</option>');
+
+            if (quartosDisponiveis.length === 0) {
+                select.append('<option value="">Nenhum quarto disponível</option>');
+                return;
+            }
+
+            quartosDisponiveis.forEach(quarto => {
+                const option = `<option value="${quarto.id}">${quarto.nome} (${quarto.vagas} vagas)</option>`;
+                select.append(option);
+            });
+        }
+
+        function carregarAlocacoes() {
+            db.collection("Eventos").doc("ED2025").collection("quartos")
+                .get()
+                .then((querySnapshot) => {
+                    alocacoes = [];
+                    
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        alocacoes.push({
+                            id: doc.id,
+                            ...data
+                        });
+                    });
+
+                    atualizarEstatisticas();
+                    renderizarTabela();
+                    
+                    // ✅ NOVO: Atualizar dropdown de participantes após carregar alocações
+                    if (participantes.length > 0) {
+                        preencherDropdownParticipantes();
+                    }
+
+                }).catch((error) => {
+                    console.error("Erro ao carregar alocações:", error);
+                });
+        }
+
+        function atualizarEstatisticas() {
+            let totalMasculinos = 0;
+            let totalFemininos = 0;
+            let ocupacaoMasculina = 0;
+            let ocupacaoFeminina = 0;
+
+            // Contar ocupação por tipo de quarto
+            const quartosOcupados = {};
+            alocacoes.forEach(alocacao => {
+                const quartoId = alocacao.quartoId;
+                if (!quartosOcupados[quartoId]) {
+                    quartosOcupados[quartoId] = 0;
+                }
+                quartosOcupados[quartoId]++;
+            });
+
+            // Calcular estatísticas
+            Object.keys(QUARTOS_CONFIG).forEach(quartoId => {
+                const quarto = QUARTOS_CONFIG[quartoId];
+                const ocupacao = quartosOcupados[quartoId] || 0;
+                
+                if (quarto.tipo === 'masculino') {
+                    if (ocupacao > 0) totalMasculinos++;
+                    ocupacaoMasculina += ocupacao;
+                } else {
+                    if (ocupacao > 0) totalFemininos++;
+                    ocupacaoFeminina += ocupacao;
+                }
+            });
+
+            // Atualizar cards
+            $('#totalMasculinos').text(totalMasculinos);
+            $('#totalFemininos').text(totalFemininos);
+            $('#totalAlocados').text(ocupacaoMasculina + ocupacaoFeminina);
+            $('#ocupacaoMasculina').text(`${ocupacaoMasculina}/20`);
+            $('#ocupacaoFeminina').text(`${ocupacaoFeminina}/20`);
+            $('#capacidadeTotal').text(`${ocupacaoMasculina + ocupacaoFeminina}/40`);
+        }
+
+        function alocarParticipante() {
+            const participanteId = $('#participante').val();
+            const quartoId = $('#quartoSelecionado').val();
+
+            if (!participanteId || !quartoId) {
+                alert("Selecione um participante e um quarto.");
+                return;
+            }
+
+            const participante = participantes.find(p => p.id === participanteId);
+            if (!participante) {
+                alert("Participante não encontrado.");
+                return;
+            }
+
+            // Verificar se o participante já tem quarto (verificação extra)
+            const jaAlocado = alocacoes.find(a => a.participanteId === participanteId);
+            if (jaAlocado) {
+                alert("Este participante já possui um quarto alocado.");
+                return;
+            }
+
+            // Salvar alocação
+            const dadosAlocacao = {
+                participanteId: participante.id,
+                participanteNome: participante.nome,
+                participanteTipo: participante.tipo,
+                participanteSexo: participante.sexo,
+                participanteIdade: calcularIdade(participante.dtnasc),
+                quartoId: quartoId,
+                quartoNome: QUARTOS_CONFIG[quartoId].nome,
+                dataAlocacao: new Date().toISOString(),
+                anoEvento: "2025"
+            };
+
+            db.collection("Eventos").doc("ED2025").collection("quartos")
+                .add(dadosAlocacao)
+                .then(() => {
+                    alert("Participante alocado com sucesso!");
+                    limparFormulario();
+                    carregarAlocacoes(); // ✅ Isso já vai atualizar o dropdown automaticamente
+                })
+                .catch((error) => {
+                    console.error("Erro ao alocar participante:", error);
+                    alert("Erro ao alocar participante. Tente novamente.");
+                });
+        }
+
+        function renderizarTabela() {
+            const tbody = $('#quartosList');
+            tbody.empty();
+
+            if (alocacoes.length === 0) {
+                tbody.append(`
+                    <tr>
+                        <td colspan="7" class="text-center">Nenhuma alocação encontrada</td>
+                    </tr>
+                `);
+                return;
+            }
+
+            alocacoes.forEach(alocacao => {
+                const dataAlocacao = new Date(alocacao.dataAlocacao).toLocaleDateString('pt-BR');
+                const ocupacaoQuarto = calcularOcupacaoQuarto(alocacao.quartoId);
+                const badgeClass = alocacao.participanteTipo === 'Encontrista' ? 'badge-encontrista' : 'badge-encontreiro';
+                const sexoBadge = alocacao.participanteSexo === 'Masculino' ? 'badge-masculino' : 'badge-feminino';
+
+                const row = `
+                    <tr>
+                        <td>
+                            <strong>${alocacao.participanteNome}</strong>
+                            <br><small class="badge ${badgeClass}">${alocacao.participanteTipo}</small>
+                        </td>
+                        <td>
+                            <span class="badge ${sexoBadge}">${alocacao.participanteSexo}</span>
+                        </td>
+                        <td>${alocacao.participanteIdade} anos</td>
+                        <td>
+                            <strong>${alocacao.quartoNome}</strong>
+                            <br><small class="text-muted">${alocacao.quartoId}</small>
+                        </td>
+                        <td>
+                            <span class="badge badge-secondary">${ocupacaoQuarto.ocupacao}/${ocupacaoQuarto.capacidade}</span>
+                        </td>
+                        <td>${dataAlocacao}</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-sm btn-warning" onclick="editarAlocacao('${alocacao.id}')" title="Editar">
+                                    <i class="material-icons">edit</i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="confirmarRemocaoAlocacao('${alocacao.id}')" title="Remover">
+                                    <i class="material-icons">delete</i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+
+        function calcularOcupacaoQuarto(quartoId) {
+            const ocupacao = alocacoes.filter(a => a.quartoId === quartoId).length;
+            const capacidade = QUARTOS_CONFIG[quartoId] ? QUARTOS_CONFIG[quartoId].capacidade : 0;
+            return { ocupacao, capacidade };
+        }
+
+        function confirmarRemocaoAlocacao(alocacaoId) {
+            const alocacao = alocacoes.find(a => a.id === alocacaoId);
+            if (!alocacao) return;
+
+            alocacaoParaRemover = alocacaoId;
+            $('#removerNome').text(alocacao.participanteNome);
+            $('#removerModal').modal('show');
+        }
+
+        function removerAlocacao(alocacaoId) {
+            db.collection("Eventos").doc("ED2025").collection("quartos")
+                .doc(alocacaoId)
+                .delete()
+                .then(() => {
+                    alert("Alocação removida com sucesso!");
+                    $('#removerModal').modal('hide');
+                    alocacaoParaRemover = null;
+                    carregarAlocacoes(); // ✅ Isso vai atualizar o dropdown automaticamente
+                })
+                .catch((error) => {
+                    console.error("Erro ao remover alocação:", error);
+                    alert("Erro ao remover alocação. Tente novamente.");
+                });
+        }
+
+        function editarAlocacao(alocacaoId) {
+            const alocacao = alocacoes.find(a => a.id === alocacaoId);
+            if (!alocacao) return;
+
+            alocacaoParaEditar = alocacaoId;
+            
+            // Preencher modal de edição
+            $('#editAlocacaoId').val(alocacao.id);
+            $('#editParticipanteId').val(alocacao.participanteId);
+            $('#editParticipanteNome').val(alocacao.participanteNome);
+            $('#editIdade').val(alocacao.participanteIdade + ' anos');
+
+            // Carregar quartos disponíveis para edição
+            carregarQuartosParaEdicao(alocacao.participanteSexo, alocacao.quartoId);
+            
+            $('#editarQuartoModal').modal('show');
+        }
+
+        function carregarQuartosParaEdicao(sexoParticipante, quartoAtual) {
+            const tipoQuarto = sexoParticipante === 'Masculino' ? 'masculino' : 'feminino';
+
+            // Calcular ocupação atual dos quartos (excluindo o quarto atual)
+            const quartosOcupados = {};
+            alocacoes.forEach(alocacao => {
+                if (alocacao.id !== alocacaoParaEditar) { // Excluir a alocação atual
+                    const quartoId = alocacao.quartoId;
+                    if (!quartosOcupados[quartoId]) {
+                        quartosOcupados[quartoId] = 0;
+                    }
+                    quartosOcupados[quartoId]++;
+                }
+            });
+
+            // Filtrar quartos disponíveis
+            const quartosDisponiveis = [];
+            Object.keys(QUARTOS_CONFIG).forEach(quartoId => {
+                const quarto = QUARTOS_CONFIG[quartoId];
+                const ocupacao = quartosOcupados[quartoId] || 0;
+                
+                if (quarto.tipo === tipoQuarto && (ocupacao < quarto.capacidade || quartoId === quartoAtual)) {
+                    quartosDisponiveis.push({
+                        id: quartoId,
+                        nome: quarto.nome,
+                        capacidade: quarto.capacidade,
+                        ocupacao: ocupacao,
+                        vagas: quarto.capacidade - ocupacao,
+                        isAtual: quartoId === quartoAtual
+                    });
+                }
+            });
+
+            // Preencher dropdown de quartos para edição
+            const select = $('#editQuartoSelecionado');
+            select.html('<option value="">Selecione um quarto</option>');
+
+            quartosDisponiveis.forEach(quarto => {
+                const selected = quarto.isAtual ? 'selected' : '';
+                const vagasText = quarto.isAtual ? 'atual' : `${quarto.vagas} vagas`;
+                const option = `<option value="${quarto.id}" ${selected}>${quarto.nome} (${vagasText})</option>`;
+                select.append(option);
+            });
+        }
+
+        function salvarEdicaoQuarto() {
+            const alocacaoId = $('#editAlocacaoId').val();
+            const novoQuartoId = $('#editQuartoSelecionado').val();
+
+            if (!novoQuartoId) {
+                alert("Selecione um quarto.");
+                return;
+            }
+
+            const alocacao = alocacoes.find(a => a.id === alocacaoId);
+            if (!alocacao) {
+                alert("Alocação não encontrada.");
+                return;
+            }
+
+            // Atualizar dados da alocação
+            const dadosAtualizados = {
+                ...alocacao,
+                quartoId: novoQuartoId,
+                quartoNome: QUARTOS_CONFIG[novoQuartoId].nome,
+                dataUltimaEdicao: new Date().toISOString()
+            };
+
+            // Remover campos desnecessários
+            delete dadosAtualizados.id;
+
+            db.collection("Eventos").doc("ED2025").collection("quartos")
+                .doc(alocacaoId)
+                .update(dadosAtualizados)
+                .then(() => {
+                    alert("Alocação atualizada com sucesso!");
+                    $('#editarQuartoModal').modal('hide');
+                    alocacaoParaEditar = null;
+                    carregarAlocacoes();
+                })
+                .catch((error) => {
+                    console.error("Erro ao atualizar alocação:", error);
+                    alert("Erro ao atualizar alocação. Tente novamente.");
+                });
+        }
+
+        function ordenarTabela(field) {
+            // Determinar direção da ordenação
+            if (sortOrder.field === field) {
+                sortOrder.direction = sortOrder.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortOrder.field = field;
+                sortOrder.direction = 'asc';
+            }
+
+            // Atualizar ícones de ordenação
+            $('.sort-btn i').text('sort');
+            $('.sort-btn').removeClass('sort-asc sort-desc');
+            
+            const currentBtn = $(`.sort-btn[data-sort="${field}"]`);
+            currentBtn.addClass(`sort-${sortOrder.direction}`);
+            currentBtn.find('i').text(sortOrder.direction === 'asc' ? 'keyboard_arrow_down' : 'keyboard_arrow_up');
+
+            // Ordenar dados
+            alocacoes.sort((a, b) => {
+                let valueA, valueB;
+                
+                switch(field) {
+                    case 'participante':
+                        valueA = a.participanteNome.toLowerCase();
+                        valueB = b.participanteNome.toLowerCase();
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (sortOrder.direction === 'asc') {
+                    return valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
+                } else {
+                    return valueA > valueB ? -1 : valueA < valueB ? 1 : 0;
+                }
+            });
+
+            // Re-renderizar tabela
+            renderizarTabela();
+        }
+
+        function limparFormulario() {
+            $('#quartoForm')[0].reset();
+            $('#idade').val('');
+            $('#quartoSelecionado').html('<option value="">Selecione um quarto</option>');
+        }
+
+        function calcularIdade(dataNascimento) {
+            if (!dataNascimento) return 'N/A';
+            
+            const hoje = new Date();
+            const nascimento = new Date(dataNascimento.split('/').reverse().join('-'));
+            
+            if (isNaN(nascimento.getTime())) return 'N/A';
+            
+            let idade = hoje.getFullYear() - nascimento.getFullYear();
+            const mes = hoje.getMonth() - nascimento.getMonth();
+            
+            if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+                idade--;
+            }
+            
+            return idade;
+        }
+    </script>
+</body>
+</html>
