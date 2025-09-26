@@ -135,7 +135,7 @@
         .loading-spinner {
             position: absolute;
             top: 55%;
-            left: 53%;
+            left: 85%;
             transform: translate(-50%, -50%);
             z-index: 10;
         }
@@ -159,6 +159,15 @@
             display: block;
             margin-left: -35%;
             margin-right: auto;
+        }
+
+        .alerta-esgotado {
+            position: fixed;
+            top: 50%;
+            left: 83%;
+            max-width: 90%;
+            font-size: 20px;
+            padding: 12px 20px;
         }
 
         @keyframes spin {
@@ -212,7 +221,7 @@
                 top: 0;
                 left: 0;
                 width: 100vw;
-                height:100%;
+                height: 100%;
                 object-fit: cover;
                 z-index: 1;
                 margin: 0;
@@ -227,7 +236,7 @@
                 padding: 6% 4%;
                 font-size: 5%x;
                 min-width: 80%;
-                top: 79.5%;
+                top: 70%;
                 left: 50%;
                 z-index: 10;
                 position: fixed;
@@ -235,8 +244,8 @@
 
             .alerta-esgotado {
                 position: fixed;
-                top: 80%;
-                left: 53%;
+                top: 70%;
+                left: 50%;
                 max-width: 90%;
                 font-size: 20px;
                 padding: 12px 20px;
@@ -244,7 +253,7 @@
 
             .loading-spinner {
                 position: fixed;
-                top: 85%;
+                top: 75%;
                 min-width: 60%;
                 left: 75%;
                 z-index: 10;
@@ -263,7 +272,7 @@
                 top: 0;
                 left: 0;
                 width: 100vw;
-                height:100%;
+                height: 100%;
                 object-fit: cover;
                 z-index: 1;
                 margin: 0;
@@ -286,7 +295,7 @@
 
             .alerta-esgotado {
                 position: fixed;
-                top: 70%;
+                top: 50%;
                 left: 53%;
                 max-width: 90%;
                 font-size: 20px;
@@ -344,13 +353,13 @@
             loadingSpinner.style.display = 'block';
 
             // ✅ LER APENAS 1 DOCUMENTO = 1 LEITURA
-            db.collection("Eventos").doc("filhasdoRei2025")  // Acesse diretamente o documento filhasdoRei2025
+            db.collection("Eventos").doc("Veredas2025")  // Acesse diretamente o documento filhasdoRei2025
                 .get()  // Aqui você já faz a leitura do documento
                 .then((doc) => {
                     if (doc.exists) {
                         const data = doc.data();
                         const totalInscricoes = (data.contador && data.contador.totalInscricoes) ? data.contador.totalInscricoes : 0;  // Verificação segura do contador
-                        console.log(`Total de inscrições Filhas do Rei: ${totalInscricoes}`);
+                        console.log(`Total de inscrições Veredas: ${totalInscricoes}`);
 
                         const btnInscricao = document.getElementById('btnInscricao');
                         const alertaEsgotado = document.getElementById('alertaEsgotado');
@@ -358,7 +367,7 @@
                         loadingSpinner.style.display = 'none';
                         btnInscricao.classList.remove('btn-hidden');
 
-                        if (totalInscricoes >= 800) {
+                        if (totalInscricoes >= 70) {
                             // Desabilitar o botão
                             btnInscricao.classList.add('btn-esgotado');
                             btnInscricao.classList.remove('btn-gradient');
@@ -380,7 +389,7 @@
                             alertaEsgotado.style.display = 'none';
                         }
                     } else {
-                        console.log("Documento filhasdoRei2025 não existe");
+                        console.log("Documento Veredas2025 não existe");
                         // Fallback: assumir 0 inscrições
                         handleButtonState(0);
                     }

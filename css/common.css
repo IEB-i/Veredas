@@ -2,7 +2,7 @@
 
 .header {
   /* background: linear-gradient(45deg, #000000, #000000); */
-  background: url('../assets/cabecalho.png') center/cover no-repeat;
+  background: #000000;
   padding: 0 20px; /* Removido padding vertical para controlar altura apenas com height */
   /*text-align: center;*/
   position: fixed;

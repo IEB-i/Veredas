@@ -173,9 +173,6 @@
     <!-- Título -->
     <div class="header">
         <h2 class="header-title">GESTÃO - VEREDAS 2025</h2>
-        <button onclick="logout()" class="btn btn-outline-light btn-sm" style="position: absolute; top: 20px; right: 20px;">
-            <i class="bi bi-box-arrow-right"></i> Sair
-        </button>
     </div>
 
     <!-- Conteiner Principal -->
@@ -314,14 +311,16 @@
                 </div>
             </div>
 
-
-
-
-
-
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Botão Sair no final da página -->
+    <div class="text-center" style="margin-bottom: 30px;">
+        <button onclick="logout()" class="btn btn-outline-success btn-lg">
+            <i class="bi bi-box-arrow-right"></i> Sair
+        </button>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -361,7 +360,7 @@
         function logout() {
             localStorage.removeItem('adminAuthenticated');
             localStorage.removeItem('authTimestamp');
-            window.location.href = '../login.html';
+            window.location.href = '../index.html';
         }
 
         // Carregar dados quando a página carregar
