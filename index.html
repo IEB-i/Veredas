@@ -367,7 +367,7 @@
                         loadingSpinner.style.display = 'none';
                         btnInscricao.classList.remove('btn-hidden');
 
-                        if (totalInscricoes >= 70) {
+                        if (totalInscricoes >= 50) {
                             // Desabilitar o botão
                             btnInscricao.classList.add('btn-esgotado');
                             btnInscricao.classList.remove('btn-gradient');
@@ -413,5 +413,6 @@
         setInterval(verificarLimiteInscricoes, 30000);
     </script>
 </body>
+
 
 </html>
