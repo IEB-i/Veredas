@@ -276,6 +276,7 @@
                                 <p><strong>Data de Nascimento:</strong> <span id="modalDtNasc"></span></p>
                                 <p><strong>Idade:</strong> <span id="modalIdade"></span></p>
                                 <p><strong>Gênero:</strong> <span id="modalGenero"></span></p>
+                                <p><strong>Estado Civil:</strong> <span id="modalEstadoCivil"></span></p>
                                 <p><strong>Celular:</strong> <span id="modalCelular"></span></p>
                             </div>
                             <div class="col-md-6">
@@ -539,6 +540,7 @@
                         $('#modalDtNasc').text(formatarData(p.dtnasc) || 'N/A');
                         $('#modalIdade').text(p.idade || 'N/A');
                         $('#modalGenero').text(p.genero || 'N/A');
+                        $('#modalEstadoCivil').text(p.estadoCivil || 'N/A');
                         $('#modalCelular').text(p.celular || 'N/A');
 
                         // Informações do Responsável
