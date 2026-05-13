@@ -197,10 +197,10 @@
         <div class="logo-circle">
             <img src="./assets/LogoBranco.png" alt="Logo IEBI">
         </div>
-        <h2 class="header-title">VEREDAS 2025</h2>
+        <h2 class="header-title">VEREDAS 2026</h2>
     </div>
     <div class="container">
-        <h2 class="text-center mb-4 font-weight-bold">Veredas 2025</h2>
+        <h2 class="text-center mb-4 font-weight-bold">Veredas 2026</h2>
         <div class="divider"></div>
 
         <div class="info-box">
@@ -309,9 +309,9 @@
 
         // Função para verificar se o nome já existe
         function verificarNomeExistente(nome) {
-            return db.collection("Eventos").doc("Veredas2025").collection("inscricoes")
+            return db.collection("Eventos").doc("Veredas2026").collection("inscricoes")
                 .where("nome", "==", nome)
-                .where("anoevento", "==", "2025")
+                .where("anoevento", "==", "2026")
                 .get()
                 .then((querySnapshot) => {
                     return !querySnapshot.empty;
@@ -388,59 +388,49 @@
 
             // Lista estática de líderes de células
             const lideres = [
-                "ADRIANA / KENEDY",
-                "AIRTON / EMÍLIA",
-                "ALDA",
-                "ALLAN / AILDA",
-                "ANA / JOYCE / AMANDA",
-                "ANDERSON / LAURISA",
-                "ANDREIA / VANDERLEI",
-                "ARTHUR / LORENA",
-                "BELMIRO / MÔNICA",
-                "BERNADETE / FRANCY",
-                "CAIO / BIANCA",
-                "CLÁUDIO / JAQUELINE",
-                "CLOVILDA / JOSIMARC",
-                "CLOVIS / ANDREI",
-                "DANIEL / EVELLY",
-                "EDUARDO / NICOLLY",
-                "FÁBIO / EDNALVA",
-                "FABRÍCIO / NADJA",
-                "FERNANDES / ZELÂNDIA",
-                "GABRIEL / BARBARA",
-                "GABRIEL / RAYZA",
-                "GILBERTO / MARCIA",
-                "GUILHERME / MIGUEL",
-                "GUSTAVO / MARIANA",
-                "GUTEMBERG / ELAINE",
-                "JAIRO / ROSANA",
-                "JOHN",
-                "JONATHAN / ALINE",
-                "JOSINALDO / ELAINE",
-                "JÚNIOR / FERNANDA",
-                "LEONARDO / LIDIA",
-                "LINDEMBERG / ADRIANA / LUCIENE",
-                "LÍVIA / NICOLY",
-                "LUCAS / SAYMON",
-                "MANOEL / CLAUDIANE",
-                "MARCIELLE / PIETRA",
-                "NATIVA",
-                "PATRÍCIA",
-                "PEDRO / FILIPE",
-                "RAMON / NAZELI",
-                "RAQUEL",
-                "RAQUEL / ADEILDES",
-                "REBEKAH / MONIQUE",
-                "RHODNEY / KAREN",
-                "RIBAMAR / JOSELMA",
-                "RICARDO / ROSANE",
-                "ROGÉRIO / LUCIÉLLEN",
-                "RUBENS / EMILLY",
-                "SAMUEL / RAISSA",
-                "SAULO / ERIKA",
-                "SIMONE",
-                "WALTER / JESSY",
-                "KAYANN / NATÁLIA"
+                "ADRIANA / KENEDY - AGUA VIVA 2",
+                "ADVANILTON / EDVÂNIA - AE01",
+                "ALDA - A01",
+                "ALLAN / AILDA - SHOFAR",
+                "ANDERSON / LAURISA - EFATÁ",
+                "ANA / AMANDA - REDE TEEN",
+                "ARTHUR / LORENA - AL01",
+                "BELMIRO / MÔNICA - LEÃO DE JUDÁ",
+                "BERNADETE / JAMILLY - MAANAIM 2",
+                "CHOSEN - REBEKAH / MONIQUE",
+                "CLÁUDIO / JAQUELINE - AGAPE",
+                "CLOVIS / LÍVIA - ROCKS",
+                "EDUARDO / NICOLLY - EN01",
+                "EVELLYN / FERNANDA - EF01",
+                "FÁBIO / EDNALVA - MANANCIAL",
+                "FABRÍCIO / NADJA - SOL DA JUSTIÇA",
+                "FLÁVIO / LIVYA - MARANATA",
+                "GABRIEL / RAYZA - PENIEL",
+                "GILBERTO / MARCIA - AGUA VIVA 1",
+                "GUILHERME / MIGUEL / FILIPE - REDE TEEN",
+                "GUSTAVO / MARIANA - HEAVEN",
+                "GUTEMBERG / ELAINE - ATOS 2",
+                "JAIRO / ROSANA - MORIAH",
+                "JOAO / SHIRLEY - JS01",
+                "LEONARDO / LIDIA - KAIROS",
+                "LINDEMBERG / ADRIANA / LUCIENE - IDE",
+                "MARIA / NILMA - MN01",
+                "NATIVA - SHEKINAH",
+                "PATRÍCIA - ATOS 1",
+                "RAMON / NAZELIA - FILADÉLFIA",
+                "RAQUEL - SHAMMAR",
+                "RHODNEY / KAREN - YAHWEH",
+                "RIBAMAR / JOSELMA - ALIANÇA",
+                "RICARDO / ROSANE - KADOSH",
+                "RUBENS / EMILLY - AGUA VIVA 3",
+                "SAMUEL / RAISSA - MANÁ",
+                "SAYMON / LUCAS - OVERFLOW",
+                "SAULO / ERIKA - ATALAIA",
+                "SIMONE - S01",
+                "THIAGO / NATÁLIA - AWAKE",
+                "THIAGO / NATHALIA - TN01",
+                "Outra Célula"
+
             ];
 
             // Ordenar os líderes alfabeticamente
@@ -525,7 +515,6 @@
             e.preventDefault();
 
 
-
             // First check if elements exist before accessing their style property
             const outraIgrejaDiv = document.getElementById('outraIgrejaDiv');
             // Only check display style if elements exist
@@ -565,7 +554,7 @@
                     rede: document.getElementById('rede').value,
                     outraIgreja: document.getElementById('outraIgreja').value,
                     dataPreenchimento: document.getElementById('dataPreenchimento').value,
-                    anoevento: '2025',
+                    anoevento: '2026',
                     statusPagamento: 'pendente',
                     dtRegistro: new Date().toISOString()
                 };
@@ -573,12 +562,12 @@
                 // Log para visualizar o objeto formData completo (sem a assinatura para não sobrecarregar o console)
                 console.log('Dados completos a serem enviados:', { ...formData, assinaturaResponsavel: formData.assinaturaResponsavel ? 'ASSINATURA_BASE64_REMOVIDA_DO_LOG' : null });
 
-                db.collection("Eventos").doc("Veredas2025").collection("inscricoes").add(formData)
+                db.collection("Eventos").doc("Veredas2026").collection("inscricoes").add(formData)
                     .then((docRef) => {
                         console.log("Documento escrito com ID: ", docRef.id);
 
                         // ✅ ADICIONE ESTA PARTE - Incrementar contador
-                        return db.collection("Eventos").doc("Veredas2025").update({
+                        return db.collection("Eventos").doc("Veredas2026").update({
                             "contador.totalInscricoes": firebase.firestore.FieldValue.increment(1),
                             ultimaAtualizacao: firebase.firestore.FieldValue.serverTimestamp()
                         });

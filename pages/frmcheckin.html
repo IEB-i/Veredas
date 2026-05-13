@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check-in - Veredas 2025</title>
+    <title>Check-in - Veredas 2026</title>
     <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -30,34 +30,34 @@
         }
 
         /* Adicionar no <style> se não existir: */
-.btn-voltar {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+        .btn-voltar {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
 
-.btn-voltar:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: translateY(-50%) scale(1.05);
-    color: white;
-    text-decoration: none;
-}
+        .btn-voltar:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-50%) scale(1.05);
+            color: white;
+            text-decoration: none;
+        }
 
-.btn-voltar .material-icons {
-    font-size: 24px;
-}
+        .btn-voltar .material-icons {
+            font-size: 24px;
+        }
 
         .header-title {
             color: white;
@@ -213,15 +213,15 @@
 </head>
 
 <body>
-<div class="header">
-    <a href="gestao.html" class="btn-voltar">
-        <i class="material-icons">arrow_back</i>
-    </a>
-    <h2 class="header-title">CHECK-IN VEREDAS 2025</h2>
-</div>
+    <div class="header">
+        <a href="gestao.html" class="btn-voltar">
+            <i class="material-icons">arrow_back</i>
+        </a>
+        <h2 class="header-title">CHECK-IN VEREDAS 2026</h2>
+    </div>
 
     <div class="container">
-        <h2 class="text-center mb-4 font-weight-bold">CHECK-IN VEREDAS 2025</h2>
+        <h2 class="text-center mb-4 font-weight-bold">CHECK-IN VEREDAS 2026</h2>
         <div class="divider"></div>
 
         <div class="info-box">
@@ -640,9 +640,9 @@
             }
 
             // Buscar acampantes com status "pago" no Firestore e que não fizeram check-in
-            db.collection("Eventos").doc("EBF2025").collection("inscricoes")
+            db.collection("Eventos").doc("EBF2026").collection("inscricoes")
                 .where("statusPagamento", "==", "pago")
-                .where("anoevento", "==", "2025")
+                .where("anoevento", "==", "2026")
                 .where("tipoInsc", "==", "criancas")   // Tipo de inscrição é "criancas"
                 .orderBy("nome")
                 .get()
@@ -694,9 +694,9 @@
             const nomeAcampante = this.value;
             if (nomeAcampante) {
                 // Buscar dados do acampante selecionado
-                db.collection("Eventos").doc("EBF2025").collection("inscricoes")
+                db.collection("Eventos").doc("EBF2026").collection("inscricoes")
                     .where("nome", "==", nomeAcampante)
-                    .where("anoevento", "==", "2025")
+                    .where("anoevento", "==", "2026")
                     .get()
                     .then((querySnapshot) => {
                         if (!querySnapshot.empty) {
@@ -875,14 +875,14 @@
             };
 
             // Salvar no Firestore
-            db.collection("Eventos").doc("EBF2025").collection("checkin").add(formData)
+            db.collection("Eventos").doc("EBF2026").collection("checkin").add(formData)
                 .then((docRef) => {
                     console.log("Check-in realizado com ID: ", docRef.id);
 
                     // Atualizar status na coleção de inscrições
-                    db.collection("Eventos").doc("EBF2025").collection("inscricoes")
+                    db.collection("Eventos").doc("EBF2026").collection("inscricoes")
                         .where("nome", "==", formData.nome)
-                        .where("anoevento", "==", "2025")
+                        .where("anoevento", "==", "2026")
                         .where("tipoInsc", "==", "criancas")
                         .get()
                         .then((querySnapshot) => {
@@ -897,7 +897,7 @@
                                     });
                                     promises.push(updatePromise);
                                 });
-                                
+
                                 // Aguardar todas as atualizações
                                 return Promise.all(promises);
                             } else {

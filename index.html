@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="./assets/3.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="./firebase/firebaseConfig.js"></script>
@@ -32,7 +33,7 @@
         .btn-gradient {
             background: linear-gradient(to right, #7a2c6c, #a92f85);
             color: white;
-            font-weight: bold;
+            font-weight: 800;
             padding: 12px 30px;
             border-radius: 50px;
             font-size: 18px;
@@ -41,8 +42,8 @@
             box-shadow: 0 4px 15px rgba(58, 16, 86, 0.4);
             transition: all 0.3s ease;
             position: absolute;
-            top: 52%;
-            left: 84%;
+            top: 55%;
+            left: 60%;
             transform: translateX(-50%);
             text-decoration: none;
             min-width: 200px;
@@ -183,14 +184,13 @@
         .gestao-icon {
             position: fixed;
             top: 7px;
-            right: 7px;
+            right: 15px;
             z-index: 1000;
-            color: rgb(0, 0, 0) !important;
-            font-size: 20px;
+            color: #d398c8 !important;
+            font-size: 28px;
             text-decoration: none;
-            opacity: 0.9;
-            transition: opacity 0.2s ease;
-            filter: grayscale(100%) brightness(0) invert(1);
+            opacity: 1;
+            transition: all 0.3s ease;
             text-shadow: none;
             background: none;
             border: none;
@@ -198,15 +198,10 @@
         }
 
         .gestao-icon:hover {
-            opacity: 0;
-            color: rgb(0, 0, 0) !important;
+            opacity: 1;
+            color: #d398c8 !important;
             text-decoration: none;
-            transform: none;
-            filter: grayscale(100%) brightness(0) invert(1);
-            text-shadow: none;
-            background: none;
-            border: none;
-            box-shadow: none;
+            transform: scale(1.2) rotate(90deg);
         }
 
         @media screen and (max-width: 852px) {
@@ -236,8 +231,9 @@
                 padding: 6% 4%;
                 font-size: 5%x;
                 min-width: 80%;
-                top: 70%;
+                top: 64%;
                 left: 50%;
+                /* font-weight: bold !important; */
                 z-index: 10;
                 position: fixed;
             }
@@ -321,14 +317,14 @@
 <body>
     <!-- Ícone de Gestão -->
     <a href="login.html" class="gestao-icon" title="Acessar Gestão">
-        ⚙️
+        <i class="bi bi-gear-fill"></i>
     </a>
 
     <img src="./assets/Texto.png" alt="Texto" class="img-fluid mb-4 desktop-image">
     <img src="./assets/Texto Celular.png" alt="Texto" class="img-fluid mb-4 mobile-image">
 
     <a href="frminscricao.html" class="btn-gradient btn-hidden" id="btnInscricao">
-        Inscreva-se Agora
+        <strong>Inscreva-se Agora</strong>
     </a>
 
     <div class="loading-spinner" id="loadingSpinner">
@@ -353,7 +349,7 @@
             loadingSpinner.style.display = 'block';
 
             // ✅ LER APENAS 1 DOCUMENTO = 1 LEITURA
-            db.collection("Eventos").doc("Veredas2025")  // Acesse diretamente o documento filhasdoRei2025
+            db.collection("Eventos").doc("Veredas2026")  // Acesse diretamente o documento filhasdoRei2026
                 .get()  // Aqui você já faz a leitura do documento
                 .then((doc) => {
                     if (doc.exists) {
@@ -367,7 +363,7 @@
                         loadingSpinner.style.display = 'none';
                         btnInscricao.classList.remove('btn-hidden');
 
-                        if (totalInscricoes >= 70) {
+                        if (totalInscricoes >= 50) {
                             // Desabilitar o botão
                             btnInscricao.classList.add('btn-esgotado');
                             btnInscricao.classList.remove('btn-gradient');
@@ -383,13 +379,13 @@
                             // Manter o botão habilitado
                             btnInscricao.classList.remove('btn-esgotado');
                             btnInscricao.classList.add('btn-gradient');
-                            btnInscricao.textContent = 'Inscreva-se Agora';
+                            btnInscricao.innerHTML = '<strong>Inscreva-se Agora</strong>';
                             btnInscricao.href = 'frminscricao.html';
                             btnInscricao.onclick = null;
                             alertaEsgotado.style.display = 'none';
                         }
                     } else {
-                        console.log("Documento Veredas2025 não existe");
+                        console.log("Documento Veredas2026 não existe");
                         // Fallback: assumir 0 inscrições
                         handleButtonState(0);
                     }

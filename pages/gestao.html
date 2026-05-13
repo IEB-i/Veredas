@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GESTÃO - VEREDAS 2025</title>
+    <title>GESTÃO - VEREDAS 2026</title>
     <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -172,7 +172,7 @@
 <body>
     <!-- Título -->
     <div class="header">
-        <h2 class="header-title">GESTÃO - VEREDAS 2025</h2>
+        <h2 class="header-title">GESTÃO - VEREDAS 2026</h2>
     </div>
 
     <!-- Conteiner Principal -->
@@ -311,9 +311,9 @@
                 </div>
             </div>
 
-                </div>
-            </div>
         </div>
+    </div>
+    </div>
     </div>
 
     <!-- Botão Sair no final da página -->
@@ -335,16 +335,16 @@
         function verificarAutenticacao() {
             const isAuthenticated = localStorage.getItem('adminAuthenticated');
             const authTimestamp = localStorage.getItem('authTimestamp');
-            
+
             if (isAuthenticated !== 'true' || !authTimestamp) {
                 window.location.href = '../login.html';
                 return false;
             }
-            
+
             const now = Date.now();
             const authTime = parseInt(authTimestamp);
             const hoursPassed = (now - authTime) / (1000 * 60 * 60);
-            
+
             // Autenticação válida por 24 horas
             if (hoursPassed >= 24) {
                 localStorage.removeItem('adminAuthenticated');
@@ -352,7 +352,7 @@
                 window.location.href = '../login.html';
                 return false;
             }
-            
+
             return true;
         }
 
@@ -373,7 +373,7 @@
         // Função para carregar estatísticas gerais
         async function carregarEstatisticas() {
             console.log('🔄 Iniciando carregamento de estatísticas...');
-            
+
             // Primeiro, testar conectividade com Firebase
             try {
                 console.log('🔥 Testando conectividade Firebase...');
@@ -382,22 +382,22 @@
             } catch (networkError) {
                 console.warn('⚠️ Problema de rede com Firebase:', networkError);
             }
-            
+
             try {
                 // Usar a estrutura confirmada pelos outros arquivos
                 console.log('📡 Buscando dados do Firestore...');
-                const querySnapshot = await db.collection("Eventos").doc("Veredas2025").collection("inscricoes").get();
-                
+                const querySnapshot = await db.collection("Eventos").doc("Veredas2026").collection("inscricoes").get();
+
                 console.log(`📋 Total de documentos encontrados: ${querySnapshot.size}`);
-                
+
                 if (querySnapshot.empty) {
                     console.log('⚠️ Nenhum documento encontrado na coleção');
                     throw new Error('Coleção vazia');
                 }
-                
+
                 let totalParticipantes = 0;
                 let pagosParticipantes = 0;
-                
+
                 querySnapshot.forEach((doc) => {
                     const participante = doc.data();
                     console.log('👤 Participante:', {
@@ -406,37 +406,37 @@
                         tipoInsc: participante.tipoInsc || 'encontrista',
                         statusPagamento: participante.statusPagamento
                     });
-                    
+
                     // Para o evento Veredas, todos são considerados encontristas
                     totalParticipantes++;
                     if (participante.statusPagamento === 'pago') {
                         pagosParticipantes++;
                     }
                 });
-                
+
                 const percentualParticipantes = totalParticipantes > 0 ? Math.round((pagosParticipantes / totalParticipantes) * 100) : 0;
                 const pendentesParticipantes = totalParticipantes - pagosParticipantes;
-                
+
                 console.log('📊 Resultados calculados:', {
                     totalParticipantes,
                     pagosParticipantes,
                     percentualParticipantes,
                     pendentesParticipantes
                 });
-                
+
                 // Atualizar elementos do DOM
                 document.getElementById('totalEncontristas').textContent = totalParticipantes;
                 document.getElementById('pagosEncontristas').textContent = pagosParticipantes;
                 document.getElementById('percentualEncontristas').textContent = percentualParticipantes + '%';
                 document.getElementById('pendentesEncontristas').textContent = pendentesParticipantes;
-                
+
                 const progressoElemento = document.getElementById('progressoEncontristas');
                 if (progressoElemento) {
                     progressoElemento.style.width = percentualParticipantes + '%';
                 }
-                
+
                 console.log('✅ Estatísticas atualizadas com sucesso!');
-                
+
                 // Salvar dados no localStorage para cache
                 localStorage.setItem('estatisticasCache', JSON.stringify({
                     totalParticipantes,
@@ -445,24 +445,24 @@
                     pendentesParticipantes,
                     timestamp: Date.now()
                 }));
-                
+
             } catch (error) {
                 console.error('❌ Erro ao carregar estatísticas:', error);
-                
+
                 // Tentar carregar dados do cache
                 const cache = localStorage.getItem('estatisticasCache');
                 if (cache) {
                     try {
                         const dadosCache = JSON.parse(cache);
                         const tempoCache = Date.now() - dadosCache.timestamp;
-                        
+
                         if (tempoCache < 3600000) { // Cache válido por 1 hora
                             console.log('📦 Carregando dados do cache...');
                             document.getElementById('totalEncontristas').textContent = dadosCache.totalParticipantes + ' (cache)';
                             document.getElementById('pagosEncontristas').textContent = dadosCache.pagosParticipantes + ' (cache)';
                             document.getElementById('percentualEncontristas').textContent = dadosCache.percentualParticipantes + '% (cache)';
                             document.getElementById('pendentesEncontristas').textContent = dadosCache.pendentesParticipantes + ' (cache)';
-                            
+
                             const progressoElemento = document.getElementById('progressoEncontristas');
                             if (progressoElemento) {
                                 progressoElemento.style.width = dadosCache.percentualParticipantes + '%';
@@ -473,7 +473,7 @@
                         console.error('Erro ao ler cache:', cacheError);
                     }
                 }
-                
+
                 // Valores padrão em caso de erro
                 document.getElementById('totalEncontristas').textContent = 'Erro de conexão';
                 document.getElementById('pagosEncontristas').textContent = 'Erro de conexão';

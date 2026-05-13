@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Quartos - Veredas 2025</title>
+    <title>Gerenciar Quartos - Veredas 2026</title>
     <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    
+
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -215,17 +215,17 @@
             .card-body {
                 padding: 15px;
             }
-            
+
             .room-action {
                 padding: 10px;
             }
-            
+
             .form-control {
                 padding: 16px 12px;
                 font-size: 16px;
                 min-height: 50px;
             }
-            
+
             select.form-control {
                 min-height: 52px;
             }
@@ -239,7 +239,7 @@
         <a href="gestao.html" class="btn-voltar">
             <i class="material-icons">arrow_back</i>
         </a>
-        <h2 class="header-title">QUARTOS - VEREDAS 2025</h2>
+        <h2 class="header-title">QUARTOS - VEREDAS 2026</h2>
     </div>
 
     <!-- CONTEÚDO PRINCIPAL -->
@@ -296,13 +296,13 @@
                                 <option value="">Selecione um participante</option>
                             </select>
                         </div>
-                        
+
                         <!-- Idade -->
                         <div class="form-group col-md-2">
                             <label for="idade">Idade</label>
                             <input type="text" class="form-control" id="idade" readonly>
                         </div>
-                        
+
                         <!-- Quarto Selecionado -->
                         <div class="form-group col-md-4">
                             <label for="quartoSelecionado">Quarto Selecionado *</label>
@@ -310,7 +310,7 @@
                                 <option value="">Selecione um quarto</option>
                             </select>
                         </div>
-                        
+
                         <!-- Botão de Confirmar -->
                         <div class="form-group col-md-2 d-flex align-items-end">
                             <button type="submit" class="btn btn-primary w-100">
@@ -337,7 +337,8 @@
                                         <th>
                                             <div class="d-flex align-items-center">
                                                 Participante
-                                                <button class="btn btn-sm text-white ml-2 sort-btn" data-sort="participante">
+                                                <button class="btn btn-sm text-white ml-2 sort-btn"
+                                                    data-sort="participante">
                                                     <i class="material-icons" id="sortIconParticipante">sort</i>
                                                 </button>
                                             </div>
@@ -362,7 +363,8 @@
     </div>
 
     <!-- Modal de Confirmação de Remoção -->
-    <div class="modal fade" id="removerModal" tabindex="-1" role="dialog" aria-labelledby="removerModalLabel" aria-hidden="true">
+    <div class="modal fade" id="removerModal" tabindex="-1" role="dialog" aria-labelledby="removerModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -384,7 +386,8 @@
     </div>
 
     <!-- Modal de Edição de Quarto -->
-    <div class="modal fade" id="editarQuartoModal" tabindex="-1" role="dialog" aria-labelledby="editarQuartoModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editarQuartoModal" tabindex="-1" role="dialog" aria-labelledby="editarQuartoModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -448,7 +451,7 @@
             'M03': { capacidade: 4, tipo: 'masculino', nome: 'Quarto Masculino 03' },
             'M04': { capacidade: 4, tipo: 'masculino', nome: 'Quarto Masculino 04' },
             'M05': { capacidade: 4, tipo: 'masculino', nome: 'Quarto Masculino 05' },
-            
+
             // Quartos Femininos
             'F01': { capacidade: 4, tipo: 'feminino', nome: 'Quarto Feminino 01' },
             'F02': { capacidade: 4, tipo: 'feminino', nome: 'Quarto Feminino 02' },
@@ -457,7 +460,7 @@
             'F05': { capacidade: 4, tipo: 'feminino', nome: 'Quarto Feminino 05' },
         };
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             carregarParticipantes();
             carregarAlocacoes();
             configurarEventos();
@@ -465,7 +468,7 @@
 
         function configurarEventos() {
             // Evento de seleção de participante
-            $('#participante').on('change', function() {
+            $('#participante').on('change', function () {
                 const participanteId = $(this).val();
                 if (participanteId) {
                     const participante = participantes.find(p => p.id === participanteId);
@@ -479,27 +482,27 @@
             });
 
             // Evento de submissão do formulário
-            $('#quartoForm').on('submit', function(e) {
+            $('#quartoForm').on('submit', function (e) {
                 e.preventDefault();
                 alocarParticipante();
             });
 
             // Evento de confirmação de remoção
-            $('#confirmarRemocao').on('click', function() {
+            $('#confirmarRemocao').on('click', function () {
                 if (alocacaoParaRemover) {
                     removerAlocacao(alocacaoParaRemover);
                 }
             });
 
             // Evento de confirmação de edição
-            $('#confirmarEdicao').on('click', function() {
+            $('#confirmarEdicao').on('click', function () {
                 if (alocacaoParaEditar) {
                     salvarEdicaoQuarto();
                 }
             });
 
             // Eventos de ordenação
-            $('.sort-btn').on('click', function() {
+            $('.sort-btn').on('click', function () {
                 const field = $(this).data('sort');
                 ordenarTabela(field);
             });
@@ -510,19 +513,19 @@
 
             // Buscar encontristas e encontreiros com pagamento confirmado
             Promise.all([
-                db.collection("Eventos").doc("ED2025").collection("inscricoes")
-                    .where("anoevento", "==", "2025")
+                db.collection("Eventos").doc("ED2026").collection("inscricoes")
+                    .where("anoevento", "==", "2026")
                     .where("tipoInsc", "==", "encontrista")
                     .where("statusPagamento", "==", "pago")
                     .get(),
-                db.collection("Eventos").doc("ED2025").collection("inscricoes")
-                    .where("anoevento", "==", "2025")
+                db.collection("Eventos").doc("ED2026").collection("inscricoes")
+                    .where("anoevento", "==", "2026")
                     .where("tipoInsc", "==", "encontreiro")
                     .where("statusPagamento", "==", "pago")
                     .get()
             ]).then(([encontristasSnapshot, encontreirosSnapshot]) => {
                 participantes = [];
-                
+
                 // Processar encontristas
                 encontristasSnapshot.forEach((doc) => {
                     const data = doc.data();
@@ -573,7 +576,7 @@
             const participantesComQuarto = alocacoes.map(alocacao => alocacao.participanteId);
 
             // Filtrar apenas participantes sem quarto
-            const participantesSemQuarto = participantes.filter(participante => 
+            const participantesSemQuarto = participantes.filter(participante =>
                 !participantesComQuarto.includes(participante.id)
             );
 
@@ -618,7 +621,7 @@
             Object.keys(QUARTOS_CONFIG).forEach(quartoId => {
                 const quarto = QUARTOS_CONFIG[quartoId];
                 const ocupacao = quartosOcupados[quartoId] || 0;
-                
+
                 if (quarto.tipo === tipoQuarto && ocupacao < quarto.capacidade) {
                     quartosDisponiveis.push({
                         id: quartoId,
@@ -646,11 +649,11 @@
         }
 
         function carregarAlocacoes() {
-            db.collection("Eventos").doc("ED2025").collection("quartos")
+            db.collection("Eventos").doc("ED2026").collection("quartos")
                 .get()
                 .then((querySnapshot) => {
                     alocacoes = [];
-                    
+
                     querySnapshot.forEach((doc) => {
                         const data = doc.data();
                         alocacoes.push({
@@ -661,7 +664,7 @@
 
                     atualizarEstatisticas();
                     renderizarTabela();
-                    
+
                     // ✅ NOVO: Atualizar dropdown de participantes após carregar alocações
                     if (participantes.length > 0) {
                         preencherDropdownParticipantes();
@@ -692,7 +695,7 @@
             Object.keys(QUARTOS_CONFIG).forEach(quartoId => {
                 const quarto = QUARTOS_CONFIG[quartoId];
                 const ocupacao = quartosOcupados[quartoId] || 0;
-                
+
                 if (quarto.tipo === 'masculino') {
                     if (ocupacao > 0) totalMasculinos++;
                     ocupacaoMasculina += ocupacao;
@@ -743,10 +746,10 @@
                 quartoId: quartoId,
                 quartoNome: QUARTOS_CONFIG[quartoId].nome,
                 dataAlocacao: new Date().toISOString(),
-                anoEvento: "2025"
+                anoEvento: "2026"
             };
 
-            db.collection("Eventos").doc("ED2025").collection("quartos")
+            db.collection("Eventos").doc("ED2026").collection("quartos")
                 .add(dadosAlocacao)
                 .then(() => {
                     alert("Participante alocado com sucesso!");
@@ -828,7 +831,7 @@
         }
 
         function removerAlocacao(alocacaoId) {
-            db.collection("Eventos").doc("ED2025").collection("quartos")
+            db.collection("Eventos").doc("ED2026").collection("quartos")
                 .doc(alocacaoId)
                 .delete()
                 .then(() => {
@@ -848,7 +851,7 @@
             if (!alocacao) return;
 
             alocacaoParaEditar = alocacaoId;
-            
+
             // Preencher modal de edição
             $('#editAlocacaoId').val(alocacao.id);
             $('#editParticipanteId').val(alocacao.participanteId);
@@ -857,7 +860,7 @@
 
             // Carregar quartos disponíveis para edição
             carregarQuartosParaEdicao(alocacao.participanteSexo, alocacao.quartoId);
-            
+
             $('#editarQuartoModal').modal('show');
         }
 
@@ -881,7 +884,7 @@
             Object.keys(QUARTOS_CONFIG).forEach(quartoId => {
                 const quarto = QUARTOS_CONFIG[quartoId];
                 const ocupacao = quartosOcupados[quartoId] || 0;
-                
+
                 if (quarto.tipo === tipoQuarto && (ocupacao < quarto.capacidade || quartoId === quartoAtual)) {
                     quartosDisponiveis.push({
                         id: quartoId,
@@ -932,7 +935,7 @@
             // Remover campos desnecessários
             delete dadosAtualizados.id;
 
-            db.collection("Eventos").doc("ED2025").collection("quartos")
+            db.collection("Eventos").doc("ED2026").collection("quartos")
                 .doc(alocacaoId)
                 .update(dadosAtualizados)
                 .then(() => {
@@ -959,7 +962,7 @@
             // Atualizar ícones de ordenação
             $('.sort-btn i').text('sort');
             $('.sort-btn').removeClass('sort-asc sort-desc');
-            
+
             const currentBtn = $(`.sort-btn[data-sort="${field}"]`);
             currentBtn.addClass(`sort-${sortOrder.direction}`);
             currentBtn.find('i').text(sortOrder.direction === 'asc' ? 'keyboard_arrow_down' : 'keyboard_arrow_up');
@@ -967,8 +970,8 @@
             // Ordenar dados
             alocacoes.sort((a, b) => {
                 let valueA, valueB;
-                
-                switch(field) {
+
+                switch (field) {
                     case 'participante':
                         valueA = a.participanteNome.toLowerCase();
                         valueB = b.participanteNome.toLowerCase();
@@ -996,21 +999,22 @@
 
         function calcularIdade(dataNascimento) {
             if (!dataNascimento) return 'N/A';
-            
+
             const hoje = new Date();
             const nascimento = new Date(dataNascimento.split('/').reverse().join('-'));
-            
+
             if (isNaN(nascimento.getTime())) return 'N/A';
-            
+
             let idade = hoje.getFullYear() - nascimento.getFullYear();
             const mes = hoje.getMonth() - nascimento.getMonth();
-            
+
             if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
                 idade--;
             }
-            
+
             return idade;
         }
     </script>
 </body>
+
 </html>
