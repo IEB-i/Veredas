@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -82,6 +83,29 @@
             color: white;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon-azul {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #0d6efd;
+        }
+
+        .btn-azul {
+            background: linear-gradient(45deg, #0d6efd, #0d6efd);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            transition: all 0.3s;
+        }
+
+        .btn-azul:hover {
+            background: linear-gradient(45deg, #0a58ca, #0d6efd);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
         }
 
         .stats-value {
@@ -173,6 +197,9 @@
     <!-- Título -->
     <div class="header">
         <h2 class="header-title">GESTÃO - VEREDAS 2026</h2>
+        <button onclick="logout()" class="btn btn-danger" style="position: absolute; right: 20px;">
+            <i class="bi bi-box-arrow-right"></i> Sair
+        </button>
     </div>
 
     <!-- Conteiner Principal -->
@@ -221,7 +248,20 @@
                 </div>
             </div>
 
-
+            <!-- Gráfico de Faixa Etária -->
+            <div class="col-md-6">
+                <div class="card dashboard-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="material-icons me-2 mr-2" style="color: #5c35d9;">assessment</i>
+                            <h5 class="card-title mb-0">Distribuição por Idade</h5>
+                        </div>
+                        <div style="height: 180px; position: relative;">
+                            <canvas id="chartIdades"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -230,6 +270,17 @@
 
         <!-- Cards das Páginas -->
         <div class="row mb-5">
+            <!-- Link Relatório Gerencial -->
+            <div class="col-md-4 mb-4">
+                <div class="card dashboard-card">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-graph-up-arrow card-icon-azul"></i>
+                        <h5 class="card-title">Relatório Gerencial</h5>
+                        <p class="card-text">Visualizar indicadores financeiros, demografia e painel gerencial.</p>
+                        <a href="relatorio.html" class="btn btn-azul">Acessar</a>
+                    </div>
+                </div>
+            </div>
             <!-- Link Pagamentos -->
             <div class="col-md-4 mb-4">
                 <div class="card dashboard-card">
@@ -313,15 +364,8 @@
 
         </div>
     </div>
-    </div>
-    </div>
 
-    <!-- Botão Sair no final da página -->
-    <div class="text-center" style="margin-bottom: 30px;">
-        <button onclick="logout()" class="btn btn-outline-success btn-lg">
-            <i class="bi bi-box-arrow-right"></i> Sair
-        </button>
-    </div>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
@@ -397,22 +441,35 @@
 
                 let totalParticipantes = 0;
                 let pagosParticipantes = 0;
+                
+                // Grupos de idade
+                const idades = {
+                    '0-12': 0,
+                    '13-17': 0,
+                    '18-25': 0,
+                    '26-40': 0,
+                    '41-60': 0,
+                    '61+': 0
+                };
 
                 querySnapshot.forEach((doc) => {
-                    const participante = doc.data();
-                    console.log('👤 Participante:', {
-                        id: doc.id,
-                        nome: participante.nome,
-                        tipoInsc: participante.tipoInsc || 'encontrista',
-                        statusPagamento: participante.statusPagamento
-                    });
-
-                    // Para o evento Veredas, todos são considerados encontristas
+                    const p = doc.data();
                     totalParticipantes++;
-                    if (participante.statusPagamento === 'pago') {
-                        pagosParticipantes++;
+                    if (p.statusPagamento === 'pago') pagosParticipantes++;
+
+                    // Processar idade
+                    const idade = parseInt(p.idade);
+                    if (!isNaN(idade)) {
+                        if (idade <= 12) idades['0-12']++;
+                        else if (idade <= 17) idades['13-17']++;
+                        else if (idade <= 25) idades['18-25']++;
+                        else if (idade <= 40) idades['26-40']++;
+                        else if (idade <= 60) idades['41-60']++;
+                        else idades['61+']++;
                     }
                 });
+
+                renderizarGrafico(idades);
 
                 const percentualParticipantes = totalParticipantes > 0 ? Math.round((pagosParticipantes / totalParticipantes) * 100) : 0;
                 const pendentesParticipantes = totalParticipantes - pagosParticipantes;
@@ -480,6 +537,68 @@
                 document.getElementById('percentualEncontristas').textContent = 'Erro de conexão';
                 document.getElementById('pendentesEncontristas').textContent = 'Erro de conexão';
             }
+        }
+
+        let meuGrafico = null;
+        function renderizarGrafico(dados) {
+            const ctx = document.getElementById('chartIdades').getContext('2d');
+            
+            if (meuGrafico) meuGrafico.destroy();
+
+            meuGrafico = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['0-12', '13-17', '18-25', '26-40', '41-60', '61+'],
+                    datasets: [{
+                        label: 'Participantes',
+                        data: Object.values(dados),
+                        backgroundColor: [
+                            'rgba(92, 53, 217, 0.7)',
+                            'rgba(92, 53, 217, 0.7)',
+                            'rgba(92, 53, 217, 0.7)',
+                            'rgba(92, 53, 217, 0.7)',
+                            'rgba(92, 53, 217, 0.7)',
+                            'rgba(92, 53, 217, 0.7)'
+                        ],
+                        borderColor: '#5c35d9',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                plugins: [{
+                    id: 'datalabels',
+                    afterDatasetsDraw(chart) {
+                        const { ctx, data } = chart;
+                        ctx.save();
+                        data.datasets[0].data.forEach((datapoint, i) => {
+                            const meta = chart.getDatasetMeta(0);
+                            const element = meta.data[i];
+                            if (element) {
+                                const { x, y } = element.tooltipPosition();
+                                ctx.font = 'bold 12px Montserrat';
+                                ctx.fillStyle = '#5c35d9';
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'bottom';
+                                ctx.fillText(datapoint, x, y - 5);
+                            }
+                        });
+                    }
+                }],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1 },
+                            grace: '10%' // Adiciona espaço extra no topo para as labels
+                        }
+                    }
+                }
+            });
         }
 
         // Função para atualizar todos os dados a cada 5 minutos

@@ -12,153 +12,669 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css">
     <style>
+        :root {
+            --primary: #5c35d9;
+            --primary-lt: #7c5ce8;
+            --primary-dk: #3d1fa8;
+            --success: #1a7a45;
+            --success-bg: rgba(39, 174, 96, .13);
+            --warning: #a04000;
+            --warning-bg: rgba(230, 126, 34, .13);
+            --danger: #e74c3c;
+            --info: #2980b9;
+            --bg: #f0f2f8;
+            --card: #fff;
+            --text: #2d3436;
+            --muted: #636e72;
+            --border: #dfe6e9;
+            --sh-sm: 0 2px 8px rgba(0, 0, 0, .08);
+            --sh-md: 0 4px 20px rgba(0, 0, 0, .13);
+            --sh-lg: 0 8px 40px rgba(0, 0, 0, .18);
+            --r: 10px;
+            --r-lg: 16px;
+        }
+
         body {
             font-family: 'Montserrat', sans-serif;
-            color: #333;
-            padding-top: 80px;
+            color: var(--text);
+            background: #f8f9fc;
+            padding-top: 100px;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(92, 53, 217, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(92, 53, 217, 0.03) 0px, transparent 50%);
+            min-height: 100vh;
         }
 
-        .filter-card {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            margin-bottom: 20px;
+        /* Modern Header Override */
+        .header {
+            background: rgba(17, 17, 17, 0.95) !important;
+            backdrop-filter: blur(10px);
+            height: 70px !important;
+            border-bottom: 3px solid var(--primary);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
         }
 
-        .btn-export {
-            background: linear-gradient(45deg, #3d7517, #3d7517);
-            color: white;
-            border: none;
+        .header-title {
+            font-size: 1.1rem !important;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            color: #fff;
+            text-transform: uppercase;
         }
 
-        .table-responsive {
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            max-height: 400px;
-            overflow-y: auto;
-            overflow-x: auto;
+        /* Loading */
+        #loadingOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, .88);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
         }
 
-        .badge-pago {
-            background-color: #28a745;
+        .spinner-ring {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
         }
 
-        .badge-pendente {
-            background-color: #ffc107;
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
+        .loading-text {
+            font-size: .85rem;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: .05em;
+        }
+
+        /* Toast */
+        #toastContainer {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast-notif {
+            background: #fff;
+            border-radius: var(--r);
+            box-shadow: var(--sh-md);
+            padding: 13px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 270px;
+            border-left: 4px solid var(--primary);
+            animation: slideIn .3s ease;
+        }
+
+        .toast-notif.success {
+            border-color: #27ae60;
+        }
+
+        .toast-notif.error {
+            border-color: var(--danger);
+        }
+
+        .toast-icon {
+            font-size: 20px;
+        }
+
+        .toast-notif.success .toast-icon {
+            color: #27ae60;
+        }
+
+        .toast-notif.error .toast-icon {
+            color: var(--danger);
+        }
+
+        .toast-message {
+            font-size: .84rem;
+            font-weight: 600;
+            color: var(--text);
+            flex: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(110%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(110%);
+                opacity: 0;
+            }
+        }
+
+        /* Header nav */
         .btn-voltar {
             position: absolute;
             left: 20px;
             top: 50%;
             transform: translateY(-50%);
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 12px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all .3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-voltar:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transform: translateY(-50%) scale(1.05);
-            color: white;
+            background: var(--primary);
+            transform: translateY(-50%) translateX(-3px);
+            color: #fff;
             text-decoration: none;
+            border-color: var(--primary-lt);
         }
 
         .btn-voltar .material-icons {
-            font-size: 24px;
+            font-size: 20px;
         }
 
-        /* Fixar o cabeçalho da tabela */
-        .dataTables_wrapper .dataTables_scroll div.dataTables_scrollHead {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            background-color: #fff;
+        /* Page header */
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin: 0;
+            color: var(--primary-dk);
+            letter-spacing: -0.02em;
         }
 
-        /* Ajustar a área de rolagem para mostrar apenas o corpo da tabela */
-        .dataTables_wrapper .dataTables_scroll {
-            max-height: 400px;
-            /* Ajuste conforme necessário */
+        .page-subtitle {
+            font-size: .88rem;
+            color: var(--muted);
+            margin-top: 6px;
+            font-weight: 500;
         }
 
-        .dataTables_wrapper .dataTables_scrollBody {
-            max-height: 350px;
-            /* Altura máxima para o corpo da tabela */
-            overflow-y: auto;
+        /* Buttons */
+        .btn-export {
+            background: linear-gradient(135deg, #16a085, #2ecc71);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: .82rem;
+            font-weight: 700;
+            padding: 10px 22px;
+            transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(22, 160, 133, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        /* Garantir que os controles de pesquisa fiquem fora da área de rolagem */
-        .dataTables_wrapper .dataTables_filter,
-        .dataTables_wrapper .dataTables_length,
-        .dataTables_wrapper .dataTables_info,
-        .dataTables_wrapper .dataTables_paginate {
-            position: relative;
-            z-index: 20;
-            background-color: #fff;
-            padding: 5px 0;
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(22, 160, 133, 0.35);
+            color: #fff;
+            filter: brightness(1.05);
         }
 
-        /* Ajustar o espaçamento entre os controles e a tabela */
-        .dataTables_wrapper .dataTables_filter {
-            margin-bottom: 10px;
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary), var(--primary-lt));
+            color: #fff;
+            border: none;
+            border-radius: var(--r);
+            font-size: .84rem;
+            font-weight: 600;
+            padding: 8px 18px;
+            transition: all .2s;
         }
 
-        /* Garantir que o título da tabela fique fixo */
-        .container h3 {
-            position: sticky;
-            top: 0;
-            background-color: #fff;
-            z-index: 30;
-            padding: 10px 0;
-            margin-bottom: 15px;
+        .btn-primary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(92, 53, 217, .35);
+            color: #fff;
         }
 
+        .btn-outline-custom {
+            background: #fff;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            font-size: .84rem;
+            font-weight: 600;
+            padding: 8px 14px;
+            transition: all .2s;
+        }
 
-        .table-responsive {
+        .btn-outline-custom:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* Filter card */
+        .filter-card {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all .3s;
+        }
+
+        .filter-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+
+        .filter-title {
+            font-size: .84rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: var(--muted);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .filter-card label {
+            font-size: .84rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 3px;
+        }
+
+        .filter-card .form-control {
+            border-radius: 7px;
+            border-color: var(--border);
+            font-size: .84rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .filter-card .form-control:focus {
+            border-color: var(--primary-lt);
+            box-shadow: 0 0 0 3px rgba(92, 53, 217, .12);
+        }
+
+        /* Counter */
+        .counter-card {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.05);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all .3s;
+        }
+
+        .counter-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            border-color: var(--primary-lt);
+        }
+
+        .counter-icon {
+            width: 40px;
+            height: 40px;
             border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-            /* Espaço adicional na parte inferior */
+            background: linear-gradient(135deg, var(--primary), var(--primary-lt));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            flex-shrink: 0;
         }
 
-        /* Garante que o cabeçalho e o corpo da tabela tenham a mesma largura */
-        #participantesTable thead th,
-        #participantesTable tbody td {
+        .counter-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--text);
+        }
+
+        .counter-label {
+            font-size: .84rem;
+            color: var(--muted);
+            font-weight: 500;
+            margin-top: 2px;
             white-space: nowrap;
-            min-width: 100px;
         }
 
-        /* Melhora a aparência da tabela com rolagem */
+        /* Paid/Pending variations */
+        .counter-card.paid {
+            border-left: 4px solid #27ae60;
+        }
+        .counter-card.paid .counter-icon {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        }
+        .counter-card.paid .counter-value { color: #27ae60; }
+
+        .counter-card.pending {
+            border-left: 4px solid var(--warning);
+        }
+        .counter-card.pending .counter-icon {
+            background: linear-gradient(135deg, var(--warning), #f39c12);
+        }
+        .counter-card.pending .counter-value { color: var(--warning); }
+
+        /* Table */
+        .table-card {
+            background: var(--card);
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+            border: 1px solid rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
         #participantesTable {
-            width: 100% !important;
             margin-bottom: 0;
         }
 
-        .table-container {
-            position: relative;
-            margin-bottom: 30px;
+        table.dataTable thead th,
+        #participantesTable thead th {
+            background: var(--primary) !important;
+            border-bottom: 2px solid var(--primary-dk) !important;
+            font-size: .75rem !important;
+            font-weight: 700 !important;
+            letter-spacing: .02em;
+            color: #ffffff !important;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            white-space: nowrap;
         }
 
-        .table-responsive {
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        #participantesTable tbody td {
+            font-size: .75rem;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            vertical-align: middle;
+            border-color: var(--border);
+            white-space: nowrap;
+        }
+
+        #participantesTable tbody tr {
+            transition: background .15s;
+        }
+
+        #participantesTable tbody tr:hover {
+            background: rgba(92, 53, 217, .04);
+        }
+
+        /* Nome */
+        #participantesTable th:nth-child(1),
+        .dataTables_scrollHead table th:nth-child(1) {
+            min-width: 250px;
+            text-align: left !important;
+        }
+
+        /* Centralização total para as colunas selecionadas */
+        .text-center {
+            text-align: center !important;
+        }
+
+        /* Badges */
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: .7rem;
+            font-weight: 700;
+            margin: 0 auto;
+        }
+
+        .badge-pago {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .badge-pendente {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+
+        /* Ver button */
+        .btn-ver {
+            background: transparent;
+            border: 1.5px solid var(--primary);
+            color: var(--primary);
+            border-radius: 8px;
+            font-size: .72rem;
+            font-weight: 700;
+            padding: 5px 14px;
+            transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            margin: 0 auto;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-ver:hover {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(92, 53, 217, 0.25);
+            transform: translateY(-1px);
+        }
+
+        /* Empty state */
+        #emptyState {
+            display: none;
+            text-align: center;
+            padding: 56px 20px;
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            color: var(--border);
+        }
+
+        .empty-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--muted);
+            margin-top: 14px;
+        }
+
+        .empty-desc {
+            font-size: .82rem;
+            color: #b2bec3;
+            margin-top: 6px;
+        }
+
+        /* DataTable overrides */
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: 7px;
+            border: 1px solid var(--border);
+            padding: 6px 11px;
+            font-size: .83rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .dataTables_wrapper .dataTables_filter input:focus {
+            outline: none;
+            border-color: var(--primary-lt);
+            box-shadow: 0 0 0 3px rgba(92, 53, 217, .1);
+        }
+
+        .dataTables_wrapper .dataTables_filter label,
+        .dataTables_wrapper .dataTables_info {
+            font-size: .8rem;
+            color: var(--muted);
+        }
+
+        .dataTables_wrapper {
+            padding: 14px;
+        }
+
+        /* Modal redesign */
+        .modal-content {
+            border: none;
+            border-radius: var(--r-lg);
+            box-shadow: var(--sh-lg);
             overflow: hidden;
-            /* Importante para manter os cantos arredondados */
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-lt));
+            border-bottom: none;
+            padding: 18px 22px;
+        }
+
+        .modal-header .modal-title {
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-header .close {
+            color: rgba(255, 255, 255, .8);
+            text-shadow: none;
+            opacity: 1;
+        }
+
+        .modal-header .close:hover {
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 20px;
+            background: #f0f2f8;
+        }
+
+        .modal-footer {
+            background: #fff;
+            border-top: 1px solid var(--border);
+            padding: 14px 22px;
+        }
+
+        /* Info sections inside modal */
+        .info-section {
+            background: #fff;
+            border-radius: var(--r);
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            box-shadow: var(--sh-sm);
+            border: 1px solid var(--border);
+        }
+
+        .info-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-sec-title {
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-sec-title .material-icons {
+            font-size: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 20px;
+        }
+
+        .info-item-label {
+            font-size: .7rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .04em;
+        }
+
+        .info-item-value {
+            font-size: .88rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-top: 2px;
+        }
+
+        #assinaturaContainer img {
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            max-width: 100%;
+            margin-top: 6px;
+        }
+
+        /* Confirm modal */
+        #confirmModal .modal-header {
+            background: var(--danger);
+        }
+
+        @media(max-width:768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 1.15rem;
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay">
+        <div class="spinner-ring"></div>
+        <span class="loading-text">Carregando participantes...</span>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
     <div class="header">
         <a href="gestao.html" class="btn-voltar">
             <i class="material-icons">arrow_back</i>
@@ -166,21 +682,27 @@
         <h2 class="header-title">PARTICIPANTES VEREDAS 2026</h2>
     </div>
 
-    <div class="container mt-5">
-        <div class="row mb-4">
-            <div class="col-md-8">
-                <h3>Lista de Participantes - Veredas 2026</h3>
+    <div class="container mt-4">
+        <div class="row align-items-center mb-4">
+            <div class="col-md-7">
+                <h1 class="page-title">Lista de Participantes</h1>
+                <p class="page-subtitle">Veredas 2026 — Gestão e acompanhamento das inscrições</p>
             </div>
-            <div class="col-md-4 text-right">
-                <button class="btn btn-export mr-2">
-                    <i class="material-icons align-middle">file_download</i> Exportar Excel
+            <div class="col-md-5 text-right">
+                <button class="btn btn-export" id="btnExportarExcel">
+                    <i class="material-icons align-middle" style="font-size:18px;">file_download</i> Exportar Excel
                 </button>
             </div>
         </div>
 
         <div class="filter-card">
-            <form id="filterForm" class="row">
-                <div class="form-group col-md-3">
+            <div class="filter-title"><i class="material-icons" style="font-size:14px;">filter_list</i> Filtros</div>
+            <form id="filterForm" class="row align-items-end">
+                <div class="form-group col-md-2 mb-2">
+                    <label for="filterNome">Nome</label>
+                    <input type="text" class="form-control" id="filterNome" placeholder="Buscar por nome...">
+                </div>
+                <div class="form-group col-md-2 mb-2">
                     <label for="filterIgreja">Igreja</label>
                     <select class="form-control" id="filterIgreja">
                         <option value="">Todas</option>
@@ -190,7 +712,7 @@
                         <option value="Outra">Outra Igreja</option>
                     </select>
                 </div>
-                <div class="form-group col-md-3">
+                <div class="form-group col-md-2 mb-2">
                     <label for="filterIdade">Faixa Etária</label>
                     <select class="form-control" id="filterIdade">
                         <option value="">Todas</option>
@@ -200,59 +722,95 @@
                         <option value="18+">18+</option>
                     </select>
                 </div>
-                <div class="form-group col-md-3">
-                    <label for="filterPagamento">Status Pagamento</label>
+                <div class="form-group col-md-2 mb-2">
+                    <label for="filterGenero">Gênero</label>
+                    <select class="form-control" id="filterGenero">
+                        <option value="">Todos</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Feminino">Feminino</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2 mb-2">
+                    <label for="filterPagamento">Pagamento</label>
                     <select class="form-control" id="filterPagamento">
                         <option value="">Todos</option>
                         <option value="pago">Pago</option>
                         <option value="pendente">Pendente</option>
                     </select>
                 </div>
-                <div class="form-group col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="material-icons align-middle">search</i> Filtrar
+                <div class="form-group col-md-2 mb-2 d-flex" style="gap:8px;">
+                    <button type="submit" class="btn btn-primary-custom flex-fill">
+                        <i class="material-icons align-middle" style="font-size:18px;">search</i>
                     </button>
-                    <button type="button" class="btn btn-outline-secondary ml-2" id="limparFiltro">
-                        Limpar
+                    <button type="button" class="btn btn-outline-custom" id="limparFiltro" title="Limpar filtros">
+                        <i class="material-icons" style="font-size:18px;">close</i>
                     </button>
                 </div>
             </form>
         </div>
 
-        <div class="table-container">
-            <div class="table-responsive">
-                <table class="table table-striped" id="participantesTable">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Nome</th>
-                            <th>Idade</th>
-                            <th>Gênero</th>
-                            <th>Celular</th>
-                            <!-- <th>Responsável</th> -->
-                            <!-- <th>Cel. Responsável</th> -->
-                            <th>Célula</th>
-                            <th>Igreja</th>
-                            <th>Pagamento</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="participantesList">
-                        <!-- Os dados serão carregados dinamicamente do Firebase -->
-                    </tbody>
-                </table>
+        <!-- Counters -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3 mb-md-0">
+                <div class="counter-card">
+                    <div class="counter-icon"><i class="material-icons" style="font-size:20px;">people</i></div>
+                    <div>
+                        <div class="counter-value" id="val-total">0</div>
+                        <div class="counter-label">Total de Inscritos
+                            <span id="texto-filtro" style="display:none; font-size: 0.75rem;">(Filtrados: <span id="contador-participantes">0</span>)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3 mb-md-0">
+                <div class="counter-card paid">
+                    <div class="counter-icon"><i class="material-icons" style="font-size:20px;">check_circle</i></div>
+                    <div>
+                        <div class="counter-value" id="val-pagos">0</div>
+                        <div class="counter-label">Pagamentos Confirmados</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="counter-card pending">
+                    <div class="counter-icon"><i class="material-icons" style="font-size:20px;">hourglass_empty</i></div>
+                    <div>
+                        <div class="counter-value" id="val-pendentes">0</div>
+                        <div class="counter-label">Aguardando Pagamento</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Adicionar este elemento após a tabela -->
-        <div class="row mt-3 mb-4">
-            <div class="col-12">
-                <div class="card bg-light">
-                    <div class="card-body py-2">
-                        <strong>Total de participantes:</strong> <span id="contador-participantes">0</span>
-                        <span id="texto-filtro" class="ml-2 text-muted font-italic" style="display: none;">(filtrados de
-                            <span id="total-participantes">0</span>)</span>
-                    </div>
-                </div>
+        <!-- Tabela -->
+        <div class="table-card p-3">
+            <table class="table table-hover table-striped table-bordered table-sm" id="participantesTable" style="width:100%">
+                <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>Data de Nasc.</th>
+                            <th>Idade</th>
+                            <th>Gênero</th>
+                            <th>Estado Civil</th>
+                            <th>Celular</th>
+                            <th>Igreja</th>
+                            <th>Célula</th>
+                            <th>Supervisor</th>
+                            <th>Rede</th>
+                            <th>Data Preench.</th>
+                            <th>Data Registro</th>
+                            <th>Pagamento</th>
+                            <th style="text-align:center;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="participantesList"></tbody>
+                </table>
+            <!-- Empty State -->
+            <div id="emptyState">
+                <i class="material-icons empty-icon">people_outline</i>
+                <p class="empty-title">Nenhum participante encontrado</p>
+                <p class="empty-desc">Tente ajustar os filtros ou aguarde o carregamento.</p>
             </div>
         </div>
 
@@ -262,58 +820,119 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="participanteModalLabel">Detalhes do Participante</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                        <h5 class="modal-title" id="participanteModalLabel">
+                            <i class="material-icons">person</i> <span id="modalNomeHeader">Detalhes</span>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span
+                                aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6>Informações Pessoais</h6>
-                                <hr>
-                                <p><strong>Nome:</strong> <span id="modalNome"></span></p>
-                                <p><strong>Data de Nascimento:</strong> <span id="modalDtNasc"></span></p>
-                                <p><strong>Idade:</strong> <span id="modalIdade"></span></p>
-                                <p><strong>Gênero:</strong> <span id="modalGenero"></span></p>
-                                <p><strong>Estado Civil:</strong> <span id="modalEstadoCivil"></span></p>
-                                <p><strong>Celular:</strong> <span id="modalCelular"></span></p>
-                            </div>
-                            <div class="col-md-6">
-                                <h6>Informações do Responsável</h6>
-                                <hr>
-
-                                <div id="assinaturaContainer" style="display: none;">
-                                    <p><strong>Assinatura do Responsável:</strong></p>
-                                    <img id="modalAssinatura" src="" alt="Assinatura do Responsável"
-                                        style="max-width: 100%; border: 1px solid #ddd; margin-top: 5px;">
+                        <!-- Pessoal -->
+                        <div class="info-section">
+                            <div class="info-sec-title"><i class="material-icons">badge</i> Informações Pessoais</div>
+                            <div class="info-grid">
+                                <div>
+                                    <div class="info-item-label">Nome Completo</div>
+                                    <div class="info-item-value" id="modalNome"></div>
+                                </div>
+                                <div>
+                                    <div class="info-item-label">Data de Nascimento</div>
+                                    <div class="info-item-value" id="modalDtNasc"></div>
+                                </div>
+                                <div>
+                                    <div class="info-item-label">Idade</div>
+                                    <div class="info-item-value" id="modalIdade"></div>
+                                </div>
+                                <div>
+                                    <div class="info-item-label">Gênero</div>
+                                    <div class="info-item-value" id="modalGenero"></div>
+                                </div>
+                                <div>
+                                    <div class="info-item-label">Estado Civil</div>
+                                    <div class="info-item-value" id="modalEstadoCivil"></div>
+                                </div>
+                                <div>
+                                    <div class="info-item-label">Celular</div>
+                                    <div class="info-item-value" id="modalCelular"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <h6>Informações Igreja</h6>
-                                <hr>
-                                <p><strong>Igreja:</strong> <span id="modalIgreja"></span></p>
-                                <p><strong>Célula:</strong> <span id="modalCelula"></span></p>
-                                <p><strong>Supervisor:</strong> <span id="modalSupervisor"></span></p>
-                                <p><strong>Rede:</strong> <span id="modalRede"></span></p>
+                        <!-- Igreja -->
+                        <div class="info-section">
+                            <div class="info-sec-title"><i class="material-icons">church</i> Informações da Igreja</div>
+                            <div class="info-grid">
+                                <div>
+                                    <div class="info-item-label">Igreja</div>
+                                    <div class="info-item-value" id="modalIgreja"></div>
+                                </div>
+                                <div>
+                                    <div class="info-item-label">Célula</div>
+                                    <div class="info-item-value" id="modalCelula"></div>
+                                </div>
+                                <div>
+                                    <div class="info-item-label">Supervisor</div>
+                                    <div class="info-item-value" id="modalSupervisor"></div>
+                                </div>
+                                <div>
+                                    <div class="info-item-label">Rede</div>
+                                    <div class="info-item-value" id="modalRede"></div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <h6>Informações Pagamento</h6>
-                                <hr>
-                                <p><strong>Status:</strong> <span id="modalStatusPagamento"></span></p>
-                                <p><strong>Data de Preenchimento:</strong> <span id="modalDataPreenchimento"></span></p>
-                                <p><strong>Data de Registro:</strong> <span id="modalDtRegistro"></span></p>
-                                <p><strong>Ano do Evento:</strong> <span id="modalAnoEvento"></span></p>
+                        </div>
+                        <!-- Pagamento -->
+                        <div class="info-section">
+                            <div class="info-sec-title"><i class="material-icons">payments</i> Pagamento &amp; Registro
                             </div>
+                            <div class="info-grid">
+                                <div>
+                                    <div class="info-item-label">Status</div>
+                                    <div class="info-item-value" id="modalStatusPagamento"></div>
+                                </div>
+                                <div>
+                                    <div class="info-item-label">Data Preenchimento</div>
+                                    <div class="info-item-value" id="modalDataPreenchimento"></div>
+                                </div>
+                                <div>
+                                    <div class="info-item-label">Data de Registro</div>
+                                    <div class="info-item-value" id="modalDtRegistro"></div>
+                                </div>
+                                <div>
+                                    <div class="info-item-label">Ano do Evento</div>
+                                    <div class="info-item-value" id="modalAnoEvento"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Assinatura -->
+                        <div id="assinaturaContainer" class="info-section" style="display:none;">
+                            <div class="info-sec-title"><i class="material-icons">draw</i> Assinatura do Responsável
+                            </div>
+                            <img id="modalAssinatura" src="" alt="Assinatura do Responsável">
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger mr-auto" id="btnExcluirParticipante">
-                            <i class="material-icons align-middle">delete</i> Excluir Participante
+                            <i class="material-icons align-middle">delete</i> Excluir
                         </button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Confirmação (substitui confirm() nativo) -->
+        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" style="color:#fff;"><i class="material-icons align-middle">warning</i>
+                            Confirmar</h5>
+                        <button type="button" class="close" data-dismiss="modal"><span
+                                style="color:#fff;">&times;</span></button>
+                    </div>
+                    <div class="modal-body" id="confirmMessage">Tem certeza?</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger btn-sm" id="confirmOkBtn">Confirmar</button>
                     </div>
                 </div>
             </div>
@@ -334,367 +953,275 @@
 
     <script>
 
-        // Inicialização do DataTable
         let dataTable;
         let totalParticipantes = 0;
 
-        //Modal e gestão do doc
-        $(document).ready(function () {
-            // Carregar participantes do Firebase
-            carregarParticipantes();
+        // === Utilitários ===
 
-            // Inicializar DataTable
+        function showToast(msg, type = 'success') {
+            const icons = { success: 'check_circle', error: 'error', warning: 'warning' };
+            const $t = $(`<div class="toast-notif ${type}">
+                <i class="material-icons toast-icon">${icons[type] || 'info'}</i>
+                <span class="toast-message">${msg}</span>
+            </div>`);
+            $('#toastContainer').append($t);
+            setTimeout(() => { $t.css('animation', 'slideOut .3s ease forwards'); setTimeout(() => $t.remove(), 300); }, 3500);
+        }
+
+        function showConfirm(msg, onConfirm) {
+            $('#confirmMessage').text(msg);
+            $('#confirmModal').modal('show');
+            $('#confirmOkBtn').off('click').on('click', function () {
+                $('#confirmModal').modal('hide');
+                onConfirm();
+            });
+        }
+
+        function showLoading(show) {
+            $('#loadingOverlay').toggle(show);
+        }
+
+        // === DataTable ready ===
+        $(document).ready(function () {
             dataTable = $('#participantesTable').DataTable({
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
-                },
-                responsive: true,
-                dom: 'Bfrti', // Removido 'p' (paginação)
-                paging: false, // Desativa a paginação
-                scrollY: '350px', // Altura fixa para a área de rolagem
-                scrollCollapse: true, // Mantém o colapso da altura
-                fixedHeader: true, // Mantém o cabeçalho fixo durante a rolagem
-                buttons: [
-                    {
-                        extend: 'excel',
-                        text: 'Exportar Excel',
-                        className: 'btn btn-export d-none',
-                        exportOptions: {
-                            columns: [0, 1, 2, 3, 4, 5, 6]
-                        }
-                    },
-                ]
+                language: { url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json' },
+                scrollX: true,
+                dom: 'Bfrti',
+                paging: false,
+                scrollY: '400px',
+                scrollCollapse: true,
+                columnDefs: [
+                    { targets: [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14], className: 'text-center' }
+                ],
+                buttons: [{
+                    extend: 'excel',
+                    text: 'Exportar Excel',
+                    className: 'btn btn-export d-none',
+                    exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] }
+                }]
             });
 
-            // Associar botões personalizados aos botões do DataTable
-            $('.btn-export').eq(0).on('click', function () {
+            carregarParticipantes();
+
+            // Botão exportar com feedback
+            $('#btnExportarExcel').on('click', function () {
                 const btn = $(this);
-                const originalText = btn.html();
+                const orig = btn.html();
+                btn.html('<i class="material-icons align-middle" style="font-size:18px;">hourglass_empty</i> Exportando...');
+                btn.prop('disabled', true);
 
                 btn.html('<i class="material-icons align-middle">hourglass_empty</i> Exportando...');
                 btn.prop('disabled', true);
 
                 dataTable.button(0).trigger();
-
-                setTimeout(() => {
-                    btn.html(originalText);
-                    btn.prop('disabled', false);
-                }, 2000);
+                setTimeout(() => { btn.html(orig); btn.prop('disabled', false); }, 2000);
             });
 
-            $('.btn-export').eq(1).on('click', function () {
-                dataTable.button(1).trigger();
-            });
-
-            // Filtrar participantes
-            $('#filterForm').on('submit', function (e) {
-                e.preventDefault();
-                aplicarFiltros();
-            });
+            // Filtrar
+            $('#filterForm').on('submit', function (e) { e.preventDefault(); aplicarFiltros(); });
 
             // Limpar filtros
-            $('#limparFiltro').on('click', function () {
-                $('#filterForm')[0].reset();
-                aplicarFiltros();
-            });
+            $('#limparFiltro').on('click', function () { $('#filterForm')[0].reset(); aplicarFiltros(); });
 
-            // Controlar a visibilidade do campo de forma de pagamento
-            $('#updatePagamento').on('change', function () {
-                if ($(this).val() === 'pago') {
-                    $('#divFormaPagamento').show();
-                    $('#updateFormaPagamento').prop('required', true);
-                } else {
-                    $('#divFormaPagamento').hide();
-                    $('#updateFormaPagamento').prop('required', false);
-                }
-            });
-
-            // Atualizar status de pagamento
-            $('#btnSalvarPagamento').on('click', function () {
-                const participanteId = $(this).data('id');
-                const novoStatus = $('#updatePagamento').val();
-
-                // Verificar se a forma de pagamento foi preenchida quando o status é pago
-                if (novoStatus === 'pago' && !$('#updateFormaPagamento').val()) {
-                    $('#updateFormaPagamento').addClass('is-invalid');
-                    return; // Interrompe a execução se o campo estiver vazio
-                }
-
-                const dadosAtualizacao = {
-                    statusPagamento: novoStatus,
-                    dataPagamento: novoStatus === 'pago' ? new Date().toISOString() : null
-                };
-
-                // Adiciona a forma de pagamento apenas se status for pago
-                if (novoStatus === 'pago') {
-                    dadosAtualizacao.formaPagamento = $('#updateFormaPagamento').val();
-                } else {
-                    dadosAtualizacao.formaPagamento = ''; // Limpa a forma de pagamento se status for pendente
-                }
-
-                db.collection("Eventos").doc("Veredas2026").collection("inscricoes").doc(participanteId)
-                    .update(dadosAtualizacao)
-                    .then(() => {
-                        alert('Status de pagamento atualizado com sucesso!');
-                        $('#participanteModal').modal('hide');
-                        carregarParticipantes();
-                    })
-                    .catch((error) => {
-                        console.error("Erro ao atualizar pagamento: ", error);
-                        alert("Erro ao atualizar pagamento. Tente novamente.");
-                    });
-            });
-
-            // Adicione este código ao seu script existente
-            $('#participanteModal').on('hide.bs.modal', function (e) {
-                // Remover o foco de todos os elementos focáveis dentro do modal
+            // Foco ao fechar modal
+            $('#participanteModal').on('hide.bs.modal', function () {
                 $(this).find('button, input, select, textarea, a[href]').blur();
             });
 
-            // Configurar o botão de exclusão
+            // Botão excluir
             $('#btnExcluirParticipante').on('click', function () {
-                const participanteId = $(this).data('id');
-
-                if (!participanteId) {
-                    // Tentar recuperar do outro botão como fallback
-                    const fallbackId = $('#btnSalvarPagamento').data('id');
-
-                    if (fallbackId) {
-                        excluirParticipante(fallbackId);
-                    } else {
-                        alert("Erro: Não foi possível identificar o participante para exclusão.");
-                    }
-                } else {
-                    excluirParticipante(participanteId);
-                }
+                const id = $(this).data('id');
+                if (!id) { showToast('Não foi possível identificar o participante.', 'error'); return; }
+                excluirParticipante(id);
             });
         });
 
-        // Função para Carregar participante
+        // === Carregar Participantes ===
         function carregarParticipantes() {
+            showLoading(true);
             db.collection("Eventos").doc("Veredas2026").collection("inscricoes")
                 .where("anoevento", "==", "2026")
                 .get()
                 .then((querySnapshot) => {
-
-                    // Limpar DataTable
                     dataTable.clear();
-
-                    // Armazenar o total de participantes
                     totalParticipantes = querySnapshot.size;
 
                     querySnapshot.forEach((doc) => {
-                        const participante = doc.data();
-
-                        // Adicionar linha ao DataTable
+                        const p = doc.data();
+                        const isPago = p.statusPagamento === 'pago';
                         dataTable.row.add([
-                            participante.nome,
-                            participante.idade,
-                            participante.genero || 'N/A',
-                            participante.celular,
-
-                            participante.celula,
-                            participante.igreja === 'Outra' ? participante.outraIgreja : participante.igreja,
-                            `<span class="badge ${participante.statusPagamento === 'pago' ? 'badge-pago' : 'badge-pendente'}">${participante.statusPagamento === 'pago' ? 'Pago' : 'Pendente'}</span>`,
-                            `<button class="btn btn-info btn-sm" onclick="verDetalhes('${doc.id}')">Ver</button>`
+                            p.nome || '',
+                            p.cpf || '',
+                            formatarData(p.dtnasc) || '',
+                            p.idade || '',
+                            p.genero || 'N/A',
+                            p.estadoCivil || '',
+                            p.celular || '',
+                            p.igreja === 'Outra' ? (p.outraIgreja || 'Outra') : (p.igreja || ''),
+                            p.celula || '',
+                            p.supervisor || '',
+                            p.rede || '',
+                            p.dataPreenchimento || '',
+                            formatarDataHora(p.dtRegistro) || '',
+                            `<span class="badge-status ${isPago ? 'badge-pago' : 'badge-pendente'}">${isPago ? '✓ Pago' : '⏳ Pendente'}</span>`,
+                            `<button class="btn-ver" onclick="verDetalhes('${doc.id}')"><i class="material-icons" style="font-size:14px;">visibility</i> Ver</button>`
                         ]);
                     });
 
-                    // Renderizar DataTable
-                    dataTable.draw();
+                    dataTable.columns.adjust().draw();
+                    
+                    // Cálculo de totais
+                    let pagos = 0;
+                    let pendentes = 0;
+                    querySnapshot.forEach(doc => {
+                        if(doc.data().statusPagamento === 'pago') pagos++;
+                        else pendentes++;
+                    });
 
-                    // Atualizar contador
-                    atualizarContador();
-
+                    atualizarContadoresGlobais(totalParticipantes, pagos, pendentes);
+                    atualizarContadorFiltrado();
+                    // Empty state
+                    const count = dataTable.rows({ search: 'applied' }).count();
+                    $('#emptyState').toggle(count === 0);
                 })
                 .catch((error) => {
-                    console.error("Erro ao carregar participantes: ", error);
-                    alert("Erro ao carregar lista de participantes. Tente novamente.");
-                });
+                    console.error("Erro ao carregar participantes:", error);
+                    showToast('Erro ao carregar participantes. Tente novamente.', 'error');
+                })
+                .finally(() => { showLoading(false); });
         }
 
-        // Adicione esta função para atualizar o contador
-        function atualizarContador() {
-            const participantesFiltrados = dataTable.rows({ search: 'applied' }).count();
-
-            $('#contador-participantes').text(participantesFiltrados);
-            $('#total-participantes').text(totalParticipantes);
-
-            // Mostrar ou esconder o texto de filtro
-            if (participantesFiltrados < totalParticipantes) {
-                $('#texto-filtro').show();
-            } else {
-                $('#texto-filtro').hide();
-            }
+        function atualizarContadoresGlobais(total, pagos, pendentes) {
+            $('#val-total').text(total);
+            $('#val-pagos').text(pagos);
+            $('#val-pendentes').text(pendentes);
         }
 
+        function atualizarContadorFiltrado() {
+            const filtrados = dataTable.rows({ search: 'applied' }).count();
+            $('#contador-participantes').text(filtrados);
+            $('#texto-filtro').toggle(filtrados < totalParticipantes);
+            $('#emptyState').toggle(filtrados === 0);
+        }
+
+        // === Ver Detalhes ===
         function verDetalhes(participanteId) {
             db.collection("Eventos").doc("Veredas2026").collection("inscricoes").doc(participanteId)
                 .get()
                 .then((doc) => {
-                    if (doc.exists) {
-                        const p = doc.data();
+                    if (!doc.exists) { showToast('Participante não encontrado!', 'error'); return; }
+                    const p = doc.data();
+                    const isPago = p.statusPagamento === 'pago';
 
-                        // Informações Pessoais
-                        $('#modalNome').text(p.nome || 'N/A');
-                        $('#modalDtNasc').text(formatarData(p.dtnasc) || 'N/A');
-                        $('#modalIdade').text(p.idade || 'N/A');
-                        $('#modalGenero').text(p.genero || 'N/A');
-                        $('#modalEstadoCivil').text(p.estadoCivil || 'N/A');
-                        $('#modalCelular').text(p.celular || 'N/A');
+                    $('#modalNomeHeader').text(p.nome || 'Participante');
+                    $('#modalNome').text(p.nome || 'N/A');
+                    $('#modalDtNasc').text(formatarData(p.dtnasc) || 'N/A');
+                    $('#modalIdade').text(p.idade || 'N/A');
+                    $('#modalGenero').text(p.genero || 'N/A');
+                    $('#modalEstadoCivil').text(p.estadoCivil || 'N/A');
+                    $('#modalCelular').text(p.celular || 'N/A');
 
-                        // Informações do Responsável
+                    if (p.assinaturaResponsavel) {
+                        $('#assinaturaContainer').show();
+                        $('#modalAssinatura').attr('src', p.assinaturaResponsavel);
+                    } else { $('#assinaturaContainer').hide(); }
 
-                        // Exibir assinatura se existir
-                        if (p.assinaturaResponsavel) {
-                            $('#assinaturaContainer').show();
-                            $('#modalAssinatura').attr('src', p.assinaturaResponsavel);
-                        } else {
-                            $('#assinaturaContainer').hide();
-                        }
+                    $('#modalIgreja').text(p.igreja === 'Outra' ? (p.outraIgreja || 'Outra') : (p.igreja || 'N/A'));
+                    $('#modalCelula').text(p.celula || 'N/A');
+                    $('#modalSupervisor').text(p.supervisor || 'N/A');
+                    $('#modalRede').text(p.rede || 'N/A');
 
-                        // Informações da Igreja
-                        if (p.igreja === 'Outra') {
-                            $('#modalIgreja').text(p.outraIgreja || 'Outra (não especificada)');
-                        } else {
-                            $('#modalIgreja').text(p.igreja || 'N/A');
-                        }
-                        $('#modalCelula').text(p.celula || 'N/A');
-                        $('#modalSupervisor').text(p.supervisor || 'N/A');
-                        $('#modalRede').text(p.rede || 'N/A');
+                    $('#modalStatusPagamento').html(`<span class="badge-status ${isPago ? 'badge-pago' : 'badge-pendente'}">${isPago ? '✓ Pago' : '⏳ Pendente'}</span>`);
+                    $('#modalDataPreenchimento').text(p.dataPreenchimento || 'N/A');
+                    $('#modalDtRegistro').text(formatarDataHora(p.dtRegistro) || 'N/A');
+                    $('#modalAnoEvento').text(p.anoevento || 'N/A');
 
-                        // Informações de Pagamento e Registro
-                        $('#modalStatusPagamento').html(`<span class="badge ${p.statusPagamento === 'pago' ? 'badge-pago' : 'badge-pendente'}">${p.statusPagamento === 'pago' ? 'Pago' : 'Pendente'}</span>`);
-                        $('#modalDataPreenchimento').text(p.dataPreenchimento || 'N/A');
-                        $('#modalDtRegistro').text(formatarDataHora(p.dtRegistro) || 'N/A');
-                        $('#modalAnoEvento').text(p.anoevento || 'N/A');
-
-                        // Armazenar ID do participante no botão de exclusão
-                        $('#btnExcluirParticipante').data('id', doc.id);
-
-                        // Abrir modal
-                        $('#participanteModal').modal('show');
-                    } else {
-                        console.error("Documento não encontrado para ID:", participanteId);
-                        alert("Participante não encontrado!");
-                    }
+                    $('#btnExcluirParticipante').data('id', doc.id);
+                    $('#participanteModal').modal('show');
                 })
                 .catch((error) => {
-                    console.error("Erro ao buscar detalhes: ", error);
-                    alert("Erro ao buscar detalhes do participante.");
+                    console.error("Erro ao buscar detalhes:", error);
+                    showToast('Erro ao buscar detalhes do participante.', 'error');
                 });
         }
 
-        // Função para formatar data e hora
-        function formatarDataHora(dataString) {
-            if (!dataString) return '';
-
-            try {
-                const data = new Date(dataString);
-                return data.toLocaleString('pt-BR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-            } catch (e) {
-                return dataString;
-            }
-        }
-
+        // === Filtros (com correção de bugs) ===
         function aplicarFiltros() {
+            const filtroNome = $('#filterNome').val().trim();
             const filtroIgreja = $('#filterIgreja').val();
             const filtroIdade = $('#filterIdade').val();
+            const filtroGenero = $('#filterGenero').val();
             const filtroPagamento = $('#filterPagamento').val();
 
-            dataTable.search('').columns().search('').draw();
+            // Limpar TODOS os filtros custom anteriores (FIX: evita empilhamento)
+            $.fn.dataTable.ext.search = [];
 
-            if (filtroIgreja) {
-                dataTable.column(4).search(
-                    filtroIgreja === 'Outra' ? '(Outra)' : filtroIgreja, true, false
-                ).draw();
-            }
+            // Resetar pesquisas de coluna
+            dataTable.search('').columns().search('');
 
-            if (filtroIdade) {
-                // Filtro personalizado para idade
-                $.fn.dataTable.ext.search.push(
-                    function (settings, data, dataIndex) {
-                        const idade = parseInt(data[1].replace(' anos', ''));
+            // Filtro por nome (col 0)
+            if (filtroNome) dataTable.column(0).search(filtroNome, false, true);
 
-                        if (filtroIdade === '18+') {
-                            // Para "Acima de 17", verificar se idade > 17
-                            return idade > 17;
-                        } else {
-                            // Para as outras faixas etárias, manter o comportamento atual
-                            const [min, max] = filtroIdade.split('-');
-                            const minIdade = parseInt(min);
-                            const maxIdade = parseInt(max);
+            // Filtro por gênero (col 4)
+            if (filtroGenero) dataTable.column(4).search(filtroGenero, false, true);
 
-                            if ((isNaN(minIdade) && isNaN(maxIdade)) ||
-                                (isNaN(minIdade) && idade <= maxIdade) ||
-                                (minIdade <= idade && isNaN(maxIdade)) ||
-                                (minIdade <= idade && idade <= maxIdade)) {
-                                return true;
-                            }
-                            return false;
-                        }
-                    }
-                );
+            // Filtro por igreja (col 7)
+            if (filtroIgreja) dataTable.column(7).search(filtroIgreja, false, true);
 
-                dataTable.draw();
-            }
-
+            // Filtro por pagamento (col 13)
             if (filtroPagamento) {
-                dataTable.column(5).search(
-                    filtroPagamento === 'pago' ? 'Pago' : 'Pendente', true, false
-                ).draw();
+                const termo = filtroPagamento === 'pago' ? 'Pago' : 'Pendente';
+                dataTable.column(13).search(termo, false, true);
             }
+
+            // Filtro por faixa etária (custom — agora limpo antes de adicionar)
+            if (filtroIdade) {
+                $.fn.dataTable.ext.search.push(function (settings, data) {
+                    const idade = parseInt(data[3]);
+                    if (isNaN(idade)) return false;
+                    if (filtroIdade === '18+') return idade >= 18;
+                    const [min, max] = filtroIdade.split('-').map(Number);
+                    return idade >= min && idade <= max;
+                });
+            }
+
+            dataTable.draw();
+            atualizarContador();
         }
 
-        function formatarData(dataString) {
-            if (!dataString) return '';
-
-            try {
-                const data = new Date(dataString);
-                return data.toLocaleDateString('pt-BR');
-            } catch (e) {
-                return dataString;
-            }
-        }
-
+        // === Exclusão (sem race condition) ===
         function excluirParticipante(participanteId) {
-            if (!participanteId) {
-                alert("Erro: Não foi possível identificar o participante para exclusão.");
-                return;
-            }
+            if (!participanteId) { showToast('Erro: não foi possível identificar o participante.', 'error'); return; }
 
-            if (confirm("Tem certeza que deseja excluir este participante? Esta ação não pode ser desfeita.")) {
+            showConfirm('Tem certeza que deseja excluir este participante? Esta ação não pode ser desfeita.', () => {
                 db.collection("Eventos").doc("Veredas2026").collection("inscricoes").doc(participanteId)
                     .delete()
+                    .then(() => db.collection("Eventos").doc("Veredas2026").update({
+                        "contador.totalInscricoes": firebase.firestore.FieldValue.increment(-1),
+                        "contador.ultimaAtualizacao": firebase.firestore.FieldValue.serverTimestamp()
+                    }))
                     .then(() => {
-                        // Decrementar contador após exclusão bem-sucedida
-                        return db.collection("Eventos").doc("Veredas2026").update({
-                            "contador.totalInscricoes": firebase.firestore.FieldValue.increment(-1),
-                            "contador.ultimaAtualizacao": firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    })
-                    .then(() => {
-                        console.log("Contador decrementado com sucesso!");
-                        alert("Participante excluído com sucesso!");
+                        showToast('Participante excluído com sucesso!', 'success');
                         $('#participanteModal').modal('hide');
-                        setTimeout(function () {
-                            window.location.reload();
-                        }, 500);
+                        setTimeout(() => window.location.reload(), 1000);
                     })
                     .catch((error) => {
-                        console.error("Erro ao excluir participante ou atualizar contador:", error);
-                        alert("Erro ao excluir participante: " + error.message);
+                        console.error("Erro ao excluir:", error);
+                        showToast('Erro ao excluir participante: ' + error.message, 'error');
                     });
-            }
+            });
+        }
 
-            carregarParticipantes(); // Recarrega a lista após exclusão
+        // === Utilitários de data ===
+        function formatarData(d) {
+            if (!d) return '';
+            try { return new Date(d).toLocaleDateString('pt-BR'); } catch (e) { return d; }
+        }
 
+        function formatarDataHora(d) {
+            if (!d) return '';
+            try { return new Date(d).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+            catch (e) { return d; }
         }
 
     </script>

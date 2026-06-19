@@ -12,117 +12,57 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.css">
     <style>
+        :root {
+            --primary: #5c35d9;
+            --primary-lt: #7c5ce8;
+            --primary-dk: #3d1fa8;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --text: #2d3436;
+            --muted: #636e72;
+            --bg: #f8f9fc;
+            --card: #ffffff;
+            --border: #edf2f7;
+            --r: 12px;
+            --sh-sm: 0 2px 10px rgba(0, 0, 0, .05);
+            --sh-md: 0 4px 20px rgba(0, 0, 0, .08);
+        }
+
         body {
             font-family: 'Montserrat', sans-serif;
-            color: #333;
-            padding-top: 80px;
+            color: var(--text);
+            background: #f8f9fc;
+            padding-top: 100px;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(92, 53, 217, 0.03) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(92, 53, 217, 0.03) 0px, transparent 50%);
+            min-height: 100vh;
         }
 
-        .dashboard-card {
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            margin-bottom: 20px;
-            height: 100%;
-            border: none;
-            background-color: white;
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .card-header {
-            border-radius: 12px 12px 0 0;
-            font-weight: 700;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-
-        .card-body {
-            padding: 25px;
-            text-align: center;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .card-body h2 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .card-body h6 {
-            font-size: 0.9rem;
-            color: #6c757d;
-            font-weight: 500;
-        }
-
-        .card-body .icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-        }
-
-        .total-card .icon {
-            color: #007bff;
-        }
-
-        .pago-card .icon {
-            color: #28a745;
-        }
-
-        .pendente-card .icon {
-            color: #ffc107;
-        }
-
-        .total-card {
-            background-color: white;
-            color: #333;
-            border-left: 5px solid #007bff;
-        }
-
-        .pago-card {
-            background-color: white;
-            color: #333;
-            border-left: 5px solid #28a745;
-        }
-
-        .pendente-card {
-            background-color: white;
-            color: #333;
-            border-left: 5px solid #ffc107;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 300px;
+        /* Modern Header Override */
+        .header {
+            background: rgba(17, 17, 17, 0.95) !important;
+            backdrop-filter: blur(10px);
+            height: 70px !important;
+            border-bottom: 3px solid var(--primary);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            position: fixed;
+            top: 0;
             width: 100%;
+            z-index: 1000;
         }
 
-        .payment-action {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .table-responsive {
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .badge-pago {
-            background-color: #28a745;
-        }
-
-        .badge-pendente {
-            background-color: #ffc107;
+        .header-title {
+            font-size: 1.1rem !important;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            color: #fff;
+            text-transform: uppercase;
+            margin: 0;
         }
 
         .btn-voltar {
@@ -130,67 +70,239 @@
             left: 20px;
             top: 50%;
             transform: translateY(-50%);
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-radius: 12px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all .3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-voltar:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transform: translateY(-50%) scale(1.05);
-            color: white;
+            background: var(--primary);
+            transform: translateY(-50%) translateX(-3px);
+            color: #fff;
             text-decoration: none;
+            border-color: var(--primary-lt);
         }
 
         .btn-voltar .material-icons {
-            font-size: 24px;
+            font-size: 20px;
         }
 
-        .btn-group .btn {
-            margin-right: 2px;
+        /* Dashboard Cards */
+        .dashboard-card {
+            background: var(--card);
+            border-radius: var(--r);
+            box-shadow: var(--sh-sm);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all .3s;
+            margin-bottom: 24px;
+            overflow: hidden;
         }
 
-        .btn-group .btn:last-child {
-            margin-right: 0;
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--sh-md);
         }
 
-        .btn-info {
-            background-color: #17a2b8;
-            color: white;
+        .card-header {
+            background: #fdfdfe;
+            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+            color: var(--muted);
+            padding: 15px 20px;
+            font-size: .85rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
         }
 
-        .btn-info:hover {
-            background-color: #138496;
+        .card-body {
+            padding: 24px;
         }
 
-        .sort-btn {
-            background: transparent;
+        .card-title {
+            font-size: .88rem;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stats-h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            color: var(--text);
+        }
+
+        .stats-h6 {
+            font-size: 0.82rem;
+            color: var(--muted);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .icon-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .total-card .icon-circle { background: linear-gradient(135deg, var(--primary), var(--primary-lt)); }
+        .pago-card .icon-circle { background: linear-gradient(135deg, var(--success), #2ecc71); }
+        .pendente-card .icon-circle { background: linear-gradient(135deg, var(--warning), #f39c12); }
+
+        .total-card .stats-h2 { color: var(--primary); }
+        .pago-card .stats-h2 { color: var(--success); }
+        .pendente-card .stats-h2 { color: var(--warning); }
+
+        /* Payment form */
+        .payment-action-card {
+            background: var(--card);
+            border-radius: var(--r);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--sh-sm);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .payment-action-card h5 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary-dk);
+        }
+
+        .payment-action-card label {
+            font-size: .84rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 5px;
+        }
+
+        .payment-action-card .form-control {
+            border-radius: 8px;
+            border-color: var(--border);
+            font-size: .88rem;
+            height: 42px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .payment-action-card .form-control:focus {
+            border-color: var(--primary-lt);
+            box-shadow: 0 0 0 3px rgba(92, 53, 217, .1);
+        }
+
+        .btn-confirmar {
+            background: linear-gradient(135deg, var(--success), #2ecc71);
+            color: #fff;
             border: none;
-            padding: 0;
+            border-radius: 8px;
+            font-weight: 700;
+            height: 42px;
+            transition: all .2s;
+            box-shadow: 0 4px 10px rgba(39, 174, 96, .2);
+        }
+
+        .btn-confirmar:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(39, 174, 96, .3);
+            color: #fff;
+        }
+
+        /* Table modern style */
+        .table {
+            margin: 0;
+        }
+
+        .table thead th {
+            background: #fdfdfe !important;
+            border-bottom: 1px solid var(--border) !important;
+            font-size: .8rem;
+            font-weight: 700;
+            color: var(--muted);
+            padding: 14px 16px;
+            text-transform: uppercase;
+            letter-spacing: .02em;
+            border-top: none;
+        }
+
+        .table tbody td {
+            font-size: .82rem;
+            padding: 14px 16px;
+            vertical-align: middle;
+            border-color: var(--border);
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(92, 53, 217, 0.01);
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(92, 53, 217, 0.03);
+        }
+
+        /* Badges */
+        .badge-payment {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-pago { background: rgba(39, 174, 96, .1); color: #27ae60; }
+        .badge-pendente { background: rgba(243, 156, 18, .1); color: #f39c12; }
+
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--muted);
+            transition: all .2s;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .sort-btn:hover {
-            transform: scale(1.2);
+        .btn-action:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
         }
 
-        .sort-btn:focus {
-            outline: none;
-            box-shadow: none;
+        .btn-action.btn-estorno:hover {
+            border-color: var(--danger);
+            color: var(--danger);
         }
 
-        .sort-asc .material-icons {
-            transform: rotate(180deg);
+        /* Chart container */
+        .chart-wrapper {
+            height: 250px;
+            position: relative;
         }
+
+        @media(max-width:768px) {
+            .header-title { font-size: 0.9rem !important; }
+            .stats-h2 { font-size: 1.8rem; }
+        }
+    </style>
     </style>
 </head>
 
@@ -207,34 +319,36 @@
         <div class="row">
             <!-- Card: Total de Inscrições -->
             <div class="col-md-4">
-                <div class="card dashboard-card">
-                    <div class="card-body total-card">
-                        <i class="material-icons icon">group_add</i>
-                        <h5 class="card-title">Total de Inscrições</h5>
-                        <h2 id="totalInscritos">0</h2>
+                <div class="card dashboard-card total-card">
+                    <div class="card-body">
+                        <div class="icon-circle"><i class="material-icons">group_add</i></div>
+                        <h5 class="card-title">Inscrições</h5>
+                        <h2 class="stats-h2" id="totalInscritos">0</h2>
+                        <h6 class="stats-h6">Veredas 2026</h6>
                     </div>
                 </div>
             </div>
 
             <!-- Card: Pagamentos Confirmados -->
             <div class="col-md-4">
-                <div class="card dashboard-card">
-                    <div class="card-body pago-card">
-                        <i class="material-icons icon">check_circle</i>
-                        <h5 class="card-title">Pagamentos Confirmados</h5>
-                        <h2 id="totalPagos">0</h2>
-                        <h6>Valor Recebido: R$ <span id="valorPago">0,00</span></h6>
+                <div class="card dashboard-card pago-card">
+                    <div class="card-body">
+                        <div class="icon-circle"><i class="material-icons">check_circle</i></div>
+                        <h5 class="card-title">Confirmados</h5>
+                        <h2 class="stats-h2" id="totalPagos">0</h2>
+                        <h6 class="stats-h6">R$ <span id="valorPago">0,00</span> recebidos</h6>
                     </div>
                 </div>
             </div>
 
             <!-- Card: Pagamentos Pendentes -->
             <div class="col-md-4">
-                <div class="card dashboard-card">
-                    <div class="card-body pendente-card">
-                        <i class="material-icons icon">hourglass_empty</i>
-                        <h5 class="card-title">Pagamentos Pendentes</h5>
-                        <h2 id="totalPendentes">0</h2>
+                <div class="card dashboard-card pendente-card">
+                    <div class="card-body">
+                        <div class="icon-circle"><i class="material-icons">hourglass_empty</i></div>
+                        <h5 class="card-title">Pendentes</h5>
+                        <h2 class="stats-h2" id="totalPendentes">0</h2>
+                        <h6 class="stats-h6">Aguardando confirmação</h6>
                     </div>
                 </div>
             </div>
@@ -249,7 +363,7 @@
                         Status de Pagamentos
                     </div>
                     <div class="card-body">
-                        <div class="chart-container">
+                        <div class="chart-wrapper">
                             <canvas id="graficoStatus"></canvas>
                         </div>
                     </div>
@@ -263,7 +377,7 @@
                         Formas de Pagamento
                     </div>
                     <div class="card-body">
-                        <div class="chart-container">
+                        <div class="chart-wrapper">
                             <canvas id="graficoFormas"></canvas>
                         </div>
                     </div>
@@ -274,8 +388,8 @@
         <!-- Registrar Pagamentos -->
         <div class="row mt-4">
             <div class="col-md-12">
-                <div class="payment-action">
-                    <h5>Registrar Novo Pagamento</h5>
+                <div class="payment-action-card">
+                    <h5><i class="material-icons align-middle mr-2" style="font-size: 20px;">add_card</i> Registrar Novo Pagamento</h5>
                     <form id="paymentForm" class="row">
                         <!-- Participantes -->
                         <div class="form-group col-md-4">
@@ -306,7 +420,7 @@
                         </div>
                         <!-- Botão de Confirmar -->
                         <div class="form-group col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-success w-100">Confirmar</button>
+                            <button type="submit" class="btn btn-confirmar w-100">Confirmar</button>
                         </div>
                     </form>
                 </div>
@@ -317,27 +431,19 @@
             <div class="col-md-12">
                 <div class="card dashboard-card">
                     <div class="card-header">
-                        Últimos Pagamentos
+                        Últimos Pagamentos Registrados
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-striped" id="pagamentosTable">
-                                <thead class="thead-dark">
+                            <table class="table" id="pagamentosTable">
+                                <thead>
                                     <tr>
-                                        <th>
-                                            <div class="d-flex align-items-center">
-                                                Participante
-                                                <button class="btn btn-sm text-white ml-2 sort-btn"
-                                                    data-sort="participante">
-                                                    <i class="material-icons" id="sortIconParticipante">sort</i>
-                                                </button>
-                                            </div>
-                                        </th>
-                                        <th>Data de Pagamento</th>
+                                        <th>Participante</th>
+                                        <th>Data</th>
                                         <th>Valor</th>
                                         <th>Forma</th>
                                         <th>Status</th>
-                                        <th>Ações</th>
+                                        <th class="text-center">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody id="pagamentosList">
@@ -855,16 +961,11 @@
             }
 
             pagamentos.forEach(pagamento => {
-                const dataPagamento = formatarData(pagamento.dataPagamento);
-                const valor = (pagamento.valor).toFixed(2).replace('.', ',');
+                const dataFmt = formatarData(pagamento.dataPagamento);
+                const badgeClass = pagamento.status === 'confirmado' ? 'badge-pago' : 'badge-pendente';
+                const statusTexto = pagamento.status.charAt(0).toUpperCase() + pagamento.status.slice(1);
 
                 const linha = `
-            <tr>
-                <td>${pagamento.participanteNome}</td>
-                <td>${dataPagamento}</td>
-                <td>R$ ${valor}</td>
-                <td>${formatarFormaPagamento(pagamento.formaPagamento)}</td>
-                <td>
                     <span class="badge ${pagamento.status === 'confirmado' ? 'badge-pago' : 'badge-pendente'}">
                         ${pagamento.status === 'confirmado' ? 'Confirmado' : 'Estornado'}
                     </span>
